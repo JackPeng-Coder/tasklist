@@ -1,3 +1,5 @@
-:root { --font-size: 16px; }
+@import './variables.css';
 * { box-sizing: border-box; }
-body { margin: 0; font-size: var(--font-size); }
+html, body { margin: 0; height: 100%; }
+body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: var(--color-bg); color: var(--color-text); }
+#app { height: 100vh; display: flex; }
