@@ -1,8 +1,10 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { createList, STORE_KEY, type Item, type List, type Settings, type TaskData, type TreeNode, type UIState } from '../types'
-import { loadTaskData, saveTaskData } from '../storage'
+import { createList, STORE_KEY, type Item, type List, type TreeNode } from '../types'
+import { loadTaskData } from '../storage'
 import { applyMove, type MoveSpec } from '../logic/move'
+import { resolveDateField } from '../logic/dates'
+import welcomeJson from '../data/welcome.json'
 
 function findNode(nodes: TreeNode[], id: string): TreeNode | null {
   for (const n of nodes) {
@@ -36,9 +38,13 @@ function countNodes(nodes: TreeNode[]): number {
   return nodes.reduce((acc, n) => acc + 1 + (Array.isArray((n as any).items) ? countNodes((n as any).items) : 0), 0)
 }
 
-function makeWelcomeList(): List {
-  // 占位欢迎列表：本任务的测试依赖空 items 结构；Task 18 将替换为读取 src/data/welcome.json
-  return { id: 'welcome', name: '欢迎使用任务清单', description: '示例列表', items: [] }
+function resolveRelativeDates(nodes: TreeNode[], now: Date): TreeNode[] {
+  return nodes.map((n) => {
+    const copy = { ...n }
+    if (copy.date) copy.date = resolveDateField(copy.date, now)
+    if (Array.isArray((copy as any).items)) (copy as any).items = resolveRelativeDates((copy as any).items, now)
+    return copy
+  })
 }
 
 export const useDataStore = defineStore('data', () => {
@@ -46,35 +52,17 @@ export const useDataStore = defineStore('data', () => {
   const currentListId = ref('')
   const recovered = ref(false)
 
-  // 本任务暂无 src/stores/ui.ts（Task 9 新增），持久化先写入默认 settings/ui 形状；
-  // Task 9/10 将把 useUiStore() 的 settings / sidebarCollapsed / expandedGroupIds 接入这里。
-  const DEFAULT_SETTINGS: Settings = { theme: 'light', fontSize: 16, lang: 'zh', showDescription: true }
-  const DEFAULT_UI: UIState = { sidebarCollapsed: false, expandedGroupIds: [] }
-
-  function persist() {
-    const data: TaskData = {
-      version: 1,
-      lists: lists.value,
-      settings: DEFAULT_SETTINGS,
-      ui: DEFAULT_UI,
-    }
-    saveTaskData(data)
-  }
-
-  let saveTimer: number | undefined
-  function scheduleSave() {
-    clearTimeout(saveTimer)
-    saveTimer = window.setTimeout(persist, 300)
+  function ensureWelcomeList() {
+    if (lists.value.length > 0) return
+    const now = new Date()
+    lists.value = [{ ...welcomeJson, items: resolveRelativeDates(welcomeJson.items as unknown as TreeNode[], now) }]
   }
 
   function init() {
     const { data, recovered: rec } = loadTaskData()
     recovered.value = rec
     lists.value = data.lists
-    if (lists.value.length === 0) {
-      lists.value = [makeWelcomeList()]
-      persist()
-    }
+    ensureWelcomeList()
     if (!lists.value.some((l) => l.id === currentListId.value)) {
       currentListId.value = lists.value[0].id
     }
@@ -96,18 +84,15 @@ export const useDataStore = defineStore('data', () => {
     l.description = description
     lists.value.push(l)
     currentListId.value = l.id
-    scheduleSave()
   }
 
   function renameList(id: string, name: string) {
     lists.value = lists.value.map((l) => (l.id === id ? { ...l, name } : l))
-    scheduleSave()
   }
 
   function deleteList(id: string) {
     lists.value = lists.value.filter((l) => l.id !== id)
     if (currentListId.value === id) currentListId.value = lists.value[0]?.id ?? ''
-    scheduleSave()
   }
 
   function addNode(parentId: string | null, node: TreeNode) {
@@ -120,7 +105,6 @@ export const useDataStore = defineStore('data', () => {
         l.id === list.id ? { ...l, items: mapNodes(l.items, parentId, (n) => ({ ...(n as any), items: [...(n as any).items, node] })) } : l,
       )
     }
-    scheduleSave()
   }
 
   function updateNode(nodeId: string, patch: Partial<Item>) {
@@ -129,7 +113,6 @@ export const useDataStore = defineStore('data', () => {
     lists.value = lists.value.map((l) =>
       l.id === list.id ? { ...l, items: mapNodes(l.items, nodeId, (n) => ({ ...n, ...patch })) } : l,
     )
-    scheduleSave()
   }
 
   function toggleDone(nodeId: string) {
@@ -144,14 +127,12 @@ export const useDataStore = defineStore('data', () => {
     const list = currentList.value
     if (!list) return
     lists.value = lists.value.map((l) => (l.id === list.id ? { ...l, items: filterNodes(l.items, nodeId) } : l))
-    scheduleSave()
   }
 
   function moveNode(spec: MoveSpec) {
     const { lists: out } = applyMove(lists.value, spec, Date.now())
     if (out !== lists.value) {
       lists.value = out
-      scheduleSave()
     }
   }
 
