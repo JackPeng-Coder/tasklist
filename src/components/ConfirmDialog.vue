@@ -4,16 +4,18 @@
     <p>{{ message }}</p>
     <template #actions>
       <button class="btn" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
-      <button class="btn danger" data-test="confirm" @click="$emit('confirm')">{{ t('common.delete') }}</button>
+      <button class="btn danger" data-test="confirm" @click="$emit('confirm')">{{ confirmLabel }}</button>
     </template>
   </ModalDialog>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
 import ModalDialog from './ModalDialog.vue'
 const { t } = useI18n()
-defineProps<{ open: boolean; title: string; message: string }>()
+const props = withDefaults(defineProps<{ open: boolean; title: string; message: string; confirmText?: string }>(), {})
+const confirmLabel = computed(() => props.confirmText ?? t('common.delete'))
 defineEmits<{ (e: 'confirm'): void; (e: 'cancel'): void }>()
 </script>
 

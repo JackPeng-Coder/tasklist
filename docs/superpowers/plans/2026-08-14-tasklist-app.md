@@ -3234,6 +3234,7 @@ git commit -m "feat: import and export with validation"
 **Interfaces:**
 - Consumes: Task 8 store、Task 10 定时器
 - Produces: 侧栏列表颜色随列表整体状态（任一逾期→红；全部完成→绿；否则蓝）——已在 Task 12 的 Sidebar 实现；本任务将列表状态计算提取为纯函数 `listStatus(list, now)`（放 `src/logic/status.ts`）并补测试；App 的 60s 定时器已接入 `touchNow`，逾期自动刷新生效。
+- **修复 Task 15 遗留缺口（重载后设置不生效）**：App.vue `onMounted` 中 `data.init()` 后，读取 `loadTaskData()` 返回的 `data.settings` / `data.ui`，应用到 ui store（`ui.settings = ...; ui.sidebarCollapsed = ...; ui.expandedGroupIds = ...; ui.applyToDOM()`），使主题/字号/语言/侧栏折叠/展开状态在重载后恢复。注意仅应用一次（onMounted），持久化仍由 App 统一 watch 负责。
 
 - [ ] **Step 1: 写 listStatus 测试（追加到 status.spec.ts）**
 

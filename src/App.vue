@@ -29,6 +29,8 @@
     </template>
   </ModalDialog>
   <ConfirmDialog :open="deletingType !== null" :title="t('confirm.title')" :message="t('confirm.message')" @confirm="confirmDelete" @cancel="onCancelDelete" />
+  <ConfirmDialog :open="importConfirmOpen" :title="t('settings.importTitle')" :message="t('settings.importMessage')" :confirm-text="t('common.confirm')" @confirm="confirmImport" @cancel="importConfirmOpen = false" />
+  <input ref="fileInput" type="file" accept="application/json" data-test="import-input" class="hidden-input" @change="onFileChange" />
 </template>
 
 <script setup lang="ts">
@@ -36,9 +38,11 @@ import { onMounted, onBeforeUnmount, watch, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataStore } from './stores/data'
 import { useUiStore } from './stores/ui'
-import { createItem, createGroup, type Item } from './types'
+import { createItem, createGroup, type Item, type TaskData } from './types'
 import { saveTaskData } from './storage'
 import { isGroup } from './logic/status'
+import { buildExportBlob, parseImportText } from './logic/io'
+import { mergeTaskData } from './logic/merge'
 import Sidebar from './components/Sidebar.vue'
 import MainArea from './components/MainArea.vue'
 import RightRail from './components/RightRail.vue'
@@ -72,6 +76,9 @@ const formDate = ref<string>()
 const formTime = ref<string>()
 const deletingId = ref<string | null>(null)
 const deletingType = ref<'list' | 'node' | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
+const pendingImport = ref<TaskData | null>(null)
+const importConfirmOpen = ref(false)
 
 let saveTimer: number | undefined
 function scheduleSave() {
@@ -171,11 +178,55 @@ function confirmDelete() {
 }
 
 function onImport() {
+  fileInput.value?.click()
 }
 function onExport() {
+  doExport()
 }
 function onAbout() {
   alert(`TaskList v${pkg.version}`)
+}
+
+function doExport() {
+  const taskData: TaskData = { version: 1, lists: data.lists, settings: ui.settings, ui: { sidebarCollapsed: ui.sidebarCollapsed, expandedGroupIds: ui.expandedGroupIds } }
+  const blob = buildExportBlob(taskData)
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `tasklist-backup-${new Date().toISOString().slice(0, 10)}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+function onFileChange(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (file) onImportFile(file)
+  input.value = ''
+}
+
+function onImportFile(file: File) {
+  const reader = new FileReader()
+  reader.onload = () => {
+    const r = parseImportText(String(reader.result))
+    if (!r.ok) { alert(t('settings.importFailed')); return }
+    pendingImport.value = r.data
+    importConfirmOpen.value = true
+  }
+  reader.readAsText(file)
+}
+
+function confirmImport() {
+  if (!pendingImport.value) return
+  const merged = mergeTaskData({ version: 1, lists: data.lists, settings: ui.settings, ui: { sidebarCollapsed: ui.sidebarCollapsed, expandedGroupIds: ui.expandedGroupIds } }, pendingImport.value)
+  data.lists = merged.lists
+  ui.settings = merged.settings
+  ui.sidebarCollapsed = merged.ui.sidebarCollapsed
+  ui.expandedGroupIds = merged.ui.expandedGroupIds
+  ui.applyToDOM()
+  pendingImport.value = null
+  importConfirmOpen.value = false
+  alert(t('settings.imported'))
 }
 </script>
 
@@ -183,4 +234,5 @@ function onAbout() {
 .btn { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); cursor: pointer; }
 .btn.primary { background: var(--color-pending); color: #fff; border: none; }
 .btn.primary:disabled { opacity: .5; cursor: not-allowed; }
+.hidden-input { display: none; }
 </style>
