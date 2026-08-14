@@ -34,6 +34,7 @@ let startY = 0
 let tracking = false
 let onMove: ((e: PointerEvent) => void) | null = null
 let onUp: ((e: PointerEvent) => void) | null = null
+let onCancel: (() => void) | null = null
 
 export function setDropHandler(fn: (target: DropTarget | null) => void): void {
   onDrop = fn
@@ -76,14 +77,21 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
   }
   window.addEventListener('pointermove', onMove)
   window.addEventListener('pointerup', onUp)
+  onCancel = () => {
+    cleanup()
+    dragState.value = null
+  }
+  window.addEventListener('pointercancel', onCancel)
 }
 
 function cleanup(): void {
   tracking = false
   if (onMove) window.removeEventListener('pointermove', onMove)
   if (onUp) window.removeEventListener('pointerup', onUp)
+  if (onCancel) window.removeEventListener('pointercancel', onCancel)
   onMove = null
   onUp = null
+  onCancel = null
 }
 
 export function resetDrag(): void {
