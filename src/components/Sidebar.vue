@@ -10,7 +10,7 @@
         v-for="l in data.lists"
         :key="l.id"
         class="list-item"
-        :class="[{ active: l.id === data.currentListId }, statusOf(l)]"
+        :class="[{ active: l.id === data.currentListId }, listStatus(l, ui.now)]"
         @click="data.selectList(l.id)"
       >
         <span class="list-name" @dblclick="startRename(l)">{{ l.name }}</span>
@@ -25,7 +25,7 @@
 import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
-import { nodeStatus } from '../logic/status'
+import { listStatus } from '../logic/status'
 import type { List } from '../types'
 
 const { t } = useI18n()
@@ -33,12 +33,6 @@ const data = useDataStore()
 const ui = useUiStore()
 const emit = defineEmits<{ (e: 'new-list'): void; (e: 'delete-list', id: string): void }>()
 
-function statusOf(l: List) {
-  const nodes = l.items
-  if (nodes.some((n) => nodeStatus(n, ui.now) === 'overdue')) return 'overdue'
-  if (nodes.every((n) => nodeStatus(n, ui.now) === 'done') && nodes.length > 0) return 'done'
-  return 'pending'
-}
 function startRename(l: List) {
   const name = prompt('重命名列表', l.name)
   if (name?.trim()) data.renameList(l.id, name.trim())

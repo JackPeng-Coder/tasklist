@@ -39,7 +39,7 @@ import { useI18n } from 'vue-i18n'
 import { useDataStore } from './stores/data'
 import { useUiStore } from './stores/ui'
 import { createItem, createGroup, type Item, type TaskData } from './types'
-import { saveTaskData } from './storage'
+import { loadTaskData, saveTaskData } from './storage'
 import { isGroup } from './logic/status'
 import { buildExportBlob, parseImportText } from './logic/io'
 import { mergeTaskData } from './logic/merge'
@@ -98,6 +98,10 @@ watch(() => ui.settings.lang, (lang) => {
 let interval: number | undefined
 onMounted(() => {
   data.init()
+  const saved = loadTaskData()
+  ui.settings = saved.data.settings
+  ui.sidebarCollapsed = saved.data.ui.sidebarCollapsed
+  ui.expandedGroupIds = saved.data.ui.expandedGroupIds
   ui.applyToDOM()
   interval = window.setInterval(ui.touchNow, 60_000)
   document.addEventListener('visibilitychange', onVisibility)

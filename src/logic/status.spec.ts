@@ -1,5 +1,5 @@
 import { createGroup, createItem, type Group, type Item } from '../types'
-import { groupStatus, groupTimestamp, isGroup, itemTimestamp, nodeStatus, nodeTimestamp } from './status'
+import { groupStatus, groupTimestamp, isGroup, itemTimestamp, listStatus, nodeStatus, nodeTimestamp } from './status'
 
 const NOW = new Date('2026-08-14T12:00:00').getTime()
 
@@ -72,5 +72,14 @@ describe('nodeStatus / nodeTimestamp / isGroup', () => {
   })
   it('nodeTimestamp 对事项等于 itemTimestamp', () => {
     expect(nodeTimestamp(dated, NOW)).toBe(itemTimestamp(dated))
+  })
+})
+
+describe('listStatus', () => {
+  it('listStatus 由列表状态推断', () => {
+    expect(listStatus({ id: 'l', name: '', description: '', items: [dated] }, NOW)).toBe('pending')
+    expect(listStatus({ id: 'l', name: '', description: '', items: [{ ...dated, date: '2026-08-01' }] }, NOW)).toBe('overdue')
+    expect(listStatus({ id: 'l', name: '', description: '', items: [doneItem] }, NOW)).toBe('done')
+    expect(listStatus({ id: 'l', name: '', description: '', items: [] }, NOW)).toBe('pending')
   })
 })

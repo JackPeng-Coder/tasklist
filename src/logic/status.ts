@@ -1,4 +1,4 @@
-import type { Group, Item, NodeStatus, TreeNode } from '../types'
+import type { Group, Item, List, NodeStatus, TreeNode } from '../types'
 
 export function isGroup(node: TreeNode): node is Group {
   return Array.isArray((node as Group).items)
@@ -46,4 +46,11 @@ export function nodeStatus(node: TreeNode, now: number): NodeStatus {
 
 export function nodeTimestamp(node: TreeNode, now: number): number {
   return isGroup(node) ? groupTimestamp(node, now) : itemTimestamp(node)
+}
+
+export function listStatus(list: List, now: number): NodeStatus {
+  if (list.items.length === 0) return 'pending'
+  if (list.items.some((n) => nodeStatus(n, now) === 'overdue')) return 'overdue'
+  if (list.items.every((n) => nodeStatus(n, now) === 'done')) return 'done'
+  return 'pending'
 }
