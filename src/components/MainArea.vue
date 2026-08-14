@@ -6,6 +6,7 @@
       <TaskList
         :nodes="data.currentList.items"
         :depth="0"
+        :parent-id="null"
         @edit="emit('edit', $event)"
         @remove="emit('remove', $event)"
         @add-item="emit('add-item', $event)"

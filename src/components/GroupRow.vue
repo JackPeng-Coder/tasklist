@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row" :class="statusClass" data-test="row" @click="toggle">
+    <div class="row" :class="statusClass" data-test="row" :data-drop-id="group.id" data-drop-kind="group" @pointerdown="onPointerDown" @click="onRowClick">
       <span class="arrow" :class="{ open: group.expanded }" data-test="arrow">▸</span>
       <span class="name">{{ group.name }}</span>
       <span v-if="showDesc && group.description" class="desc"> · {{ group.description }}</span>
@@ -16,7 +16,7 @@
     </div>
     <div v-if="group.expanded" class="children">
       <div class="indent-line" />
-      <TaskList :nodes="group.items" :depth="depth + 1" @edit="$emit('edit', $event)" @remove="$emit('remove', $event)" @add-item="$emit('add-item', $event)" @add-group="$emit('add-group', $event)" />
+      <TaskList :nodes="group.items" :depth="depth + 1" :parent-id="group.id" @edit="$emit('edit', $event)" @remove="$emit('remove', $event)" @add-item="$emit('add-item', $event)" @add-group="$emit('add-group', $event)" />
     </div>
   </div>
 </template>
@@ -27,10 +27,11 @@ import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
 import { formatDateLabel } from '../logic/dates'
 import { groupStatus } from '../logic/status'
+import { beginDrag, dragState } from '../composables/useDrag'
 import type { Group } from '../types'
 import TaskList from './TaskList.vue'
 
-const props = defineProps<{ group: Group; depth: number }>()
+const props = defineProps<{ group: Group; depth: number; parentId: string | null }>()
 const emit = defineEmits<{ (e: 'edit', id: string): void; (e: 'remove', id: string): void; (e: 'add-item', parentId: string): void; (e: 'add-group', parentId: string): void }>()
 const data = useDataStore()
 const ui = useUiStore()
@@ -59,6 +60,15 @@ const count = computed(() => countRecursive(props.group.items))
 function toggle() {
   data.updateNode(props.group.id, { expanded: !props.group.expanded } as any)
   ui.setGroupExpanded(props.group.id, !props.group.expanded)
+}
+
+function onPointerDown(e: PointerEvent) {
+  if ((e.target as HTMLElement).closest('button')) return
+  beginDrag(props.group.id, data.currentListId, props.parentId, e)
+}
+function onRowClick() {
+  if (dragState.value?.active) return // 拖拽结束吞掉本次 click
+  toggle()
 }
 </script>
 

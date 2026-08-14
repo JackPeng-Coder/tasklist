@@ -1,5 +1,5 @@
 <template>
-  <div class="row" :class="statusClass" data-test="row" @click="data.toggleDone(item.id)">
+  <div class="row" :class="statusClass" data-test="row" :data-drop-id="item.id" :data-drop-kind="item.done ? undefined : 'item'" @pointerdown="onPointerDown" @click="onRowClick">
     <span class="dot" :class="{ done: item.done }" data-test="dot" />
     <span class="name">{{ item.name }}</span>
     <span v-if="showDesc && item.description" class="desc"> · {{ item.description }}</span>
@@ -18,12 +18,22 @@ import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
 import { formatDateLabel } from '../logic/dates'
 import { itemTimestamp, nodeStatus } from '../logic/status'
+import { beginDrag, dragState } from '../composables/useDrag'
 import type { Item } from '../types'
 
-const props = defineProps<{ item: Item; depth: number }>()
+const props = defineProps<{ item: Item; depth: number; parentId: string | null }>()
 const emit = defineEmits<{ (e: 'edit', id: string): void; (e: 'remove', id: string): void }>()
 const data = useDataStore()
 const ui = useUiStore()
+
+function onPointerDown(e: PointerEvent) {
+  if ((e.target as HTMLElement).closest('button')) return
+  beginDrag(props.item.id, data.currentListId, props.parentId, e)
+}
+function onRowClick() {
+  if (dragState.value?.active) return // 拖拽结束吞掉本次 click
+  data.toggleDone(props.item.id)
+}
 
 const statusClass = computed(() => {
   const s = nodeStatus(props.item, ui.now)

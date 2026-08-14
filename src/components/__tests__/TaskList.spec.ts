@@ -22,7 +22,7 @@ describe('TaskList', () => {
         { id: 'c', name: '完成项', description: '', done: true, createdAt: 3 },
       ],
     }]
-    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0 }, global: { plugins: [pinia] } })
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia] } })
     expect(w.text()).toContain('逾期项')
     expect(w.text()).toContain('待办')
     expect(w.text()).toContain('完成项')
@@ -36,7 +36,7 @@ describe('TaskList', () => {
       items: [{ id: 'a', name: '任务', description: '', done: false, createdAt: 1 }],
     }]
     s.currentListId = 'l'
-    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0 }, global: { plugins: [pinia] } })
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia] } })
     await w.find('[data-test="row"]').trigger('click')
     expect((s.lists[0].items[0] as any).done).toBe(true)
   })
