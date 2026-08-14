@@ -1,11 +1,11 @@
 :root {
   --sidebar-width: 240px;
   --right-rail-width: 64px;
-  --font-base: 15px;
+  --font-base: 14px;
   --font-xs: 12px;
   --font-sm: 13px;
-  --font-md: 15px;
-  --font-lg: 17px;
+  --font-md: 14px;
+  --font-lg: 16px;
 
   --radius: 8px;
   --radius-sm: 6px;

@@ -23,8 +23,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
-import { formatDateLabel } from '../logic/dates'
-import { itemTimestamp, nodeStatus } from '../logic/status'
+import { nodeStatus } from '../logic/status'
 import { beginDrag, dragState } from '../composables/useDrag'
 import type { Item } from '../types'
 
@@ -50,12 +49,11 @@ const statusClass = computed(() => {
 const showDesc = computed(() => ui.settings.showDescription && !!props.item.description)
 const dateLabel = computed(() => {
   if (!props.item.date) return ''
-  const label = formatDateLabel(props.item.date, new Date(ui.now))
+  const [y, m, d] = props.item.date.split('-').map(Number)
+  const base = `${m}月${d}日`
+  const full = y === new Date(ui.now).getFullYear() ? base : `${y}年${base}`
   const time = props.item.time ?? ''
-  const text = label === 'yesterday' || label === 'today' || label === 'tomorrow' || label === 'dayAfterTomorrow'
-    ? t(`date.${label}`)
-    : label
-  return text + (time ? ` ${time}` : '')
+  return full + (time ? ` ${time}` : '')
 })
 </script>
 

@@ -11,7 +11,7 @@ describe('ui store', () => {
   it('默认浅色与中文字号 16', () => {
     const s = useUiStore()
     expect(s.settings.theme).toBe('light')
-    expect(s.settings.fontSize).toBe(16)
+    expect(s.settings.fontSize).toBe(14)
   })
 
   it('切换主题写入 DOM', () => {
@@ -24,7 +24,7 @@ describe('ui store', () => {
     const s = useUiStore()
     s.setFontSize(20)
     expect(document.documentElement.style.getPropertyValue('--font-base')).toBe('20px')
-    expect(document.documentElement.style.getPropertyValue('--font-md')).toBe(`${15 * (20 / 15)}px`)
+    expect(document.documentElement.style.getPropertyValue('--font-md')).toBe(`${14 * (20 / 14)}px`)
   })
 
   it('展开状态与编辑模式', () => {

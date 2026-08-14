@@ -1,7 +1,6 @@
 <template>
   <aside class="sidebar" :class="{ collapsed: ui.sidebarCollapsed }">
     <div class="sidebar-head">
-      <button class="icon-btn toggle" :title="ui.sidebarCollapsed ? t('sidebar.expand') : t('sidebar.collapse')" @click="ui.toggleSidebar()">{{ ui.sidebarCollapsed ? '☰' : '✕' }}</button>
       <span class="title">{{ t('sidebar.lists') }}</span>
       <button class="icon-btn edit" :class="{ active: ui.editMode }" @click="ui.toggleEditMode()">{{ t('sidebar.edit') }}</button>
     </div>
@@ -45,7 +44,7 @@ function startRename(l: List) {
   .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 50; width: var(--sidebar-width); transform: translateX(0); transition: transform 220ms var(--ease); }
   .sidebar.collapsed { width: var(--sidebar-width); transform: translateX(-100%); }
 }
-.sidebar-head { padding: 8px; display: flex; gap: 4px; align-items: center; min-width: var(--sidebar-width); }
+.sidebar-head { padding: 48px 8px 8px; display: flex; gap: 4px; align-items: center; min-width: var(--sidebar-width); }
 .sidebar-head .title { flex: 1; font-weight: 600; color: var(--ink); }
 .icon-btn { background: none; border: 1px solid transparent; border-radius: var(--radius-sm); font-size: 18px; cursor: pointer; color: var(--ink-3); display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; transition: color 150ms var(--ease), background-color 150ms var(--ease), transform 140ms var(--spring); }
 .icon-btn:hover { background: var(--ink-tint); color: var(--ink); }

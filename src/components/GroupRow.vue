@@ -28,7 +28,6 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
-import { formatDateLabel } from '../logic/dates'
 import { groupStatus } from '../logic/status'
 import { beginDrag, dragState } from '../composables/useDrag'
 import type { Group } from '../types'
@@ -47,11 +46,10 @@ const statusClass = computed(() => {
 const showDesc = computed(() => ui.settings.showDescription && !!props.group.description)
 const dateLabel = computed(() => {
   if (!props.group.date) return ''
-  const label = formatDateLabel(props.group.date, new Date(ui.now))
-  const text = label === 'yesterday' || label === 'today' || label === 'tomorrow' || label === 'dayAfterTomorrow'
-    ? t(`date.${label}`)
-    : label
-  return text + (props.group.time ? ` ${props.group.time}` : '')
+  const [y, m, d] = props.group.date.split('-').map(Number)
+  const base = `${m}月${d}日`
+  const full = y === new Date(ui.now).getFullYear() ? base : `${y}年${base}`
+  return full + (props.group.time ? ` ${props.group.time}` : '')
 })
 
 function countRecursive(nodes: any[]): { done: number; total: number } {
@@ -92,7 +90,7 @@ function onRowClick() {
 .expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: transform 150ms var(--ease); color: var(--ink-3); font-size: var(--font-sm); cursor: pointer; border-radius: var(--radius-sm); }
 .expand-btn:hover { color: var(--ink); background: var(--ink-tint); }
 .expand-btn.open { transform: rotate(90deg); }
-.name { font-weight: 600; font-size: var(--font-md); }
+.name { font-weight: 600; font-size: var(--font-lg); }
 .desc { color: var(--ink-2); font-size: var(--font-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .spacer { flex: 1; }
 .group-meta { font-size: var(--font-xs); font-variant-numeric: tabular-nums; color: var(--ink-3); white-space: nowrap; }

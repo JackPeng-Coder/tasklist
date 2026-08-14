@@ -1,21 +1,28 @@
 <template>
-  <main class="main-area" :class="{ 'has-collapsed-sidebar': ui.sidebarCollapsed }" data-test="main-area">
-    <button v-if="ui.sidebarCollapsed" class="sidebar-toggle" :title="t('sidebar.expand')" @click="ui.toggleSidebar()">☰</button>
-    <template v-if="data.currentList">
-      <h2 class="list-title">{{ data.currentList.name }}</h2>
-      <p v-if="data.currentList.description" class="list-desc">{{ data.currentList.description }}</p>
-      <TaskList
-        :nodes="data.currentList.items"
-        :depth="0"
-        :parent-id="null"
-        @edit="emit('edit', $event)"
-        @remove="emit('remove', $event)"
-        @add-item="emit('add-item', $event)"
-        @add-group="emit('add-group', $event)"
-      />
-    </template>
-    <div v-else class="empty-tip">{{ t('empty.noList') }}</div>
-    <DragPreview :state="dragState" />
+  <main class="main-area" data-test="main-area">
+    <button
+      class="sidebar-toggle"
+      :title="ui.sidebarCollapsed ? t('sidebar.expand') : t('sidebar.collapse')"
+      data-test="sidebar-toggle"
+      @click="ui.toggleSidebar()"
+    >{{ ui.sidebarCollapsed ? '☰' : '✕' }}</button>
+    <div class="content">
+      <template v-if="data.currentList">
+        <h2 class="list-title">{{ data.currentList.name }}</h2>
+        <p v-if="data.currentList.description" class="list-desc">{{ data.currentList.description }}</p>
+        <TaskList
+          :nodes="data.currentList.items"
+          :depth="0"
+          :parent-id="null"
+          @edit="emit('edit', $event)"
+          @remove="emit('remove', $event)"
+          @add-item="emit('add-item', $event)"
+          @add-group="emit('add-group', $event)"
+        />
+      </template>
+      <div v-else class="empty-tip">{{ t('empty.noList') }}</div>
+      <DragPreview :state="dragState" />
+    </div>
   </main>
 </template>
 
@@ -54,9 +61,9 @@ onBeforeUnmount(() => resetDrag())
 </script>
 
 <style scoped>
-.main-area { flex: 1; overflow-y: auto; padding: 20px 28px 24px; position: relative; }
-.main-area.has-collapsed-sidebar { padding-top: 56px; }
-.sidebar-toggle { position: absolute; left: 14px; top: 14px; width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: 14px; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), box-shadow 150ms var(--ease), transform 140ms var(--spring); z-index: 10; }
+.main-area { flex: 1; overflow-y: auto; position: relative; }
+.content { max-width: 760px; margin: 0 auto; padding: 56px 28px 48px; }
+.sidebar-toggle { position: fixed; top: 10px; left: 10px; width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: 14px; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), box-shadow 150ms var(--ease), transform 140ms var(--spring); z-index: 60; }
 .sidebar-toggle:hover { color: var(--ink); box-shadow: var(--shadow-lift); }
 .list-title { margin: 0 0 6px; font-size: var(--font-lg); font-weight: 700; }
 .list-desc { margin: 0 0 18px; color: var(--ink-2); font-size: var(--font-sm); }
