@@ -22,42 +22,24 @@
       </template>
     </template>
     <div v-if="isEmpty" class="empty-tip" data-test="empty-tip">{{ t('empty.noItems') }}</div>
-    <DragPreview :state="dragState" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUiStore } from '../stores/ui'
-import { useDataStore } from '../stores/data'
 import { groupedNodes } from '../logic/sort'
 import { formatDateLabel } from '../logic/dates'
-import { dragState, resetDrag, setDropHandler } from '../composables/useDrag'
 import type { TreeNode } from '../types'
 import NodeRow from './NodeRow.vue'
-import DragPreview from './DragPreview.vue'
 
 const props = defineProps<{ nodes: TreeNode[]; depth: number; parentId: string | null }>()
 const emit = defineEmits<{ (e: 'edit', id: string): void; (e: 'remove', id: string): void; (e: 'add-item', parentId: string): void; (e: 'add-group', parentId: string): void }>()
 const { t } = useI18n()
 const ui = useUiStore()
-const data = useDataStore()
 const grouped = computed(() => groupedNodes(props.nodes, ui.now))
 const isEmpty = computed(() => props.nodes.length === 0)
-
-setDropHandler((target) => {
-  const d = dragState.value
-  if (!d || !d.active) return
-  if (target && target.id === d.nodeId) return // 无效目标
-  data.moveNode({
-    fromListId: d.listId,
-    nodeId: d.nodeId,
-    toKind: target?.kind === 'group' ? 'group' : target?.kind === 'item' ? 'item' : 'list',
-    toId: target?.id ?? d.listId,
-  })
-})
-onBeforeUnmount(() => resetDrag())
 
 function withSeparators(nodes: TreeNode[], now: number): Array<{ node: TreeNode; sep?: string }> {
   const out: Array<{ node: TreeNode; sep?: string }> = []

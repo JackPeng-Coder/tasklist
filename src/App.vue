@@ -103,6 +103,11 @@ onMounted(() => {
   ui.settings = saved.data.settings
   ui.sidebarCollapsed = saved.data.ui.sidebarCollapsed
   ui.expandedGroupIds = saved.data.ui.expandedGroupIds
+  const lang = saved.data.settings.lang
+  if (lang === 'zh' || lang === 'en') {
+    i18n.global.locale.value = lang
+    localStorage.setItem('tasklist:lang', lang)
+  }
   ui.applyToDOM()
   interval = window.setInterval(ui.touchNow, 60_000)
   document.addEventListener('visibilitychange', onVisibility)

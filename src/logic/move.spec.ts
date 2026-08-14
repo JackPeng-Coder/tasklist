@@ -68,4 +68,19 @@ describe('applyMove', () => {
     const { lists: out } = applyMove(src, { fromListId: 'l1', nodeId: g.id, toKind: 'item', toId: child.id }, NOW)
     expect(out).toBe(src)
   })
+
+  it('未知 toId 无操作', () => {
+    const src = makeLists()
+    const idA = src[0].items[0].id
+    expect(() => applyMove(src, { fromListId: 'l1', nodeId: idA, toKind: 'item', toId: 'nonexistent' }, NOW)).not.toThrow()
+    const { lists: out } = applyMove(src, { fromListId: 'l1', nodeId: idA, toKind: 'item', toId: 'nonexistent' }, NOW)
+    expect(findNode(out[0].items, idA).node).not.toBeNull()
+  })
+
+  it('未知 toId 组合目标无操作', () => {
+    const src = makeLists()
+    const idA = src[0].items[0].id
+    const { lists: out } = applyMove(src, { fromListId: 'l1', nodeId: idA, toKind: 'group', toId: 'nonexistent' }, NOW)
+    expect(findNode(out[0].items, idA).node).not.toBeNull()
+  })
 })

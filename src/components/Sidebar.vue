@@ -34,7 +34,7 @@ const ui = useUiStore()
 const emit = defineEmits<{ (e: 'new-list'): void; (e: 'delete-list', id: string): void }>()
 
 function startRename(l: List) {
-  const name = prompt('重命名列表', l.name)
+  const name = prompt(t('sidebar.renameList'), l.name)
   if (name?.trim()) data.renameList(l.id, name.trim())
 }
 </script>

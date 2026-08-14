@@ -4,7 +4,7 @@ export default {
   item: { name: '事项名称', description: '事项描述', new: '新建事项', edit: '编辑事项', date: '日期', time: '时间' },
   group: { name: '组合名称', description: '组合描述', new: '新建组合', edit: '编辑组合' },
   status: { overdue: '已逾期', pending: '未完成', done: '已完成', doneCount: '{done}/{total} 已完成' },
-  sidebar: { lists: '列表', edit: '编辑', newList: '+ 新建列表' },
+  sidebar: { lists: '列表', edit: '编辑', newList: '+ 新建列表', renameList: '重命名列表' },
   rail: { addItem: '+事项', addGroup: '+组合', edit: '编辑', settings: '设置' },
   settings: { title: '设置', showDescription: '显示描述', theme: '外观', light: '浅色模式', dark: '深色模式', fontSize: '字号大小', language: '语言', import: '导入数据', export: '导出数据', about: '关于', imported: '导入成功', importFailed: '导入失败：文件格式不正确', importTitle: '确认导入？', importMessage: '将覆盖同 ID 数据', recovered: '检测到本地数据损坏，已备份原数据并重置为空数据' },
   date: { yesterday: '昨天', today: '今天', tomorrow: '明天', dayAfterTomorrow: '后天' },
