@@ -1,0 +1,58 @@
+{
+  "id": "welcome",
+  "name": "欢迎使用任务清单",
+  "description": "这是一个示例列表，展示组合、事项、日期与完成状态的使用方式。你可以随意修改或删除它。",
+  "items": [
+    {
+      "id": "welcome-tour",
+      "name": "认识任务清单",
+      "description": "点击事项左侧的圆，可标记完成",
+      "done": false,
+      "createdAt": 1723612800000
+    },
+    {
+      "id": "welcome-group",
+      "name": "组合（示例）",
+      "description": "组合可以嵌套任意深度的子事项或子组合",
+      "expanded": true,
+      "items": [
+        {
+          "id": "welcome-tour-2",
+          "name": "子事项：点击箭头展开/收起组合",
+          "description": "拖动事项到另一个事项上，可自动创建组合",
+          "done": true,
+          "createdAt": 1723612900000
+        },
+        {
+          "id": "welcome-tour-3",
+          "name": "子事项：已完成",
+          "done": true,
+          "createdAt": 1723613000000
+        }
+      ]
+    },
+    {
+      "id": "welcome-dated",
+      "name": "带日期的事项",
+      "description": "日期靠前的事项会排在前面，逾期会变红",
+      "date": "tomorrow",
+      "time": "18:00",
+      "done": false,
+      "createdAt": 1723613100000
+    },
+    {
+      "id": "welcome-overdue",
+      "name": "逾期的事项（示例）",
+      "description": "日期已过的未完成事项会显示为红色",
+      "date": "yesterday",
+      "done": false,
+      "createdAt": 1723613150000
+    },
+    {
+      "id": "welcome-done",
+      "name": "已完成的事项（示例）",
+      "done": true,
+      "createdAt": 1723613200000
+    }
+  ]
+}
