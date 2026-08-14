@@ -30,6 +30,7 @@ import { useDataStore } from './stores/data'
 import { useUiStore } from './stores/ui'
 import { createItem, createGroup, type Item } from './types'
 import { saveTaskData } from './storage'
+import { isGroup } from './logic/status'
 import Sidebar from './components/Sidebar.vue'
 import MainArea from './components/MainArea.vue'
 import RightRail from './components/RightRail.vue'
@@ -94,7 +95,7 @@ function openEditNode(id: string) {
   if (!data.currentList) return
   const node = findNodeDeep(data.currentList.items, id)
   if (!node) return
-  editingTarget.value = 'item' in node ? 'item' : 'group'
+  editingTarget.value = isGroup(node) ? 'group' : 'item'
   editingId.value = id
   formName.value = node.name; formDescription.value = node.description
   formDate.value = (node as Item).date; formTime.value = (node as Item).time
