@@ -6,7 +6,7 @@
       <span v-if="showDesc && group.description" class="desc"> · {{ group.description }}</span>
       <span class="spacer" />
       <span v-if="group.date" class="meta">{{ dateLabel }}</span>
-      <span class="meta">{{ doneCount }}/{{ totalCount }} 已完成</span>
+      <span class="meta">{{ count.done }}/{{ count.total }} 已完成</span>
       <template v-if="ui.editMode">
         <button class="mini-btn" @click.stop="$emit('edit', group.id)">编辑</button>
         <button class="mini-btn" @click.stop="$emit('add-item', group.id)">+事项</button>
@@ -54,7 +54,7 @@ function countRecursive(nodes: any[]): { done: number; total: number } {
   }
   return { done, total }
 }
-const { done: doneCount, total: totalCount } = countRecursive(props.group.items)
+const count = computed(() => countRecursive(props.group.items))
 
 function toggle() {
   data.updateNode(props.group.id, { expanded: !props.group.expanded } as any)
