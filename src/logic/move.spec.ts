@@ -49,7 +49,7 @@ describe('applyMove', () => {
     const g = findNode(lists[0].items, createdGroupId!).node
     expect(g).not.toBeNull()
     expect(g.name).toBe('b · a')
-    expect(g.items.map((n: any) => n.id).sort()).toEqual([idA, idB])
+    expect(g.items.map((n: any) => n.id).sort()).toEqual([idA, idB].sort())
   })
 
   it('移动到自身无效', () => {
