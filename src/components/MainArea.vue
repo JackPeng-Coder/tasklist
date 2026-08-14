@@ -3,7 +3,14 @@
     <template v-if="data.currentList">
       <h2 class="list-title">{{ data.currentList.name }}</h2>
       <p v-if="data.currentList.description" class="list-desc">{{ data.currentList.description }}</p>
-      <TaskList :nodes="data.currentList.items" :depth="0" @add-item="onAddItem" @add-group="onAddGroup" />
+      <TaskList
+        :nodes="data.currentList.items"
+        :depth="0"
+        @edit="emit('edit', $event)"
+        @remove="emit('remove', $event)"
+        @add-item="emit('add-item', $event)"
+        @add-group="emit('add-group', $event)"
+      />
     </template>
     <div v-else class="empty-tip">暂无列表</div>
   </main>
@@ -11,19 +18,15 @@
 
 <script setup lang="ts">
 import { useDataStore } from '../stores/data'
-import { createGroup, createItem } from '../types'
 import TaskList from './TaskList.vue'
 
 const data = useDataStore()
-
-function onAddItem(parentId: string | null) {
-  if (!data.currentList) return
-  data.addNode(parentId, createItem(''))
-}
-function onAddGroup(parentId: string | null) {
-  if (!data.currentList) return
-  data.addNode(parentId, createGroup(''))
-}
+const emit = defineEmits<{
+  (e: 'edit', id: string): void
+  (e: 'remove', id: string): void
+  (e: 'add-item', parentId: string | null): void
+  (e: 'add-group', parentId: string | null): void
+}>()
 </script>
 
 <style scoped>
