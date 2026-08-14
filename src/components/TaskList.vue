@@ -69,6 +69,6 @@ const doneRows = computed(() => withSeparators(grouped.value.done, ui.now))
 .group-head.overdue { color: var(--color-overdue); }
 .group-head.pending { color: var(--color-pending); }
 .group-head.done { color: var(--color-done); }
-.group-head .rule { flex: 1; border-bottom: 2px solid currentColor; opacity: .35; }
+.group-head .rule { flex: 1; height: 1px; background: color-mix(in srgb, currentColor 22%, transparent); }
 .date-sep { color: var(--color-muted); font-size: var(--font-xs); margin: 6px 0 4px; }
 </style>

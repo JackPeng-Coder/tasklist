@@ -21,8 +21,8 @@ defineEmits<{ (e: 'confirm'): void; (e: 'cancel'): void }>()
 
 <style scoped>
 .message { margin: 0; line-height: 1.6; color: var(--color-text); }
-.btn { padding: 8px 18px; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); cursor: pointer; font-size: 14px; transition: background .15s, border-color .15s; }
-.btn:hover { background: var(--color-bg); }
-.btn.danger { background: transparent; color: var(--color-overdue); border-color: var(--color-overdue); }
-.btn.danger:hover { background: rgba(224, 62, 62, .08); }
+.btn { padding: 5px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: var(--font-sm); font-weight: 500; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), border-color 150ms var(--ease), background-color 150ms var(--ease), transform 140ms var(--spring); }
+.btn:hover { color: var(--blue-ink); border-color: var(--blue); box-shadow: var(--shadow-lift); }
+.btn.danger { background: var(--red); color: #fff; border-color: var(--red); }
+.btn.danger:hover { background: var(--red-ink); border-color: var(--red-ink); color: #fff; }
 </style>

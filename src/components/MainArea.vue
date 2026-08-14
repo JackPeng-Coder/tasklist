@@ -56,9 +56,9 @@ onBeforeUnmount(() => resetDrag())
 <style scoped>
 .main-area { flex: 1; overflow-y: auto; padding: 20px 28px 24px; position: relative; }
 .main-area.has-collapsed-sidebar { padding-top: 56px; }
-.sidebar-toggle { position: absolute; left: 14px; top: 14px; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text); cursor: pointer; font-size: 18px; box-shadow: var(--shadow-sm); transition: background .15s, border-color .15s; z-index: 10; }
-.sidebar-toggle:hover { background: var(--color-bg); border-color: var(--color-muted); }
+.sidebar-toggle { position: absolute; left: 14px; top: 14px; width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: 14px; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), box-shadow 150ms var(--ease), transform 140ms var(--spring); z-index: 10; }
+.sidebar-toggle:hover { color: var(--ink); box-shadow: var(--shadow-lift); }
 .list-title { margin: 0 0 6px; font-size: var(--font-lg); font-weight: 700; }
-.list-desc { margin: 0 0 18px; color: var(--color-muted); font-size: var(--font-sm); }
-.empty-tip { color: var(--color-muted); font-size: var(--font-md); text-align: center; padding: 60px 20px; }
+.list-desc { margin: 0 0 18px; color: var(--ink-2); font-size: var(--font-sm); }
+.empty-tip { color: var(--ink-3); font-size: var(--font-md); text-align: center; padding: 60px 20px; }
 </style>

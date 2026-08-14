@@ -53,11 +53,11 @@ function trySubmit() { emit('submit') }
 
 <style scoped>
 .form { display: flex; flex-direction: column; gap: 14px; }
-.form > label { display: flex; flex-direction: column; gap: 6px; font-size: var(--font-sm); color: var(--color-muted); }
-input[type='text'], input[type='date'], input[type='time'] { padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); font-size: var(--font-md); outline: none; transition: border-color .15s, box-shadow .15s; }
-input[type='text']:focus, input[type='date']:focus, input[type='time']:focus { border-color: var(--color-pending); box-shadow: 0 0 0 3px rgba(58, 123, 213, .15); }
-.switch-row { flex-direction: row; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-md); background: var(--color-bg); }
+.form > label { display: flex; flex-direction: column; gap: 6px; font-size: var(--font-sm); color: var(--ink-2); }
+input[type='text'], input[type='date'], input[type='time'] { padding: 8px 10px; border: 1px solid var(--input-line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-size: var(--font-md); outline: none; font-family: inherit; transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease); }
+input[type='text']:focus, input[type='date']:focus, input[type='time']:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-ring); }
+.switch-row { flex-direction: row; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); background: var(--paper); }
 .switch-row span { flex: 1; }
-.switch-row input[type='checkbox'] { width: 18px; height: 18px; accent-color: var(--color-pending); cursor: pointer; }
+.switch-row input[type='checkbox'] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; }
 .nested { padding-left: 24px; }
 </style>

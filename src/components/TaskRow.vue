@@ -1,10 +1,16 @@
 <template>
   <div class="row" :class="statusClass" data-test="row" :data-drop-id="item.id" :data-drop-kind="item.done ? undefined : 'item'" @pointerdown="onPointerDown" @click="onRowClick">
-    <span class="dot" :class="{ done: item.done }" data-test="dot" />
-    <span class="name">{{ item.name }}</span>
-    <span v-if="showDesc && item.description" class="desc"> · {{ item.description }}</span>
+    <span class="checkbox-wrap">
+      <span class="checkmark" :class="{ checked: item.done }" data-test="dot">
+        <svg viewBox="0 0 16 16"><path d="M3 8.5 L6.5 12 L13 4.5" /></svg>
+      </span>
+    </span>
+    <span class="title">
+      <span class="name">{{ item.name }}</span>
+      <span v-if="showDesc && item.description" class="desc"> · {{ item.description }}</span>
+    </span>
     <span class="spacer" />
-    <span v-if="item.date" class="meta">{{ dateLabel }}</span>
+    <span v-if="item.date" class="time-chip" :class="statusClass">{{ dateLabel }}</span>
     <template v-if="ui.editMode">
       <button class="mini-btn" @click.stop="$emit('edit', item.id)">{{ t('common.edit') }}</button>
       <button class="mini-btn danger" @click.stop="$emit('remove', item.id)">{{ t('common.delete') }}</button>
@@ -54,19 +60,30 @@ const dateLabel = computed(() => {
 </script>
 
 <style scoped>
-.row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); background: var(--color-surface); margin-bottom: 8px; cursor: pointer; border: 1px solid transparent; box-shadow: var(--shadow-sm); transition: box-shadow .15s, transform .15s; }
-.row:hover { box-shadow: var(--shadow-md); }
-.overdue { background: color-mix(in srgb, var(--color-overdue) 10%, var(--color-surface)); }
-.pending { background: color-mix(in srgb, var(--color-pending) 7%, var(--color-surface)); }
-.done { background: color-mix(in srgb, var(--color-done) 7%, var(--color-surface)); }
-.dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--color-muted); flex-shrink: 0; transition: border-color .15s, background .15s; }
-.dot.done { border-color: var(--color-done); background: var(--color-done); position: relative; }
-.dot.done::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; }
+.row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
+.row:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
+.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
+.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }
+.done { background: var(--green-soft); border-color: var(--green-line); box-shadow: inset 3px 0 0 var(--green), var(--shadow-card); }
+.overdue:hover { box-shadow: inset 3px 0 0 var(--red), var(--shadow-lift); }
+.pending:hover { box-shadow: inset 3px 0 0 var(--blue), var(--shadow-lift); }
+.done:hover { box-shadow: inset 3px 0 0 var(--green), var(--shadow-lift); }
+.title { flex: 1 1 auto; min-width: 120px; }
+.checkbox-wrap { position: relative; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; flex-shrink: 0; }
+.checkmark { width: 18px; height: 18px; border: 2px solid var(--check-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--card); transition: border-color 180ms var(--ease), background-color 180ms var(--ease), transform 180ms var(--spring); }
+.checkbox-wrap:hover .checkmark { border-color: var(--green); }
+.checkmark svg { width: 10px; height: 10px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.checkmark svg path { stroke-dasharray: 14; stroke-dashoffset: 14; transition: stroke-dashoffset 250ms var(--ease) 60ms; }
+.checkmark.checked { border-color: var(--green); background: var(--green); transform: scale(1.06); }
+.checkmark.checked svg path { stroke-dashoffset: 0; }
 .name { font-size: var(--font-md); font-weight: 500; }
-.desc { color: var(--color-muted); font-size: var(--font-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.desc { color: var(--ink-2); font-size: var(--font-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .spacer { flex: 1; }
-.meta { color: var(--color-muted); font-size: var(--font-xs); }
-.mini-btn { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; color: var(--color-muted); cursor: pointer; font-size: var(--font-xs); transition: color .15s, background .15s, border-color .15s; }
-.mini-btn:hover { background: var(--color-surface); color: var(--color-text); border-color: var(--color-border); }
-.mini-btn.danger:hover { color: var(--color-overdue); background: rgba(224, 62, 62, .08); border-color: rgba(224, 62, 62, .25); }
+.time-chip { font-size: var(--font-xs); font-variant-numeric: tabular-nums; color: var(--ink-2); background: var(--ink-tint); padding: 2px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+.time-chip.overdue { color: var(--red-ink); background: rgba(224, 82, 82, 0.12); }
+.time-chip.pending { color: var(--blue-ink); background: rgba(75, 111, 217, 0.11); }
+.time-chip.done { color: var(--green-ink); background: rgba(53, 160, 111, 0.12); }
+.mini-btn { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; color: var(--ink-3); cursor: pointer; font-size: var(--font-xs); transition: color 150ms var(--ease), background-color 150ms var(--ease); }
+.mini-btn:hover { background: var(--ink-tint); color: var(--ink); }
+.mini-btn.danger:hover { color: var(--red); background: var(--red-soft); }
 </style>

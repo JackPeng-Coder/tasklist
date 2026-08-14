@@ -7,40 +7,111 @@
   --font-md: 15px;
   --font-lg: 17px;
 
-  --color-bg: #f5f6f8;
-  --color-surface: #ffffff;
-  --color-text: #222222;
-  --color-muted: #8a929e;
-  --color-border: #e3e5e8;
-  --color-overdue: #e03e3e;
-  --color-pending: #3a7bd5;
-  --color-done: #2fa35c;
-  --color-overdue-deep: #c22f2f;
-  --color-pending-deep: #2d62b0;
-  --color-done-deep: #23824a;
-  --color-group-deep: #1c3a5e;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .04);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, .08);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, .16);
-  --radius-sm: 8px;
+  --radius: 8px;
+  --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 12px;
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* 三档文字灰度 */
+  --ink: #20242e;
+  --ink-2: #667085;
+  --ink-3: #98a2b3;
+
+  --paper: #f5f6f8;
+  --card: #ffffff;
+  --line: #e7e9ee;
+  --input-line: #d5dae1;
+
+  --red: #e05252;
+  --red-ink: #c24343;
+  --red-soft: rgba(224, 82, 82, 0.07);
+  --red-line: rgba(224, 82, 82, 0.25);
+
+  --blue: #4b6fd9;
+  --blue-ink: #3a5bc0;
+  --blue-soft: rgba(75, 111, 217, 0.07);
+  --blue-line: rgba(75, 111, 217, 0.25);
+  --blue-hover: #3f60c4;
+  --blue-ring: rgba(75, 111, 217, 0.18);
+
+  --green: #35a06f;
+  --green-ink: #2a7f59;
+  --green-soft: rgba(53, 160, 111, 0.08);
+  --green-line: rgba(53, 160, 111, 0.28);
+
+  --ink-tint: rgba(16, 24, 40, 0.05);
+  --ink-tint-strong: rgba(16, 24, 40, 0.13);
+  --ink-tint-stronger: rgba(16, 24, 40, 0.26);
+  --check-border: #c3cad3;
+  --mask: rgba(16, 24, 40, 0.35);
+
+  --shadow-card: 0 1px 2px var(--ink-tint), 0 2px 8px var(--ink-tint);
+  --shadow-lift: 0 2px 4px rgba(16, 24, 40, 0.07), 0 10px 24px rgba(16, 24, 40, 0.09);
+  --shadow-lg: 0 12px 40px rgba(16, 24, 40, 0.16);
+
+  /* 旧令牌别名 → 新令牌 */
+  --color-bg: var(--paper);
+  --color-surface: var(--card);
+  --color-text: var(--ink);
+  --color-muted: var(--ink-2);
+  --color-border: var(--line);
+  --color-overdue: var(--red);
+  --color-pending: var(--blue);
+  --color-done: var(--green);
+  --color-overdue-deep: var(--red-ink);
+  --color-pending-deep: var(--blue-ink);
+  --color-done-deep: var(--green-ink);
 }
 
 body[data-theme='dark'] {
-  --color-bg: #1a1c20;
-  --color-surface: #26292f;
-  --color-text: #e8e8e8;
-  --color-muted: #8a929b;
-  --color-border: #3a3e46;
-  --color-overdue: #ff6b6b;
-  --color-pending: #6ea8ff;
-  --color-done: #5ecb8a;
-  --color-overdue-deep: #d94f4f;
-  --color-pending-deep: #4f8ee0;
-  --color-done-deep: #3aa86c;
-  --color-group-deep: #3d5f8f;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .24);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, .28);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, .40);
+  --ink: #e8eaed;
+  --ink-2: #9aa3b2;
+  --ink-3: #6b7280;
+
+  --paper: #15171c;
+  --card: #1e2128;
+  --line: #2a2e37;
+  --input-line: #3a3f4b;
+
+  --red: #ff6b6b;
+  --red-ink: #ff8585;
+  --red-soft: rgba(224, 82, 82, 0.12);
+  --red-line: rgba(224, 82, 82, 0.38);
+
+  --blue: #6ea8ff;
+  --blue-ink: #7fb0ff;
+  --blue-soft: rgba(75, 111, 217, 0.14);
+  --blue-line: rgba(75, 111, 217, 0.4);
+  --blue-hover: #3f60c4;
+  --blue-ring: rgba(75, 111, 217, 0.3);
+
+  --green: #5ecb8a;
+  --green-ink: #6fd898;
+  --green-soft: rgba(53, 160, 111, 0.13);
+  --green-line: rgba(53, 160, 111, 0.4);
+
+  --ink-tint: rgba(255, 255, 255, 0.06);
+  --ink-tint-strong: rgba(255, 255, 255, 0.16);
+  --ink-tint-stronger: rgba(255, 255, 255, 0.28);
+  --check-border: #4a4f5a;
+  --mask: rgba(0, 0, 0, 0.55);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.4), 0 10px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.45);
+
+  /* 旧令牌别名 → 新令牌 */
+  --color-bg: var(--paper);
+  --color-surface: var(--card);
+  --color-text: var(--ink);
+  --color-muted: var(--ink-2);
+  --color-border: var(--line);
+  --color-overdue: var(--red);
+  --color-pending: var(--blue);
+  --color-done: var(--green);
+  --color-overdue-deep: var(--red-ink);
+  --color-pending-deep: var(--blue-ink);
+  --color-done-deep: var(--green-ink);
 }

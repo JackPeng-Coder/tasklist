@@ -39,29 +39,31 @@ function startRename(l: List) {
 </script>
 
 <style scoped>
-.sidebar { width: var(--sidebar-width); flex-shrink: 0; background: var(--color-surface); border-right: 1px solid var(--color-border); display: flex; flex-direction: column; transition: width .2s, transform .2s; overflow: hidden; }
+.sidebar { width: var(--sidebar-width); flex-shrink: 0; background: var(--card); border-right: 1px solid var(--line); display: flex; flex-direction: column; transition: width 220ms var(--ease), transform 220ms var(--ease); overflow: hidden; }
 .sidebar.collapsed { width: 0; border-right: none; }
 @media (max-width: 720px) {
-  .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 50; width: var(--sidebar-width); transform: translateX(0); transition: transform .2s; }
+  .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 50; width: var(--sidebar-width); transform: translateX(0); transition: transform 220ms var(--ease); }
   .sidebar.collapsed { width: var(--sidebar-width); transform: translateX(-100%); }
 }
 .sidebar-head { padding: 8px; display: flex; gap: 4px; align-items: center; min-width: var(--sidebar-width); }
-.sidebar-head .title { flex: 1; font-weight: 600; }
-.icon-btn { background: none; border: 1px solid transparent; border-radius: 8px; font-size: 18px; cursor: pointer; color: var(--color-text); display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; transition: background .15s, border-color .15s; }
-.icon-btn:hover { background: var(--color-bg); border-color: var(--color-border); }
+.sidebar-head .title { flex: 1; font-weight: 600; color: var(--ink); }
+.icon-btn { background: none; border: 1px solid transparent; border-radius: var(--radius-sm); font-size: 18px; cursor: pointer; color: var(--ink-3); display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; transition: color 150ms var(--ease), background-color 150ms var(--ease), transform 140ms var(--spring); }
+.icon-btn:hover { background: var(--ink-tint); color: var(--ink); }
 .sidebar-head .icon-btn.edit { width: auto; padding: 0 10px; font-size: 13px; }
-.sidebar-head .icon-btn.edit.active { background: var(--color-pending); color: #fff; border-color: var(--color-pending); }
+.sidebar-head .icon-btn.edit.active { background: var(--blue); color: #fff; }
 .sidebar-body { flex: 1; overflow-y: auto; padding: 0 8px; }
-.list-item { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; color: var(--color-text); transition: background .15s; min-width: calc(var(--sidebar-width) - 16px); }
-.list-item:hover { background: var(--color-bg); }
-.list-item.new-list { width: calc(100% - 16px); font: inherit; background: none; border: none; text-align: left; color: var(--color-muted); }
-.list-item.new-list:hover { color: var(--color-text); background: var(--color-bg); }
-.list-item.active { background: var(--color-bg); outline: 1px solid var(--color-border); }
-.overdue { color: var(--color-overdue); }
-.pending { color: var(--color-pending); }
-.done { color: var(--color-done); }
+.list-item { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 2px; color: var(--ink-2); transition: background-color 150ms var(--ease), color 150ms var(--ease), transform 140ms var(--spring); min-width: calc(var(--sidebar-width) - 16px); }
+.list-item:hover { background: var(--ink-tint); color: var(--ink); }
+.list-item.new-list { width: calc(100% - 16px); font: inherit; background: none; border: none; text-align: left; color: var(--ink-3); }
+.list-item.new-list:hover { color: var(--ink); background: var(--ink-tint); }
+.list-item.active { background: var(--blue-soft); color: var(--blue-ink); font-weight: 600; }
+.list-item.overdue.active { background: var(--red-soft); color: var(--red-ink); }
+.list-item.done.active { background: var(--green-soft); color: var(--green-ink); }
+.overdue { color: var(--red-ink); }
+.pending { color: var(--blue-ink); }
+.done { color: var(--green-ink); }
 .list-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.mini-btn { background: none; border: 1px solid transparent; border-radius: 6px; padding: 4px 6px; color: var(--color-muted); cursor: pointer; transition: color .15s, background .15s; }
-.mini-btn:hover { background: var(--color-surface); color: var(--color-text); }
-.mini-btn.danger:hover { color: var(--color-overdue); background: rgba(224, 62, 62, .08); }
+.mini-btn { background: none; border: none; border-radius: var(--radius-sm); padding: 2px 5px; color: var(--ink-3); cursor: pointer; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
+.mini-btn:hover { background: var(--ink-tint); color: var(--ink); }
+.mini-btn.danger:hover { color: var(--red); background: var(--red-soft); }
 </style>

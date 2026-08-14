@@ -1,12 +1,29 @@
 @import './variables.css';
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; font-size: var(--font-base); }
-body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.5; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Segoe UI', sans-serif;
+  line-height: 1.55;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
 #app { height: 100vh; display: flex; }
+
+button { font-family: inherit; cursor: pointer; }
+button:active, .row:active { transform: scale(0.98); }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+::-webkit-scrollbar-thumb { background: var(--ink-tint-strong); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-tint-stronger); }
 
 .no-select { user-select: none; -webkit-user-select: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

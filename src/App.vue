@@ -278,10 +278,10 @@ function confirmImport() {
 </script>
 
 <style scoped>
-.btn { padding: 8px 18px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); cursor: pointer; font-size: var(--font-sm); transition: background .15s, border-color .15s; }
-.btn:hover { background: var(--color-bg); }
-.btn.primary { background: var(--color-pending); color: #fff; border-color: var(--color-pending); }
-.btn.primary:hover { background: var(--color-pending-deep); border-color: var(--color-pending-deep); }
-.btn.primary:disabled { opacity: .5; cursor: not-allowed; }
+.btn { padding: 5px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: var(--font-sm); font-weight: 500; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), border-color 150ms var(--ease), background-color 150ms var(--ease), transform 140ms var(--spring); }
+.btn:hover { color: var(--blue-ink); border-color: var(--blue); box-shadow: var(--shadow-lift); }
+.btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+.btn.primary:hover { background: var(--blue-hover); border-color: var(--blue-hover); color: #fff; }
+.btn.primary:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
 .hidden-input { display: none; }
 </style>
