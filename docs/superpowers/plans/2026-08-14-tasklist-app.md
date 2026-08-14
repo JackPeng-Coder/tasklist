@@ -3309,6 +3309,8 @@ function resolveRelativeDates(nodes: TreeNode[], now: Date): TreeNode[] {
 ```
 `init()` 同步调用 `ensureWelcomeList()`，无需 async；删除 Task 8 的 `makeWelcomeList` 内联实现。
 
+**同时删除 store 内部的 `persist()`/`scheduleSave()` 及所有 `scheduleSave()` 调用**（Task 10 起持久化唯一入口是 App.vue 的统一 watch；双写会短暂写入默认 settings/ui，见 Task 10 报告关注点 2）。actions 仍保持纯状态变更。
+
 - [ ] **Step 1: 创建 PWA 文件**
 
 `public/manifest.webmanifest`:
