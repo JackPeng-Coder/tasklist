@@ -98,6 +98,7 @@ watch(() => ui.settings.lang, (lang) => {
 let interval: number | undefined
 onMounted(() => {
   data.init()
+  if (data.recovered) alert(t('settings.recovered'))
   const saved = loadTaskData()
   ui.settings = saved.data.settings
   ui.sidebarCollapsed = saved.data.ui.sidebarCollapsed

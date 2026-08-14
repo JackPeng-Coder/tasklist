@@ -12,3 +12,20 @@
 ## 技术栈
 
 Vue 3、Vite、TypeScript、Pinia、vue-i18n、Vitest
+
+## 部署
+
+```bash
+npm run build
+npx gh-pages -d dist
+```
+
+## 开发
+
+```bash
+npm install
+npm run dev      # 开发
+npm test         # 单测
+```
+
+如无 gh-pages 依赖，`npm i -D gh-pages` 或手动推送 `dist/` 到 gh-pages 分支。

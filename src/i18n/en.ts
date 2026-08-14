@@ -6,7 +6,7 @@ export default {
   status: { overdue: 'Overdue', pending: 'To do', done: 'Done', doneCount: '{done}/{total} done' },
   sidebar: { lists: 'Lists', edit: 'Edit', newList: '+ New list' },
   rail: { addItem: '+Item', addGroup: '+Group', edit: 'Edit', settings: 'Settings' },
-  settings: { title: 'Settings', showDescription: 'Show description', theme: 'Appearance', light: 'Light mode', dark: 'Dark mode', fontSize: 'Font size', language: 'Language', import: 'Import data', export: 'Export data', about: 'About', imported: 'Import successful', importFailed: 'Import failed: invalid file format', importTitle: 'Confirm import?', importMessage: 'Data with the same ID will be overwritten' },
+  settings: { title: 'Settings', showDescription: 'Show description', theme: 'Appearance', light: 'Light mode', dark: 'Dark mode', fontSize: 'Font size', language: 'Language', import: 'Import data', export: 'Export data', about: 'About', imported: 'Import successful', importFailed: 'Import failed: invalid file format', importTitle: 'Confirm import?', importMessage: 'Data with the same ID will be overwritten', recovered: 'Local data was corrupted; the original data has been backed up and reset' },
   date: { yesterday: 'Yesterday', today: 'Today', tomorrow: 'Tomorrow', dayAfterTomorrow: 'Day after tomorrow' },
   drag: { preview: 'Dragging…' },
   empty: { noItems: 'No items yet, click + on the right to add', noList: 'No list' },
