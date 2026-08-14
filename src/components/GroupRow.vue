@@ -6,12 +6,12 @@
       <span v-if="showDesc && group.description" class="desc"> · {{ group.description }}</span>
       <span class="spacer" />
       <span v-if="group.date" class="meta">{{ dateLabel }}</span>
-      <span class="meta">{{ count.done }}/{{ count.total }} 已完成</span>
+      <span class="meta">{{ t('status.doneCount', { done: count.done, total: count.total }) }}</span>
       <template v-if="ui.editMode">
-        <button class="mini-btn" @click.stop="$emit('edit', group.id)">编辑</button>
-        <button class="mini-btn" @click.stop="$emit('add-item', group.id)">+事项</button>
-        <button class="mini-btn" @click.stop="$emit('add-group', group.id)">+组合</button>
-        <button class="mini-btn danger" @click.stop="$emit('remove', group.id)">删除</button>
+        <button class="mini-btn" @click.stop="$emit('edit', group.id)">{{ t('common.edit') }}</button>
+        <button class="mini-btn" @click.stop="$emit('add-item', group.id)">{{ t('rail.addItem') }}</button>
+        <button class="mini-btn" @click.stop="$emit('add-group', group.id)">{{ t('rail.addGroup') }}</button>
+        <button class="mini-btn danger" @click.stop="$emit('remove', group.id)">{{ t('common.delete') }}</button>
       </template>
     </div>
     <div v-if="group.expanded" class="children">
@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
 import { formatDateLabel } from '../logic/dates'
@@ -33,6 +34,7 @@ import TaskList from './TaskList.vue'
 
 const props = defineProps<{ group: Group; depth: number; parentId: string | null }>()
 const emit = defineEmits<{ (e: 'edit', id: string): void; (e: 'remove', id: string): void; (e: 'add-item', parentId: string): void; (e: 'add-group', parentId: string): void }>()
+const { t } = useI18n()
 const data = useDataStore()
 const ui = useUiStore()
 
@@ -44,7 +46,10 @@ const showDesc = computed(() => ui.settings.showDescription && !!props.group.des
 const dateLabel = computed(() => {
   if (!props.group.date) return ''
   const label = formatDateLabel(props.group.date, new Date(ui.now))
-  return label + (props.group.time ? ` ${props.group.time}` : '')
+  const text = label === 'yesterday' || label === 'today' || label === 'tomorrow' || label === 'dayAfterTomorrow'
+    ? t(`date.${label}`)
+    : label
+  return text + (props.group.time ? ` ${props.group.time}` : '')
 })
 
 function countRecursive(nodes: any[]): { done: number; total: number } {

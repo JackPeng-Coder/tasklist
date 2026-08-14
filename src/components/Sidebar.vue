@@ -2,8 +2,8 @@
   <aside class="sidebar" :class="{ open: !ui.sidebarCollapsed }">
     <div class="sidebar-head">
       <button class="icon-btn" @click="ui.toggleSidebar()">{{ ui.sidebarCollapsed ? '☰' : '✕' }}</button>
-      <span class="title">列表</span>
-      <button class="icon-btn" :class="{ active: ui.editMode }" @click="ui.toggleEditMode()">编辑</button>
+      <span class="title">{{ t('sidebar.lists') }}</span>
+      <button class="icon-btn" :class="{ active: ui.editMode }" @click="ui.toggleEditMode()">{{ t('sidebar.edit') }}</button>
     </div>
     <div class="sidebar-body">
       <div
@@ -14,19 +14,21 @@
         @click="data.selectList(l.id)"
       >
         <span class="list-name" @dblclick="startRename(l)">{{ l.name }}</span>
-        <span v-if="ui.editMode" class="mini-btn danger" @click.stop="$emit('delete-list', l.id)">删除</span>
+        <span v-if="ui.editMode" class="mini-btn danger" @click.stop="$emit('delete-list', l.id)">{{ t('common.delete') }}</span>
       </div>
-      <button class="list-item new-list" @click="$emit('new-list')">+ 新建列表</button>
+      <button class="list-item new-list" @click="$emit('new-list')">{{ t('sidebar.newList') }}</button>
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
 import { nodeStatus } from '../logic/status'
 import type { List } from '../types'
 
+const { t } = useI18n()
 const data = useDataStore()
 const ui = useUiStore()
 const emit = defineEmits<{ (e: 'new-list'): void; (e: 'delete-list', id: string): void }>()

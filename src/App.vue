@@ -4,7 +4,7 @@
   <RightRail @add-item="() => openNewItem(null)" @add-group="() => openNewGroup(null)" @open-settings="settingsOpen = true" />
   <ModalDialog :open="editingTarget !== null" @close="editingTarget = null">
     <template #title>
-      <h3>{{ editingId ? '编辑' : '新建' }} {{ editingTarget === 'item' ? '事项' : editingTarget === 'group' ? '组合' : '列表' }}</h3>
+      <h3>{{ dialogTitle }}</h3>
     </template>
     <ItemForm
       v-if="editingTarget === 'item'"
@@ -17,15 +17,23 @@
     <GroupForm v-else-if="editingTarget === 'group'" v-model:name="formName" v-model:description="formDescription" @submit="saveGroupForm" />
     <ListForm v-else-if="editingTarget === 'list'" v-model:name="formName" v-model:description="formDescription" @submit="saveListForm" />
     <template #actions>
-      <button class="btn" @click="editingTarget = null">取消</button>
-      <button class="btn primary" data-test="save" :disabled="!formName.trim()" @click="saveForm">确认</button>
+      <button class="btn" @click="editingTarget = null">{{ t('common.cancel') }}</button>
+      <button class="btn primary" data-test="save" :disabled="!formName.trim()" @click="saveForm">{{ t('common.confirm') }}</button>
     </template>
   </ModalDialog>
-  <ConfirmDialog :open="deletingType !== null" title="确认删除" message="删除后不可恢复" @confirm="confirmDelete" @cancel="onCancelDelete" />
+  <ModalDialog :open="settingsOpen" @close="settingsOpen = false">
+    <template #title><h3>{{ t('settings.title') }}</h3></template>
+    <SettingsPanel @import="onImport" @export="onExport" @about="onAbout" />
+    <template #actions>
+      <button class="btn" @click="settingsOpen = false">{{ t('common.cancel') }}</button>
+    </template>
+  </ModalDialog>
+  <ConfirmDialog :open="deletingType !== null" :title="t('confirm.title')" :message="t('confirm.message')" @confirm="confirmDelete" @cancel="onCancelDelete" />
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, watch, ref } from 'vue'
+import { onMounted, onBeforeUnmount, watch, ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useDataStore } from './stores/data'
 import { useUiStore } from './stores/ui'
 import { createItem, createGroup, type Item } from './types'
@@ -39,10 +47,21 @@ import ConfirmDialog from './components/ConfirmDialog.vue'
 import ItemForm from './components/ItemForm.vue'
 import GroupForm from './components/GroupForm.vue'
 import ListForm from './components/ListForm.vue'
+import SettingsPanel from './components/SettingsPanel.vue'
+import i18n from './i18n'
+import pkg from '../package.json'
 
+const { t } = useI18n()
 const data = useDataStore()
 const ui = useUiStore()
 const settingsOpen = ref(false)
+
+const dialogTitle = computed(() => {
+  const editing = editingId.value !== null
+  if (editingTarget.value === 'item') return t(editing ? 'item.edit' : 'item.new')
+  if (editingTarget.value === 'group') return t(editing ? 'group.edit' : 'group.new')
+  return t(editing ? 'list.edit' : 'list.new')
+})
 
 const editingTarget = ref<'item' | 'group' | 'list' | null>(null)
 const editingId = ref<string | null>(null)
@@ -63,6 +82,11 @@ function scheduleSave() {
 }
 
 watch(() => [data.lists, data.currentListId, ui.settings, ui.sidebarCollapsed, ui.expandedGroupIds], scheduleSave, { deep: true })
+
+watch(() => ui.settings.lang, (lang) => {
+  i18n.global.locale.value = lang as 'zh' | 'en'
+  localStorage.setItem('tasklist:lang', lang)
+})
 
 let interval: number | undefined
 onMounted(() => {
@@ -144,6 +168,14 @@ function confirmDelete() {
   if (deletingType.value === 'list' && deletingId.value) data.deleteList(deletingId.value)
   if (deletingType.value === 'node' && deletingId.value) data.deleteNode(deletingId.value)
   deletingId.value = null; deletingType.value = null
+}
+
+function onImport() {
+}
+function onExport() {
+}
+function onAbout() {
+  alert(`TaskList v${pkg.version}`)
 }
 </script>
 

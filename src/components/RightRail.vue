@@ -1,14 +1,16 @@
 <template>
   <nav class="right-rail">
-    <button class="icon-btn" title="+ 事项" @click="$emit('add-item')">+事项</button>
-    <button class="icon-btn" title="+ 组合" @click="$emit('add-group')">+组合</button>
-    <button class="icon-btn" :class="{ active: ui.editMode }" @click="ui.toggleEditMode()">编辑</button>
-    <button class="icon-btn" @click="$emit('open-settings')">设置</button>
+    <button class="icon-btn" :title="t('rail.addItem')" @click="$emit('add-item')">{{ t('rail.addItem') }}</button>
+    <button class="icon-btn" :title="t('rail.addGroup')" @click="$emit('add-group')">{{ t('rail.addGroup') }}</button>
+    <button class="icon-btn" :class="{ active: ui.editMode }" @click="ui.toggleEditMode()">{{ t('rail.edit') }}</button>
+    <button class="icon-btn" @click="$emit('open-settings')">{{ t('rail.settings') }}</button>
   </nav>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { useUiStore } from '../stores/ui'
+const { t } = useI18n()
 const ui = useUiStore()
 defineEmits<{ (e: 'add-item'): void; (e: 'add-group'): void; (e: 'open-settings'): void }>()
 </script>

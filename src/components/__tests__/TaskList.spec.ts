@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia, type Pinia } from 'pinia'
 import TaskList from '../TaskList.vue'
 import { useDataStore } from '../../stores/data'
+import i18n from '../../i18n'
 
 describe('TaskList', () => {
   let pinia: Pinia
@@ -22,7 +23,7 @@ describe('TaskList', () => {
         { id: 'c', name: '完成项', description: '', done: true, createdAt: 3 },
       ],
     }]
-    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia] } })
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
     expect(w.text()).toContain('逾期项')
     expect(w.text()).toContain('待办')
     expect(w.text()).toContain('完成项')
@@ -36,7 +37,7 @@ describe('TaskList', () => {
       items: [{ id: 'a', name: '任务', description: '', done: false, createdAt: 1 }],
     }]
     s.currentListId = 'l'
-    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia] } })
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
     await w.find('[data-test="row"]').trigger('click')
     expect((s.lists[0].items[0] as any).done).toBe(true)
   })

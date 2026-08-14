@@ -1,33 +1,34 @@
 <template>
   <div class="task-list" :style="{ '--depth': depth }">
     <template v-if="overdueRows.length">
-      <div class="group-head overdue" data-test="group-head-overdue">已逾期 <span class="rule" /></div>
+      <div class="group-head overdue" data-test="group-head-overdue">{{ t('status.overdue') }} <span class="rule" /></div>
       <template v-for="r in overdueRows" :key="r.node.id">
-        <div v-if="r.sep" class="date-sep">{{ r.sep }}</div>
+        <div v-if="r.sep" class="date-sep">{{ formatSep(r.sep) }}</div>
         <NodeRow :node="r.node" :depth="depth" :parent-id="parentId" @edit="emit('edit', $event)" @remove="emit('remove', $event)" @add-item="emit('add-item', $event)" @add-group="emit('add-group', $event)" />
       </template>
     </template>
     <template v-if="pendingRows.length">
-      <div class="group-head pending">未完成 <span class="rule" /></div>
+      <div class="group-head pending">{{ t('status.pending') }} <span class="rule" /></div>
       <template v-for="r in pendingRows" :key="r.node.id">
-        <div v-if="r.sep" class="date-sep">{{ r.sep }}</div>
+        <div v-if="r.sep" class="date-sep">{{ formatSep(r.sep) }}</div>
         <NodeRow :node="r.node" :depth="depth" :parent-id="parentId" @edit="emit('edit', $event)" @remove="emit('remove', $event)" @add-item="emit('add-item', $event)" @add-group="emit('add-group', $event)" />
       </template>
     </template>
     <template v-if="doneRows.length">
-      <div class="group-head done">已完成 <span class="rule" /></div>
+      <div class="group-head done">{{ t('status.done') }} <span class="rule" /></div>
       <template v-for="r in doneRows" :key="r.node.id">
-        <div v-if="r.sep" class="date-sep">{{ r.sep }}</div>
+        <div v-if="r.sep" class="date-sep">{{ formatSep(r.sep) }}</div>
         <NodeRow :node="r.node" :depth="depth" :parent-id="parentId" @edit="emit('edit', $event)" @remove="emit('remove', $event)" @add-item="emit('add-item', $event)" @add-group="emit('add-group', $event)" />
       </template>
     </template>
-    <div v-if="isEmpty" class="empty-tip" data-test="empty-tip">暂无事项</div>
+    <div v-if="isEmpty" class="empty-tip" data-test="empty-tip">{{ t('empty.noItems') }}</div>
     <DragPreview :state="dragState" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUiStore } from '../stores/ui'
 import { useDataStore } from '../stores/data'
 import { groupedNodes } from '../logic/sort'
@@ -39,6 +40,7 @@ import DragPreview from './DragPreview.vue'
 
 const props = defineProps<{ nodes: TreeNode[]; depth: number; parentId: string | null }>()
 const emit = defineEmits<{ (e: 'edit', id: string): void; (e: 'remove', id: string): void; (e: 'add-item', parentId: string): void; (e: 'add-group', parentId: string): void }>()
+const { t } = useI18n()
 const ui = useUiStore()
 const data = useDataStore()
 const grouped = computed(() => groupedNodes(props.nodes, ui.now))
@@ -71,6 +73,11 @@ function withSeparators(nodes: TreeNode[], now: number): Array<{ node: TreeNode;
     }
   }
   return out
+}
+
+const dateKeys = new Set(['yesterday', 'today', 'tomorrow', 'dayAfterTomorrow'])
+function formatSep(sep: string) {
+  return dateKeys.has(sep) ? t(`date.${sep}`) : sep
 }
 
 const overdueRows = computed(() => withSeparators(grouped.value.overdue, ui.now))

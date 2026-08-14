@@ -1,0 +1,15 @@
+export default {
+  common: { cancel: '取消', confirm: '确认', save: '保存', edit: '编辑', delete: '删除', new: '新建', add: '添加' },
+  list: { name: '列表名称', description: '列表描述', new: '新建列表', edit: '编辑列表' },
+  item: { name: '事项名称', description: '事项描述', new: '新建事项', edit: '编辑事项', date: '日期', time: '时间' },
+  group: { name: '组合名称', description: '组合描述', new: '新建组合', edit: '编辑组合' },
+  status: { overdue: '已逾期', pending: '未完成', done: '已完成', doneCount: '{done}/{total} 已完成' },
+  sidebar: { lists: '列表', edit: '编辑', newList: '+ 新建列表' },
+  rail: { addItem: '+事项', addGroup: '+组合', edit: '编辑', settings: '设置' },
+  settings: { title: '设置', showDescription: '显示描述', theme: '外观', light: '浅色模式', dark: '深色模式', fontSize: '字号大小', language: '语言', import: '导入数据', export: '导出数据', about: '关于', imported: '导入成功', importFailed: '导入失败：文件格式不正确' },
+  date: { yesterday: '昨天', today: '今天', tomorrow: '明天', dayAfterTomorrow: '后天' },
+  drag: { preview: '拖动中…' },
+  empty: { noItems: '暂无事项，点击右侧 + 添加', noList: '暂无列表' },
+  confirm: { title: '确认删除', message: '删除后不可恢复' },
+  required: '名称必填',
+}

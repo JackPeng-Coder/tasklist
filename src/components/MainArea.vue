@@ -13,14 +13,16 @@
         @add-group="emit('add-group', $event)"
       />
     </template>
-    <div v-else class="empty-tip">暂无列表</div>
+    <div v-else class="empty-tip">{{ t('empty.noList') }}</div>
   </main>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import TaskList from './TaskList.vue'
 
+const { t } = useI18n()
 const data = useDataStore()
 const emit = defineEmits<{
   (e: 'edit', id: string): void

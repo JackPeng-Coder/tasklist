@@ -1,12 +1,12 @@
 <template>
   <div class="form">
-    <label>名称 *<input v-model="name" data-test="name" @keydown.enter="trySubmit" /></label>
-    <label>描述<input v-model="description" /></label>
-    <label class="switch-row"><span>日期</span><input type="checkbox" v-model="hasDate" /></label>
+    <label>{{ t('item.name') }} *<input v-model="name" data-test="name" @keydown.enter="trySubmit" /></label>
+    <label>{{ t('item.description') }}<input v-model="description" /></label>
+    <label class="switch-row"><span>{{ t('item.date') }}</span><input type="checkbox" v-model="hasDate" /></label>
     <div v-if="hasDate" class="nested">
       <label><input type="date" v-model="date" /></label>
     </div>
-    <label class="switch-row"><span>时间</span><input type="checkbox" v-model="hasTime" :disabled="!hasDate" /></label>
+    <label class="switch-row"><span>{{ t('item.time') }}</span><input type="checkbox" v-model="hasTime" :disabled="!hasDate" /></label>
     <div v-if="hasTime" class="nested">
       <label><input type="time" v-model="time" /></label>
     </div>
@@ -15,6 +15,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps<{ name: string; description: string; date?: string; time?: string }>()
 const emit = defineEmits<{

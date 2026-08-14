@@ -3,14 +3,16 @@
     <template #title><h3>{{ title }}</h3></template>
     <p>{{ message }}</p>
     <template #actions>
-      <button class="btn" @click="$emit('cancel')">取消</button>
-      <button class="btn danger" data-test="confirm" @click="$emit('confirm')">删除</button>
+      <button class="btn" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
+      <button class="btn danger" data-test="confirm" @click="$emit('confirm')">{{ t('common.delete') }}</button>
     </template>
   </ModalDialog>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import ModalDialog from './ModalDialog.vue'
+const { t } = useI18n()
 defineProps<{ open: boolean; title: string; message: string }>()
 defineEmits<{ (e: 'confirm'): void; (e: 'cancel'): void }>()
 </script>

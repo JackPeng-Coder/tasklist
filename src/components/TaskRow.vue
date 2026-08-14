@@ -6,14 +6,15 @@
     <span class="spacer" />
     <span v-if="item.date" class="meta">{{ dateLabel }}</span>
     <template v-if="ui.editMode">
-      <button class="mini-btn" @click.stop="$emit('edit', item.id)">编辑</button>
-      <button class="mini-btn danger" @click.stop="$emit('remove', item.id)">删除</button>
+      <button class="mini-btn" @click.stop="$emit('edit', item.id)">{{ t('common.edit') }}</button>
+      <button class="mini-btn danger" @click.stop="$emit('remove', item.id)">{{ t('common.delete') }}</button>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
 import { formatDateLabel } from '../logic/dates'
@@ -23,6 +24,7 @@ import type { Item } from '../types'
 
 const props = defineProps<{ item: Item; depth: number; parentId: string | null }>()
 const emit = defineEmits<{ (e: 'edit', id: string): void; (e: 'remove', id: string): void }>()
+const { t } = useI18n()
 const data = useDataStore()
 const ui = useUiStore()
 
@@ -43,10 +45,11 @@ const showDesc = computed(() => ui.settings.showDescription && !!props.item.desc
 const dateLabel = computed(() => {
   if (!props.item.date) return ''
   const label = formatDateLabel(props.item.date, new Date(ui.now))
-  const t = props.item.time ?? ''
-  return label === 'yesterday' || label === 'today' || label === 'tomorrow' || label === 'dayAfterTomorrow'
-    ? label + (t ? ` ${t}` : '')
-    : label + (t ? ` ${t}` : '')
+  const time = props.item.time ?? ''
+  const text = label === 'yesterday' || label === 'today' || label === 'tomorrow' || label === 'dayAfterTomorrow'
+    ? t(`date.${label}`)
+    : label
+  return text + (time ? ` ${time}` : '')
 })
 </script>
 

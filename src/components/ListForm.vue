@@ -1,12 +1,15 @@
 <template>
   <div class="form">
-    <label>名称 *<input v-model="name" data-test="name" @keydown.enter="trySubmit" /></label>
-    <label>描述<input v-model="description" /></label>
+    <label>{{ t('list.name') }} *<input v-model="name" data-test="name" @keydown.enter="trySubmit" /></label>
+    <label>{{ t('list.description') }}<input v-model="description" /></label>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps<{ name: string; description: string }>()
 const emit = defineEmits<{ (e: 'update:name', v: string): void; (e: 'update:description', v: string): void; (e: 'submit'): void }>()
