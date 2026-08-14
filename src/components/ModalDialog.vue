@@ -31,8 +31,9 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
 </script>
 
 <style scoped>
-.overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .4); display: flex; align-items: center; justify-content: center; z-index: 100; }
-.dialog { background: var(--color-surface); border-radius: 12px; padding: 16px 20px; min-width: 320px; max-width: 90vw; box-shadow: 0 8px 30px rgba(0, 0, 0, .25); }
-.body { margin: 12px 0; }
-.actions { display: flex; justify-content: flex-end; gap: 8px; }
+.overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.dialog { background: var(--color-surface); border-radius: var(--radius-lg); padding: 20px 24px; min-width: 360px; max-width: min(560px, 92vw); box-shadow: var(--shadow-lg); border: 1px solid var(--color-border); }
+.dialog h3 { margin: 0 0 4px; font-size: var(--font-lg); }
+.body { margin: 16px 0; }
+.actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
 </style>

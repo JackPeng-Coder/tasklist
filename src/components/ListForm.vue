@@ -21,7 +21,8 @@ function trySubmit() { emit('submit') }
 </script>
 
 <style scoped>
-.form { display: flex; flex-direction: column; gap: 10px; }
-label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--color-muted); }
-input { padding: 8px; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); color: var(--color-text); font-size: 14px; }
+.form { display: flex; flex-direction: column; gap: 14px; }
+.form > label { display: flex; flex-direction: column; gap: 6px; font-size: var(--font-sm); color: var(--color-muted); }
+input { padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); font-size: var(--font-md); outline: none; transition: border-color .15s, box-shadow .15s; }
+input:focus { border-color: var(--color-pending); box-shadow: 0 0 0 3px rgba(58, 123, 213, .15); }
 </style>

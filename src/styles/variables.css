@@ -1,8 +1,16 @@
 :root {
+  --sidebar-width: 240px;
+  --right-rail-width: 64px;
+  --font-base: 15px;
+  --font-xs: 12px;
+  --font-sm: 13px;
+  --font-md: 15px;
+  --font-lg: 17px;
+
   --color-bg: #f5f6f8;
   --color-surface: #ffffff;
   --color-text: #222222;
-  --color-muted: #999999;
+  --color-muted: #8a929e;
   --color-border: #e3e5e8;
   --color-overdue: #e03e3e;
   --color-pending: #3a7bd5;
@@ -11,13 +19,19 @@
   --color-pending-deep: #2d62b0;
   --color-done-deep: #23824a;
   --color-group-deep: #1c3a5e;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, .08);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, .16);
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
 }
 
 body[data-theme='dark'] {
   --color-bg: #1a1c20;
   --color-surface: #26292f;
   --color-text: #e8e8e8;
-  --color-muted: #8a8f98;
+  --color-muted: #8a929b;
   --color-border: #3a3e46;
   --color-overdue: #ff6b6b;
   --color-pending: #6ea8ff;
@@ -26,4 +40,7 @@ body[data-theme='dark'] {
   --color-pending-deep: #4f8ee0;
   --color-done-deep: #3aa86c;
   --color-group-deep: #3d5f8f;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .24);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, .28);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, .40);
 }

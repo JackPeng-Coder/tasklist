@@ -40,6 +40,12 @@ function onLang(e: Event) {
 </script>
 
 <style scoped>
-.panel { display: flex; flex-direction: column; gap: 12px; min-width: 300px; }
-.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.panel { display: flex; flex-direction: column; gap: 16px; min-width: 300px; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: var(--font-sm); }
+.row span { color: var(--color-text); }
+.row input[type='checkbox'] { width: 18px; height: 18px; accent-color: var(--color-pending); cursor: pointer; }
+.row input[type='range'] { flex: 1; accent-color: var(--color-pending); cursor: pointer; }
+.row select { padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); font-size: var(--font-sm); cursor: pointer; }
+.row button { padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); cursor: pointer; font-size: var(--font-sm); transition: background .15s; }
+.row button:hover { background: var(--color-bg); }
 </style>

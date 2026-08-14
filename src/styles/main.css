@@ -1,5 +1,12 @@
 @import './variables.css';
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; }
-body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: var(--color-bg); color: var(--color-text); }
+html, body { margin: 0; height: 100%; font-size: var(--font-base); }
+body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.5; }
 #app { height: 100vh; display: flex; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+
+.no-select { user-select: none; -webkit-user-select: none; }

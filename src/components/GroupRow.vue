@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="group-wrap">
     <div class="row" :class="statusClass" data-test="row" :data-drop-id="group.id" data-drop-kind="group" @pointerdown="onPointerDown" @click="onRowClick">
       <span class="arrow" :class="{ open: group.expanded }" data-test="arrow">▸</span>
       <span class="name">{{ group.name }}</span>
@@ -14,7 +14,7 @@
         <button class="mini-btn danger" @click.stop="$emit('remove', group.id)">{{ t('common.delete') }}</button>
       </template>
     </div>
-    <div v-if="group.expanded" class="children">
+    <div v-if="group.expanded" class="children" :data-drop-id="group.id" data-drop-kind="group">
       <div class="indent-line" />
       <TaskList :nodes="group.items" :depth="depth + 1" :parent-id="group.id" @edit="$emit('edit', $event)" @remove="$emit('remove', $event)" @add-item="$emit('add-item', $event)" @add-group="$emit('add-group', $event)" />
     </div>
@@ -78,18 +78,21 @@ function onRowClick() {
 </script>
 
 <style scoped>
-.row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; background: var(--color-surface); margin-bottom: 6px; cursor: pointer; border: 1px solid var(--color-border); }
-.overdue { background: color-mix(in srgb, var(--color-overdue-deep) 15%, var(--color-surface)); }
-.pending { background: color-mix(in srgb, var(--color-pending-deep) 12%, var(--color-surface)); }
-.done { background: color-mix(in srgb, var(--color-done-deep) 12%, var(--color-surface)); }
-.arrow { display: inline-block; width: 16px; transition: transform .15s; color: var(--color-muted); }
+.row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); background: var(--color-surface); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--color-border); box-shadow: var(--shadow-sm); transition: box-shadow .15s, transform .15s; }
+.row:hover { box-shadow: var(--shadow-md); }
+.overdue { background: color-mix(in srgb, var(--color-overdue-deep) 12%, var(--color-surface)); border-color: color-mix(in srgb, var(--color-overdue) 35%, var(--color-border)); }
+.pending { background: color-mix(in srgb, var(--color-pending-deep) 10%, var(--color-surface)); border-color: color-mix(in srgb, var(--color-pending) 35%, var(--color-border)); }
+.done { background: color-mix(in srgb, var(--color-done-deep) 10%, var(--color-surface)); border-color: color-mix(in srgb, var(--color-done) 35%, var(--color-border)); }
+.arrow { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; transition: transform .15s; color: var(--color-muted); font-size: var(--font-sm); }
 .arrow.open { transform: rotate(90deg); }
-.name { font-weight: 600; }
-.desc { color: var(--color-muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.name { font-weight: 700; font-size: var(--font-md); }
+.desc { color: var(--color-muted); font-size: var(--font-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .spacer { flex: 1; }
-.meta { color: var(--color-muted); font-size: 12px; }
-.mini-btn { background: none; border: none; color: var(--color-muted); cursor: pointer; font-size: 12px; }
-.mini-btn.danger:hover { color: var(--color-overdue); }
-.children { position: relative; margin-left: 18px; padding-left: 14px; }
+.meta { color: var(--color-muted); font-size: var(--font-xs); }
+.mini-btn { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; color: var(--color-muted); cursor: pointer; font-size: var(--font-xs); transition: color .15s, background .15s, border-color .15s; }
+.mini-btn:hover { background: var(--color-surface); color: var(--color-text); border-color: var(--color-border); }
+.mini-btn.danger:hover { color: var(--color-overdue); background: rgba(224, 62, 62, .08); border-color: rgba(224, 62, 62, .25); }
+.group-wrap { position: relative; }
+.children { position: relative; margin-left: 18px; padding: 6px 0 2px 14px; }
 .indent-line { position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--color-border); }
 </style>

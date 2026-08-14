@@ -6,7 +6,7 @@
     <div v-if="hasDate" class="nested">
       <label><input type="date" v-model="date" /></label>
     </div>
-    <label class="switch-row"><span>{{ t('item.time') }}</span><input type="checkbox" v-model="hasTime" :disabled="!hasDate" /></label>
+    <label class="switch-row"><span>{{ t('item.time') }}</span><input type="checkbox" v-model="hasTime" /></label>
     <div v-if="hasTime" class="nested">
       <label><input type="time" v-model="time" /></label>
     </div>
@@ -42,17 +42,22 @@ watch(hasDate, (v) => {
   if (!v) { hasTime.value = false; emit('update:time', undefined) }
 })
 watch(date, (v) => { if (hasDate.value) emit('update:date', v || undefined) })
-watch(hasTime, (v) => emit('update:time', v ? (time.value || undefined) : undefined))
+watch(hasTime, (v) => {
+  if (v && !hasDate.value) { hasDate.value = true }
+  emit('update:time', v ? (time.value || undefined) : undefined)
+})
 watch(time, (v) => { if (hasTime.value) emit('update:time', v || undefined) })
 
 function trySubmit() { emit('submit') }
 </script>
 
 <style scoped>
-.form { display: flex; flex-direction: column; gap: 10px; }
-label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--color-muted); }
-input[type='text'], input[type='date'], input[type='time'] { padding: 8px; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); color: var(--color-text); font-size: 14px; }
-.switch-row { flex-direction: row; align-items: center; gap: 8px; }
+.form { display: flex; flex-direction: column; gap: 14px; }
+.form > label { display: flex; flex-direction: column; gap: 6px; font-size: var(--font-sm); color: var(--color-muted); }
+input[type='text'], input[type='date'], input[type='time'] { padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); font-size: var(--font-md); outline: none; transition: border-color .15s, box-shadow .15s; }
+input[type='text']:focus, input[type='date']:focus, input[type='time']:focus { border-color: var(--color-pending); box-shadow: 0 0 0 3px rgba(58, 123, 213, .15); }
+.switch-row { flex-direction: row; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-md); background: var(--color-bg); }
 .switch-row span { flex: 1; }
-.nested { padding-left: 20px; }
+.switch-row input[type='checkbox'] { width: 18px; height: 18px; accent-color: var(--color-pending); cursor: pointer; }
+.nested { padding-left: 24px; }
 </style>

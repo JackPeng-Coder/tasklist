@@ -11,7 +11,12 @@ export const useUiStore = defineStore('ui', () => {
 
   function applyToDOM() {
     document.body.dataset.theme = settings.value.theme
-    document.body.style.fontSize = `${settings.value.fontSize}px`
+    const ratio = settings.value.fontSize / 15
+    document.documentElement.style.setProperty('--font-base', `${settings.value.fontSize}px`)
+    document.documentElement.style.setProperty('--font-xs', `${12 * ratio}px`)
+    document.documentElement.style.setProperty('--font-sm', `${13 * ratio}px`)
+    document.documentElement.style.setProperty('--font-md', `${15 * ratio}px`)
+    document.documentElement.style.setProperty('--font-lg', `${17 * ratio}px`)
   }
 
   function setTheme(theme: Theme) {

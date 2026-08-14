@@ -14,5 +14,5 @@ defineProps<{ state: DragState | null }>()
 </script>
 
 <style scoped>
-.drag-preview { position: fixed; z-index: 200; opacity: .5; pointer-events: none; background: var(--color-surface); border: 1px dashed var(--color-muted); border-radius: 8px; padding: 8px 12px; transform: translate(-50%, -50%); }
+.drag-preview { position: fixed; z-index: 200; opacity: .7; pointer-events: none; background: var(--color-surface); border: 1px dashed var(--color-muted); border-radius: var(--radius-md); padding: 10px 14px; transform: translate(-50%, -50%); box-shadow: var(--shadow-md); font-size: var(--font-sm); color: var(--color-text); white-space: nowrap; }
 </style>

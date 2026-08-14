@@ -9,6 +9,7 @@ export interface DragState {
   width: number
   height: number
   active: boolean
+  ctrl: boolean
 }
 
 export interface DropTarget { id: string; kind: 'item' | 'group' }
@@ -42,15 +43,18 @@ export function setDropHandler(fn: (target: DropTarget | null) => void): void {
 
 export function beginDrag(nodeId: string, listId: string, parentId: string | null, e: PointerEvent): void {
   if (e.button !== 0 || tracking) return
+  e.preventDefault()
   tracking = true
   startX = e.clientX
   startY = e.clientY
   const el = e.currentTarget as HTMLElement
   const rect = el.getBoundingClientRect()
-  dragState.value = { nodeId, listId, parentId, x: e.clientX, y: e.clientY, width: rect.width, height: rect.height, active: false }
+  dragState.value = { nodeId, listId, parentId, x: e.clientX, y: e.clientY, width: rect.width, height: rect.height, active: false, ctrl: e.ctrlKey }
+  document.body.classList.add('no-select')
   onMove = (ev: PointerEvent) => {
     const d = dragState.value
     if (!d) return
+    d.ctrl = ev.ctrlKey
     if (!d.active) {
       if (!shouldStartDrag(startX, startY, ev.clientX, ev.clientY)) return
       d.active = true
@@ -63,23 +67,22 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
     const d = dragState.value
     if (!d || !d.active) {
       dragState.value = null
+      document.body.classList.remove('no-select')
       return
     }
     const target = resolveDropTarget(document.elementFromPoint(ev.clientX, ev.clientY))
     onDrop?.(target)
-    // 保留 dragState（active=true）直到本次 click 被行吞掉或落到 window，
-    // 之后再清理，避免 click 触发 toggle
-    const consume = () => {
-      window.removeEventListener('click', consume)
-      if (dragState.value?.active) dragState.value = null
-    }
-    window.addEventListener('click', consume)
+    // 立即清理预览与选中禁止；在捕获阶段拦截紧随其后的 click，避免触发行切换
+    dragState.value = null
+    document.body.classList.remove('no-select')
+    window.addEventListener('click', suppressClick, { capture: true, once: true })
   }
   window.addEventListener('pointermove', onMove)
   window.addEventListener('pointerup', onUp)
   onCancel = () => {
     cleanup()
     dragState.value = null
+    document.body.classList.remove('no-select')
   }
   window.addEventListener('pointercancel', onCancel)
 }
@@ -94,7 +97,12 @@ function cleanup(): void {
   onCancel = null
 }
 
+function suppressClick(e: MouseEvent): void {
+  e.stopPropagation()
+}
+
 export function resetDrag(): void {
   dragState.value = null
+  document.body.classList.remove('no-select')
   cleanup()
 }

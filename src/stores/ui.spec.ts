@@ -20,10 +20,11 @@ describe('ui store', () => {
     expect(document.body.dataset.theme).toBe('dark')
   })
 
-  it('字号写入 DOM', () => {
+  it('字号写入 CSS 变量', () => {
     const s = useUiStore()
     s.setFontSize(20)
-    expect(document.body.style.fontSize).toBe('20px')
+    expect(document.documentElement.style.getPropertyValue('--font-base')).toBe('20px')
+    expect(document.documentElement.style.getPropertyValue('--font-md')).toBe(`${15 * (20 / 15)}px`)
   })
 
   it('展开状态与编辑模式', () => {

@@ -1,21 +1,21 @@
 <template>
   <div class="task-list" :style="{ '--depth': depth }">
     <template v-if="overdueRows.length">
-      <div class="group-head overdue" data-test="group-head-overdue">{{ t('status.overdue') }} <span class="rule" /></div>
+      <div class="group-head overdue" data-test="group-head-overdue"><span class="label">{{ t('status.overdue') }}</span><span class="rule" /></div>
       <template v-for="r in overdueRows" :key="r.node.id">
         <div v-if="r.sep" class="date-sep">{{ formatSep(r.sep) }}</div>
         <NodeRow :node="r.node" :depth="depth" :parent-id="parentId" @edit="emit('edit', $event)" @remove="emit('remove', $event)" @add-item="emit('add-item', $event)" @add-group="emit('add-group', $event)" />
       </template>
     </template>
     <template v-if="pendingRows.length">
-      <div class="group-head pending">{{ t('status.pending') }} <span class="rule" /></div>
+      <div class="group-head pending"><span class="label">{{ t('status.pending') }}</span><span class="rule" /></div>
       <template v-for="r in pendingRows" :key="r.node.id">
         <div v-if="r.sep" class="date-sep">{{ formatSep(r.sep) }}</div>
         <NodeRow :node="r.node" :depth="depth" :parent-id="parentId" @edit="emit('edit', $event)" @remove="emit('remove', $event)" @add-item="emit('add-item', $event)" @add-group="emit('add-group', $event)" />
       </template>
     </template>
     <template v-if="doneRows.length">
-      <div class="group-head done">{{ t('status.done') }} <span class="rule" /></div>
+      <div class="group-head done"><span class="label">{{ t('status.done') }}</span><span class="rule" /></div>
       <template v-for="r in doneRows" :key="r.node.id">
         <div v-if="r.sep" class="date-sep">{{ formatSep(r.sep) }}</div>
         <NodeRow :node="r.node" :depth="depth" :parent-id="parentId" @edit="emit('edit', $event)" @remove="emit('remove', $event)" @add-item="emit('add-item', $event)" @add-group="emit('add-group', $event)" />
@@ -46,18 +46,14 @@ function withSeparators(nodes: TreeNode[], now: number): Array<{ node: TreeNode;
   let prev: string | null = null
   for (const n of nodes) {
     const date = (n as { date?: string }).date
-    if (date) {
-      const label = formatDateLabel(date, new Date(now))
-      if (label !== prev) { out.push({ node: n, sep: label }); prev = label }
-      else out.push({ node: n })
-    } else {
-      out.push({ node: n })
-    }
+    const label = date ? formatDateLabel(date, new Date(now)) : 'nodate'
+    if (label !== prev) { out.push({ node: n, sep: label }); prev = label }
+    else out.push({ node: n })
   }
   return out
 }
 
-const dateKeys = new Set(['yesterday', 'today', 'tomorrow', 'dayAfterTomorrow'])
+const dateKeys = new Set(['yesterday', 'today', 'tomorrow', 'dayAfterTomorrow', 'nodate'])
 function formatSep(sep: string) {
   return dateKeys.has(sep) ? t(`date.${sep}`) : sep
 }
@@ -68,10 +64,11 @@ const doneRows = computed(() => withSeparators(grouped.value.done, ui.now))
 </script>
 
 <style scoped>
-.group-head { display: flex; align-items: center; gap: 8px; font-size: 13px; margin: 10px 0 4px; }
+.group-head { display: flex; align-items: center; gap: 10px; font-size: var(--font-sm); margin: 12px 0 6px; }
+.group-head .label { font-weight: 600; white-space: nowrap; }
 .group-head.overdue { color: var(--color-overdue); }
 .group-head.pending { color: var(--color-pending); }
 .group-head.done { color: var(--color-done); }
-.group-head .rule { flex: 1; border-bottom: 1px dashed var(--color-border); }
-.date-sep { color: var(--color-muted); font-size: 12px; margin: 4px 0 2px; }
+.group-head .rule { flex: 1; border-bottom: 2px solid currentColor; opacity: .35; }
+.date-sep { color: var(--color-muted); font-size: var(--font-xs); margin: 6px 0 4px; }
 </style>

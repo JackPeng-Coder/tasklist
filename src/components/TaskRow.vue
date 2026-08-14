@@ -54,16 +54,19 @@ const dateLabel = computed(() => {
 </script>
 
 <style scoped>
-.row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; background: var(--color-surface); margin-bottom: 6px; cursor: pointer; }
-.overdue { background: color-mix(in srgb, var(--color-overdue) 12%, var(--color-surface)); }
-.pending { background: color-mix(in srgb, var(--color-pending) 8%, var(--color-surface)); }
-.done { background: color-mix(in srgb, var(--color-done) 8%, var(--color-surface)); }
-.dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--color-muted); flex-shrink: 0; }
-.dot.done { border-color: var(--color-done); background: var(--color-done); }
-.name { font-size: 15px; }
-.desc { color: var(--color-muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); background: var(--color-surface); margin-bottom: 8px; cursor: pointer; border: 1px solid transparent; box-shadow: var(--shadow-sm); transition: box-shadow .15s, transform .15s; }
+.row:hover { box-shadow: var(--shadow-md); }
+.overdue { background: color-mix(in srgb, var(--color-overdue) 10%, var(--color-surface)); }
+.pending { background: color-mix(in srgb, var(--color-pending) 7%, var(--color-surface)); }
+.done { background: color-mix(in srgb, var(--color-done) 7%, var(--color-surface)); }
+.dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--color-muted); flex-shrink: 0; transition: border-color .15s, background .15s; }
+.dot.done { border-color: var(--color-done); background: var(--color-done); position: relative; }
+.dot.done::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; }
+.name { font-size: var(--font-md); font-weight: 500; }
+.desc { color: var(--color-muted); font-size: var(--font-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .spacer { flex: 1; }
-.meta { color: var(--color-muted); font-size: 12px; }
-.mini-btn { background: none; border: none; color: var(--color-muted); cursor: pointer; font-size: 12px; }
-.mini-btn.danger:hover { color: var(--color-overdue); }
+.meta { color: var(--color-muted); font-size: var(--font-xs); }
+.mini-btn { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; color: var(--color-muted); cursor: pointer; font-size: var(--font-xs); transition: color .15s, background .15s, border-color .15s; }
+.mini-btn:hover { background: var(--color-surface); color: var(--color-text); border-color: var(--color-border); }
+.mini-btn.danger:hover { color: var(--color-overdue); background: rgba(224, 62, 62, .08); border-color: rgba(224, 62, 62, .25); }
 </style>

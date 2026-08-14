@@ -1,5 +1,5 @@
 <template>
-  <Sidebar @new-list="openNewList" @delete-list="onDeleteList" />
+  <Sidebar @new-list="openNewList" @delete-list="onDeleteList" @rename-list="openRenameList" />
   <MainArea @edit="openEditNode" @remove="onRemoveNode" @add-item="openNewItem" @add-group="openNewGroup" />
   <RightRail @add-item="() => openNewItem(null)" @add-group="() => openNewGroup(null)" @open-settings="settingsOpen = true" />
   <ModalDialog :open="editingTarget !== null" @close="editingTarget = null">
@@ -29,8 +29,11 @@
     </template>
   </ModalDialog>
   <ConfirmDialog :open="deletingType !== null" :title="t('confirm.title')" :message="t('confirm.message')" @confirm="confirmDelete" @cancel="onCancelDelete" />
-  <ConfirmDialog :open="importConfirmOpen" :title="t('settings.importTitle')" :message="t('settings.importMessage')" :confirm-text="t('common.confirm')" @confirm="confirmImport" @cancel="importConfirmOpen = false" />
-  <input ref="fileInput" type="file" accept="application/json" data-test="import-input" class="hidden-input" @change="onFileChange" />
+    <ConfirmDialog :open="importConfirmOpen" :title="t('settings.importTitle')" :message="t('settings.importMessage')" :confirm-text="t('common.confirm')" @confirm="confirmImport" @cancel="importConfirmOpen = false" />
+    <AlertDialog :open="alertOpen" :title="alertTitle" :message="alertMessage" @close="alertOpen = false" />
+    <PromptDialog :open="promptOpen" :title="promptTitle" :default-value="promptDefault" @confirm="onPromptConfirm" @cancel="promptOpen = false" />
+    <input ref="fileInput" type="file" accept="application/json" data-test="import-input" class="hidden-input" @change="onFileChange" />
+
 </template>
 
 <script setup lang="ts">
@@ -48,6 +51,8 @@ import MainArea from './components/MainArea.vue'
 import RightRail from './components/RightRail.vue'
 import ModalDialog from './components/ModalDialog.vue'
 import ConfirmDialog from './components/ConfirmDialog.vue'
+import AlertDialog from './components/AlertDialog.vue'
+import PromptDialog from './components/PromptDialog.vue'
 import ItemForm from './components/ItemForm.vue'
 import GroupForm from './components/GroupForm.vue'
 import ListForm from './components/ListForm.vue'
@@ -80,6 +85,34 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const pendingImport = ref<TaskData | null>(null)
 const importConfirmOpen = ref(false)
 
+const alertOpen = ref(false)
+const alertTitle = ref('')
+const alertMessage = ref('')
+const promptOpen = ref(false)
+const promptTitle = ref('')
+const promptDefault = ref('')
+const promptCallback = ref<((value: string | null) => void) | null>(null)
+
+function showAlert(title: string, message: string) {
+  alertTitle.value = title
+  alertMessage.value = message
+  alertOpen.value = true
+}
+function showPrompt(title: string, defaultValue: string): Promise<string | null> {
+  promptTitle.value = title
+  promptDefault.value = defaultValue
+  promptOpen.value = true
+  return new Promise((resolve) => {
+    promptCallback.value = resolve
+  })
+}
+function onPromptConfirm(value: string | null) {
+  promptOpen.value = false
+  promptCallback.value?.(value)
+  promptCallback.value = null
+}
+
+
 let saveTimer: number | undefined
 function scheduleSave() {
   clearTimeout(saveTimer)
@@ -98,7 +131,7 @@ watch(() => ui.settings.lang, (lang) => {
 let interval: number | undefined
 onMounted(() => {
   data.init()
-  if (data.recovered) alert(t('settings.recovered'))
+  if (data.recovered) showAlert(t('common.notice'), t('settings.recovered'))
   const saved = loadTaskData()
   ui.settings = saved.data.settings
   ui.sidebarCollapsed = saved.data.ui.sidebarCollapsed
@@ -131,6 +164,10 @@ function openNewGroup(parentId: string | null) {
 function openNewList() {
   editingTarget.value = 'list'; editingId.value = null
   formName.value = ''; formDescription.value = ''
+}
+async function openRenameList(list: { id: string; name: string }) {
+  const name = await showPrompt(t('sidebar.renameList'), list.name)
+  if (name?.trim()) data.renameList(list.id, name.trim())
 }
 function openEditNode(id: string) {
   if (!data.currentList) return
@@ -194,7 +231,7 @@ function onExport() {
   doExport()
 }
 function onAbout() {
-  alert(`TaskList v${pkg.version}`)
+  showAlert(t('settings.about'), `TaskList v${pkg.version}`)
 }
 
 function doExport() {
@@ -219,7 +256,7 @@ function onImportFile(file: File) {
   const reader = new FileReader()
   reader.onload = () => {
     const r = parseImportText(String(reader.result))
-    if (!r.ok) { alert(t('settings.importFailed')); return }
+    if (!r.ok) { showAlert(t('common.notice'), t('settings.importFailed')); return }
     pendingImport.value = r.data
     importConfirmOpen.value = true
   }
@@ -236,13 +273,15 @@ function confirmImport() {
   ui.applyToDOM()
   pendingImport.value = null
   importConfirmOpen.value = false
-  alert(t('settings.imported'))
+  showAlert(t('common.notice'), t('settings.imported'))
 }
 </script>
 
 <style scoped>
-.btn { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); cursor: pointer; }
-.btn.primary { background: var(--color-pending); color: #fff; border: none; }
+.btn { padding: 8px 18px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); cursor: pointer; font-size: var(--font-sm); transition: background .15s, border-color .15s; }
+.btn:hover { background: var(--color-bg); }
+.btn.primary { background: var(--color-pending); color: #fff; border-color: var(--color-pending); }
+.btn.primary:hover { background: var(--color-pending-deep); border-color: var(--color-pending-deep); }
 .btn.primary:disabled { opacity: .5; cursor: not-allowed; }
 .hidden-input { display: none; }
 </style>
