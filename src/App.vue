@@ -26,7 +26,7 @@ function scheduleSave() {
   }, 300)
 }
 
-watch([data.lists, data.currentListId, ui.settings, ui.sidebarCollapsed, ui.expandedGroupIds], scheduleSave, { deep: true })
+watch(() => [data.lists, data.currentListId, ui.settings, ui.sidebarCollapsed, ui.expandedGroupIds], scheduleSave, { deep: true })
 
 let interval: number | undefined
 onMounted(() => {
