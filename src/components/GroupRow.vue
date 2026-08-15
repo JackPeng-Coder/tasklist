@@ -1,22 +1,20 @@
 <template>
   <div class="group-wrap">
-    <div class="row" :class="statusClass" data-test="row" :data-drop-id="group.id" data-drop-kind="group">
-      <div class="row-main" @pointerdown="onPointerDown" @click="onRowClick">
-        <span class="expand-btn" :class="{ open: group.expanded }" data-test="arrow">▸</span>
-        <span class="title">
-          <span class="name">{{ group.name }}</span>
-          <span v-if="showDesc && group.description" class="desc"> · {{ group.description }}</span>
-        </span>
-        <span class="spacer" />
-        <span class="group-meta">{{ t('status.doneCount', { done: count.done, total: count.total }) }}</span>
-        <span v-if="groupTimeLabel" class="time-chip" :class="statusClass">{{ groupTimeLabel }}</span>
-      </div>
-      <div v-if="ui.editMode" class="row-actions">
+    <div class="row" :class="statusClass" data-test="row" :data-drop-id="group.id" data-drop-kind="group" @pointerdown="onPointerDown" @click="onRowClick">
+      <span class="expand-btn" :class="{ open: group.expanded }" data-test="arrow">▸</span>
+      <span class="title">
+        <span class="name">{{ group.name }}</span>
+        <span v-if="showDesc && group.description" class="desc"> · {{ group.description }}</span>
+      </span>
+      <span class="spacer" />
+      <span class="group-meta">{{ t('status.doneCount', { done: count.done, total: count.total }) }}</span>
+      <span v-if="groupTimeLabel" class="time-chip" :class="statusClass">{{ groupTimeLabel }}</span>
+      <template v-if="ui.editMode">
         <button class="mini-btn" @click.stop="$emit('edit', group.id)">{{ t('common.edit') }}</button>
         <button class="mini-btn" @click.stop="$emit('add-item', group.id)">{{ t('rail.addItem') }}</button>
         <button class="mini-btn" @click.stop="$emit('add-group', group.id)">{{ t('rail.addGroup') }}</button>
         <button class="mini-btn danger" @click.stop="$emit('remove', group.id)">{{ t('common.delete') }}</button>
-      </div>
+      </template>
     </div>
     <div v-if="group.expanded" class="children" :data-drop-id="group.id" data-drop-kind="group">
       <div class="indent-line" />
@@ -75,9 +73,7 @@ function onRowClick() {
 </script>
 
 <style scoped>
-.row { display: flex; flex-direction: column; gap: 6px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
-.row-main { display: flex; align-items: center; gap: 10px; }
-.row-actions { display: flex; justify-content: flex-end; gap: 6px; padding-top: 6px; border-top: 1px solid var(--line); margin-top: 2px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
 .row:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
 .row.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
 .row.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }

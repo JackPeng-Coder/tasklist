@@ -40,7 +40,7 @@ describe('TaskList', () => {
     }]
     s.currentListId = 'l'
     const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
-    await w.find('[data-test="row"] .row-main').trigger('click')
+    await w.find('[data-test="row"]').trigger('click')
     expect((s.lists[0].items[0] as any).done).toBe(true)
   })
 
