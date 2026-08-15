@@ -1,6 +1,6 @@
 # Tasklist 开发计划（Roadmap）
 
-> 本文档记录项目的开发计划、阶段进度与排期事项。设计细节见 [DESIGN.md](../DESIGN.md)。
+> 本文档记录项目的开发计划、阶段进度与排期事项。设计细节见 [DESIGN.md](DESIGN.md)。
 
 ## 已完成阶段
 
