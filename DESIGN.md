@@ -21,6 +21,7 @@
 - 数据持久化：localStorage 单键 `tasklist:v1`，写入时防抖
 - PWA：manifest + 简单 Service Worker（离线缓存），支持「安装到桌面」独立窗口
 - 部署：GitHub Pages，`npm run build` 产物直接推送，零运维
+- 开发服务器：Vite，`server.host` 显式绑定 `127.0.0.1`（避免默认 `localhost` 在部分 Windows 环境下解析 IPv6 `::1` 时触发 `EACCES`）
 
 ### 2.1 数据模型
 
