@@ -9,12 +9,13 @@
       <span class="name">{{ item.name }}</span>
       <span v-if="showDesc && item.description" class="desc"> · {{ item.description }}</span>
     </span>
-    <span class="spacer" />
-    <span v-if="item.date" class="time-chip" :class="statusClass">{{ dateLabel }}</span>
-    <template v-if="ui.editMode">
-      <button class="mini-btn" @click.stop="$emit('edit', item.id)">{{ t('common.edit') }}</button>
-      <button class="mini-btn danger" @click.stop="$emit('remove', item.id)">{{ t('common.delete') }}</button>
-    </template>
+    <span class="trailing">
+      <span v-if="item.date" class="time-chip" :class="statusClass">{{ dateLabel }}</span>
+      <span v-if="ui.editMode" class="actions">
+        <button class="mini-btn" @click.stop="$emit('edit', item.id)">{{ t('common.edit') }}</button>
+        <button class="mini-btn danger" @click.stop="$emit('remove', item.id)">{{ t('common.delete') }}</button>
+      </span>
+    </span>
   </div>
 </template>
 
@@ -59,6 +60,8 @@ const dateLabel = computed(() => {
 
 <style scoped>
 .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
+.trailing { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: nowrap; margin-left: auto; }
+.actions { display: flex; align-items: center; gap: 6px; }
 .row:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
 .row.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
 .row.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }
