@@ -1,6 +1,6 @@
 <template>
   <div class="group-wrap">
-    <div class="row" :class="statusClass" data-test="row" :data-drop-id="group.id" data-drop-kind="group" @pointerdown="onPointerDown" @click="onRowClick">
+    <div ref="rowEl" class="row" :class="statusClass" data-test="row" :data-drop-id="group.id" data-drop-kind="group" @pointerdown="onPointerDown" @click="onRowClick">
       <span class="expand-btn" :class="{ open: group.expanded }" data-test="arrow">▸</span>
       <span class="title">
         <span class="name">{{ group.name }}</span>
@@ -9,12 +9,12 @@
       <span class="trailing">
         <span class="group-meta">{{ t('status.doneCount', { done: count.done, total: count.total }) }}</span>
         <span v-if="groupTimeLabel" class="time-chip" :class="statusClass">{{ groupTimeLabel }}</span>
-        <span v-if="ui.editMode" class="actions">
-          <button class="mini-btn" @click.stop="$emit('edit', group.id)">{{ t('common.edit') }}</button>
-          <button class="mini-btn" @click.stop="$emit('add-item', group.id)">{{ t('rail.addItem') }}</button>
-          <button class="mini-btn" @click.stop="$emit('add-group', group.id)">{{ t('rail.addGroup') }}</button>
-          <button class="mini-btn danger" @click.stop="$emit('remove', group.id)">{{ t('common.delete') }}</button>
-        </span>
+      </span>
+      <span v-if="ui.editMode" class="actions">
+        <button class="mini-btn" @click.stop="$emit('edit', group.id)">{{ t('common.edit') }}</button>
+        <button class="mini-btn" @click.stop="$emit('add-item', group.id)">{{ t('rail.addItem') }}</button>
+        <button class="mini-btn" @click.stop="$emit('add-group', group.id)">{{ t('rail.addGroup') }}</button>
+        <button class="mini-btn danger" @click.stop="$emit('remove', group.id)">{{ t('common.delete') }}</button>
       </span>
     </div>
     <div v-if="group.expanded" class="children" :data-drop-id="group.id" data-drop-kind="group">
@@ -25,13 +25,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
 import { groupStatus, groupTimestamp } from '../logic/status'
 import { formatTimestampLabel } from '../logic/dates'
 import { beginDrag, dragState } from '../composables/useDrag'
+import { useTrailingWrap } from '../composables/useTrailingWrap'
 import type { Group } from '../types'
 import TaskList from './TaskList.vue'
 
@@ -40,6 +41,9 @@ const emit = defineEmits<{ (e: 'edit', id: string): void; (e: 'remove', id: stri
 const { t } = useI18n()
 const data = useDataStore()
 const ui = useUiStore()
+
+const rowEl = ref<HTMLElement | null>(null)
+useTrailingWrap(rowEl)
 
 const statusClass = computed(() => {
   const s = groupStatus(props.group, ui.now)
@@ -75,8 +79,9 @@ function onRowClick() {
 
 <style scoped>
 .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
+.row.actions-wrapped .actions { margin-left: auto; }
 .trailing { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: nowrap; margin-left: auto; }
-.actions { display: flex; align-items: center; gap: 6px; }
+.actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .row:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
 .row.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
 .row.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }

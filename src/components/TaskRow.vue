@@ -1,5 +1,5 @@
 <template>
-  <div class="row" :class="statusClass" data-test="row" :data-drop-id="item.id" :data-drop-kind="item.done ? undefined : 'item'" @pointerdown="onPointerDown" @click="onRowClick">
+  <div ref="rowEl" class="row" :class="statusClass" data-test="row" :data-drop-id="item.id" :data-drop-kind="item.done ? undefined : 'item'" @pointerdown="onPointerDown" @click="onRowClick">
     <span class="checkbox-wrap">
       <span class="checkmark" :class="{ checked: item.done }" data-test="dot">
         <svg viewBox="0 0 16 16"><path d="M3 8.5 L6.5 12 L13 4.5" /></svg>
@@ -9,23 +9,22 @@
       <span class="name">{{ item.name }}</span>
       <span v-if="showDesc && item.description" class="desc"> · {{ item.description }}</span>
     </span>
-    <span class="trailing">
-      <span v-if="item.date" class="time-chip" :class="statusClass">{{ dateLabel }}</span>
-      <span v-if="ui.editMode" class="actions">
-        <button class="mini-btn" @click.stop="$emit('edit', item.id)">{{ t('common.edit') }}</button>
-        <button class="mini-btn danger" @click.stop="$emit('remove', item.id)">{{ t('common.delete') }}</button>
-      </span>
+    <span v-if="item.date" class="time-chip" :class="statusClass">{{ dateLabel }}</span>
+    <span v-if="ui.editMode" class="actions">
+      <button class="mini-btn" @click.stop="$emit('edit', item.id)">{{ t('common.edit') }}</button>
+      <button class="mini-btn danger" @click.stop="$emit('remove', item.id)">{{ t('common.delete') }}</button>
     </span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
 import { nodeStatus } from '../logic/status'
 import { beginDrag, dragState } from '../composables/useDrag'
+import { useTrailingWrap } from '../composables/useTrailingWrap'
 import type { Item } from '../types'
 
 const props = defineProps<{ item: Item; depth: number; parentId: string | null }>()
@@ -33,6 +32,9 @@ const emit = defineEmits<{ (e: 'edit', id: string): void; (e: 'remove', id: stri
 const { t } = useI18n()
 const data = useDataStore()
 const ui = useUiStore()
+
+const rowEl = ref<HTMLElement | null>(null)
+useTrailingWrap(rowEl)
 
 function onPointerDown(e: PointerEvent) {
   if ((e.target as HTMLElement).closest('button')) return
@@ -60,8 +62,8 @@ const dateLabel = computed(() => {
 
 <style scoped>
 .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
-.trailing { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: nowrap; margin-left: auto; }
-.actions { display: flex; align-items: center; gap: 6px; }
+.row.actions-wrapped .actions { margin-left: auto; }
+.actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .row:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
 .row.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
 .row.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }
@@ -80,7 +82,7 @@ const dateLabel = computed(() => {
 .name { font-size: var(--font-md); font-weight: 500; }
 .desc { color: var(--ink-2); font-size: var(--font-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .spacer { flex: 1; }
-.time-chip { font-size: var(--font-xs); font-variant-numeric: tabular-nums; color: var(--ink-2); background: var(--ink-tint); padding: 2px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+.time-chip { font-size: var(--font-xs); font-variant-numeric: tabular-nums; color: var(--ink-2); background: var(--ink-tint); padding: 2px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; margin-left: auto; }
 .time-chip.overdue { color: var(--red-ink); background: rgba(224, 82, 82, 0.12); }
 .time-chip.pending { color: var(--blue-ink); background: rgba(75, 111, 217, 0.11); }
 .time-chip.done { color: var(--green-ink); background: rgba(53, 160, 111, 0.12); }
