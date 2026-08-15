@@ -13,6 +13,12 @@
 
 Vue 3、Vite、TypeScript、Pinia、vue-i18n、Vitest
 
+## 项目文档
+
+- [DESIGN.md](DESIGN.md) — 项目设计画像：一切设计细节（陈述语气，设计变更须同步于此）
+- [ROADMAP.md](ROADMAP.md) — 开发计划与排期
+- [AGENTS.md](AGENTS.md) — 项目约定（供编码代理阅读）
+
 ## 部署
 
 ```bash
