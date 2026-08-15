@@ -1,6 +1,8 @@
 <template>
   <div class="panel">
-    <label class="row"><span>{{ t('settings.showDescription') }}</span><input type="checkbox" :checked="ui.settings.showDescription" @change="ui.setShowDescription(($event.target as HTMLInputElement).checked)" /></label>
+    <div class="row"><span>{{ t('settings.showDescription') }}</span>
+      <label class="switch"><input type="checkbox" data-test="show-description" :checked="ui.settings.showDescription" @change="ui.setShowDescription(($event.target as HTMLInputElement).checked)" /><span class="slider" /></label>
+    </div>
     <label class="row"><span>{{ t('settings.theme') }}</span>
       <select data-test="theme" @change="ui.setTheme(($event.target as HTMLSelectElement).value as any)">
         <option value="light" :selected="ui.settings.theme === 'light'">{{ t('settings.light') }}</option>
@@ -43,7 +45,6 @@ function onLang(e: Event) {
 .panel { display: flex; flex-direction: column; gap: 16px; min-width: 300px; }
 .row { display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: var(--font-sm); }
 .row span { color: var(--ink); }
-.row input[type='checkbox'] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; }
 .row input[type='range'] { flex: 1; accent-color: var(--blue); cursor: pointer; }
 .row select { padding: 5px 10px; border-radius: var(--radius-sm); border: 1px solid var(--input-line); background: var(--card); color: var(--ink); font-size: var(--font-sm); cursor: pointer; font-family: inherit; }
 .row button { padding: 5px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: var(--font-sm); font-weight: 500; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), border-color 150ms var(--ease), box-shadow 150ms var(--ease), transform 140ms var(--spring); }

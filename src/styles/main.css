@@ -24,6 +24,15 @@ button:focus-visible, input:focus-visible, select:focus-visible {
 
 .no-select { user-select: none; -webkit-user-select: none; }
 
+/* 滑动开关 */
+.switch { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
+.switch input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; }
+.switch .slider { position: absolute; inset: 0; background: var(--ink-tint-strong); border-radius: 999px; cursor: pointer; transition: background 200ms var(--ease); }
+.switch .slider::after { content: ''; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; background: #fff; border-radius: 50%; box-shadow: var(--shadow-card); transition: transform 200ms var(--spring); }
+.switch input:checked + .slider { background: var(--blue); }
+.switch input:checked + .slider::after { transform: translateX(16px); }
+.switch input:focus-visible + .slider { outline: 2px solid var(--blue); outline-offset: 1px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }

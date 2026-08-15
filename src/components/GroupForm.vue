@@ -1,7 +1,7 @@
 <template>
   <div class="form">
-    <label>{{ t('group.name') }} *<input v-model="name" data-test="name" @keydown.enter="trySubmit" /></label>
-    <label>{{ t('group.description') }}<input v-model="description" /></label>
+    <label class="field">{{ t('group.name') }} *<input v-model="name" data-test="name" @keydown.enter="trySubmit" /></label>
+    <label class="field">{{ t('group.description') }}<input v-model="description" /></label>
   </div>
 </template>
 
@@ -22,7 +22,7 @@ function trySubmit() { emit('submit') }
 
 <style scoped>
 .form { display: flex; flex-direction: column; gap: 14px; }
-.form > label { display: flex; flex-direction: column; gap: 6px; font-size: var(--font-sm); color: var(--ink-2); }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: var(--font-sm); color: var(--ink-2); }
 input { padding: 8px 10px; border: 1px solid var(--input-line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-size: var(--font-md); outline: none; font-family: inherit; transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease); }
 input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-ring); }
 </style>

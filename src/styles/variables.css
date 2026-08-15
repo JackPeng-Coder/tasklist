@@ -66,6 +66,7 @@
 }
 
 body[data-theme='dark'] {
+  color-scheme: dark;
   --ink: #e8eaed;
   --ink-2: #9aa3b2;
   --ink-3: #6b7280;

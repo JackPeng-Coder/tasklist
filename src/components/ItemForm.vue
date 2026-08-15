@@ -1,15 +1,21 @@
 <template>
   <div class="form">
-    <label>{{ t('item.name') }} *<input v-model="name" data-test="name" @keydown.enter="trySubmit" /></label>
-    <label>{{ t('item.description') }}<input v-model="description" /></label>
-    <label class="switch-row"><span>{{ t('item.date') }}</span><input type="checkbox" v-model="hasDate" /></label>
-    <div v-if="hasDate" class="nested">
-      <label><input type="date" v-model="date" /></label>
+    <label class="field">{{ t('item.name') }} *
+      <input v-model="name" data-test="name" @keydown.enter="trySubmit" />
+    </label>
+    <label class="field">{{ t('item.description') }}
+      <input v-model="description" />
+    </label>
+    <div class="switch-row">
+      <span>{{ t('item.date') }}</span>
+      <label class="switch"><input type="checkbox" v-model="hasDate" /><span class="slider" /></label>
     </div>
-    <label class="switch-row"><span>{{ t('item.time') }}</span><input type="checkbox" v-model="hasTime" /></label>
-    <div v-if="hasTime" class="nested">
-      <label><input type="time" v-model="time" /></label>
+    <input v-if="hasDate" class="picker" type="date" v-model="date" />
+    <div class="switch-row">
+      <span>{{ t('item.time') }}</span>
+      <label class="switch"><input type="checkbox" v-model="hasTime" /><span class="slider" /></label>
     </div>
+    <input v-if="hasTime" class="picker" type="time" v-model="time" />
   </div>
 </template>
 
@@ -53,11 +59,10 @@ function trySubmit() { emit('submit') }
 
 <style scoped>
 .form { display: flex; flex-direction: column; gap: 14px; }
-.form > label { display: flex; flex-direction: column; gap: 6px; font-size: var(--font-sm); color: var(--ink-2); }
-input[type='text'], input[type='date'], input[type='time'] { padding: 8px 10px; border: 1px solid var(--input-line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-size: var(--font-md); outline: none; font-family: inherit; transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease); }
-input[type='text']:focus, input[type='date']:focus, input[type='time']:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-ring); }
-.switch-row { flex-direction: row; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); background: var(--paper); }
-.switch-row span { flex: 1; }
-.switch-row input[type='checkbox'] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; }
-.nested { padding-left: 24px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: var(--font-sm); color: var(--ink-2); }
+.field input, .picker { padding: 8px 10px; border: 1px solid var(--input-line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-size: var(--font-md); outline: none; font-family: inherit; transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease); }
+.field input:focus, .picker:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-ring); }
+.picker { width: 100%; }
+.switch-row { display: flex; align-items: center; gap: 10px; font-size: var(--font-sm); color: var(--ink); }
+.switch-row > span { flex: 1; }
 </style>
