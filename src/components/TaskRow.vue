@@ -1,20 +1,22 @@
 <template>
-  <div class="row" :class="statusClass" data-test="row" :data-drop-id="item.id" :data-drop-kind="item.done ? undefined : 'item'" @pointerdown="onPointerDown" @click="onRowClick">
-    <span class="checkbox-wrap">
-      <span class="checkmark" :class="{ checked: item.done }" data-test="dot">
-        <svg viewBox="0 0 16 16"><path d="M3 8.5 L6.5 12 L13 4.5" /></svg>
+  <div class="row" :class="statusClass" data-test="row" :data-drop-id="item.id" :data-drop-kind="item.done ? undefined : 'item'">
+    <div class="row-main" @pointerdown="onPointerDown" @click="onRowClick">
+      <span class="checkbox-wrap">
+        <span class="checkmark" :class="{ checked: item.done }" data-test="dot">
+          <svg viewBox="0 0 16 16"><path d="M3 8.5 L6.5 12 L13 4.5" /></svg>
+        </span>
       </span>
-    </span>
-    <span class="title">
-      <span class="name">{{ item.name }}</span>
-      <span v-if="showDesc && item.description" class="desc"> · {{ item.description }}</span>
-    </span>
-    <span class="spacer" />
-    <span v-if="item.date" class="time-chip" :class="statusClass">{{ dateLabel }}</span>
-    <template v-if="ui.editMode">
+      <span class="title">
+        <span class="name">{{ item.name }}</span>
+        <span v-if="showDesc && item.description" class="desc"> · {{ item.description }}</span>
+      </span>
+      <span class="spacer" />
+      <span v-if="item.date" class="time-chip" :class="statusClass">{{ dateLabel }}</span>
+    </div>
+    <div v-if="ui.editMode" class="row-actions">
       <button class="mini-btn" @click.stop="$emit('edit', item.id)">{{ t('common.edit') }}</button>
       <button class="mini-btn danger" @click.stop="$emit('remove', item.id)">{{ t('common.delete') }}</button>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -58,8 +60,10 @@ const dateLabel = computed(() => {
 </script>
 
 <style scoped>
-.row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
+.row { display: flex; flex-direction: column; gap: 6px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
+.row-main { display: flex; align-items: center; gap: 10px; }
 .row:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
+.row-actions { display: flex; justify-content: flex-end; gap: 6px; padding-top: 6px; border-top: 1px solid var(--line); margin-top: 2px; }
 .row.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
 .row.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }
 .row.done { background: var(--green-soft); border-color: var(--green-line); box-shadow: inset 3px 0 0 var(--green), var(--shadow-card); }
