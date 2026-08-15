@@ -9,6 +9,7 @@ describe('TaskList', () => {
   let pinia: Pinia
   beforeEach(() => {
     localStorage.clear()
+    i18n.global.locale.value = 'zh'
     pinia = createPinia()
     setActivePinia(pinia)
   })
@@ -60,5 +61,40 @@ describe('TaskList', () => {
     const groupChip = w.find('.row[data-drop-kind="group"] .time-chip')
     expect(groupChip.exists()).toBe(true)
     expect(groupChip.text()).toBe('8月20日 09:00')
+  })
+
+  it('组合的时间 chip 位于已完成计数（group-meta）右侧', () => {
+    const ui = useUiStore()
+    ui.now = new Date(2026, 7, 14, 12, 0).getTime()
+    const s = useDataStore()
+    s.init()
+    const group = {
+      id: 'g', name: '组合', description: '', expanded: true,
+      items: [
+        { id: 'x', name: '子事项', description: '', date: '2026-08-20', time: '09:00', done: false, createdAt: 1 },
+      ],
+    }
+    s.lists = [{ id: 'l', name: 'L', description: '', items: [group] }]
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
+    const rowHtml = w.find('.row[data-drop-kind="group"]').html()
+    expect(rowHtml.indexOf('time-chip')).toBeGreaterThan(rowHtml.indexOf('group-meta'))
+  })
+
+  it('组合按递归时间显示日期分隔（有时间的组合不归入无时间）', () => {
+    const ui = useUiStore()
+    ui.now = new Date(2026, 7, 14, 12, 0).getTime()
+    const s = useDataStore()
+    s.init()
+    const group = {
+      id: 'g', name: '组合', description: '', expanded: true,
+      items: [
+        { id: 'x', name: '子事项', description: '', date: '2026-08-15', time: '09:00', done: false, createdAt: 1 },
+      ],
+    }
+    s.lists = [{ id: 'l', name: 'L', description: '', items: [group] }]
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
+    // 组合的时间是明天 → 分隔符应为「明天」而非「无时间」
+    expect(w.text()).toContain('明天')
+    expect(w.text()).not.toContain('无时间')
   })
 })

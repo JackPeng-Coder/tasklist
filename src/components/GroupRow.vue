@@ -7,8 +7,8 @@
         <span v-if="showDesc && group.description" class="desc"> · {{ group.description }}</span>
       </span>
       <span class="spacer" />
-      <span v-if="groupTimeLabel" class="time-chip" :class="statusClass">{{ groupTimeLabel }}</span>
       <span class="group-meta">{{ t('status.doneCount', { done: count.done, total: count.total }) }}</span>
+      <span v-if="groupTimeLabel" class="time-chip" :class="statusClass">{{ groupTimeLabel }}</span>
       <template v-if="ui.editMode">
         <button class="mini-btn" @click.stop="$emit('edit', group.id)">{{ t('common.edit') }}</button>
         <button class="mini-btn" @click.stop="$emit('add-item', group.id)">{{ t('rail.addItem') }}</button>

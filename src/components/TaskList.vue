@@ -30,7 +30,8 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUiStore } from '../stores/ui'
 import { groupedNodes } from '../logic/sort'
-import { formatDateLabel } from '../logic/dates'
+import { formatDateLabel, toISO } from '../logic/dates'
+import { isGroup, groupTimestamp } from '../logic/status'
 import type { TreeNode } from '../types'
 import NodeRow from './NodeRow.vue'
 
@@ -45,12 +46,21 @@ function withSeparators(nodes: TreeNode[], now: number): Array<{ node: TreeNode;
   const out: Array<{ node: TreeNode; sep?: string }> = []
   let prev: string | null = null
   for (const n of nodes) {
-    const date = (n as { date?: string }).date
-    const label = date ? formatDateLabel(date, new Date(now)) : 'nodate'
+    const label = separatorLabel(n, now)
     if (label !== prev) { out.push({ node: n, sep: label }); prev = label }
     else out.push({ node: n })
   }
   return out
+}
+
+// 组合无 date 字段，其时间由递归计算得出，与行内时间 chip 同源
+function separatorLabel(node: TreeNode, now: number): string {
+  if (isGroup(node)) {
+    const ts = groupTimestamp(node, now)
+    return Number.isFinite(ts) ? formatDateLabel(toISO(new Date(ts)), new Date(now)) : 'nodate'
+  }
+  const date = (node as { date?: string }).date
+  return date ? formatDateLabel(date, new Date(now)) : 'nodate'
 }
 
 const dateKeys = new Set(['yesterday', 'today', 'tomorrow', 'dayAfterTomorrow', 'nodate'])
