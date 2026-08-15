@@ -7,7 +7,7 @@
         <span v-if="showDesc && group.description" class="desc"> · {{ group.description }}</span>
       </span>
       <span class="spacer" />
-      <span v-if="group.date" class="time-chip" :class="statusClass">{{ dateLabel }}</span>
+      <span v-if="groupTimeLabel" class="time-chip" :class="statusClass">{{ groupTimeLabel }}</span>
       <span class="group-meta">{{ t('status.doneCount', { done: count.done, total: count.total }) }}</span>
       <template v-if="ui.editMode">
         <button class="mini-btn" @click.stop="$emit('edit', group.id)">{{ t('common.edit') }}</button>
@@ -28,7 +28,8 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
-import { groupStatus } from '../logic/status'
+import { groupStatus, groupTimestamp } from '../logic/status'
+import { formatTimestampLabel } from '../logic/dates'
 import { beginDrag, dragState } from '../composables/useDrag'
 import type { Group } from '../types'
 import TaskList from './TaskList.vue'
@@ -44,13 +45,7 @@ const statusClass = computed(() => {
   return s === 'overdue' ? 'overdue' : s === 'done' ? 'done' : 'pending'
 })
 const showDesc = computed(() => ui.settings.showDescription && !!props.group.description)
-const dateLabel = computed(() => {
-  if (!props.group.date) return ''
-  const [y, m, d] = props.group.date.split('-').map(Number)
-  const base = `${m}月${d}日`
-  const full = y === new Date(ui.now).getFullYear() ? base : `${y}年${base}`
-  return full + (props.group.time ? ` ${props.group.time}` : '')
-})
+const groupTimeLabel = computed(() => formatTimestampLabel(groupTimestamp(props.group, ui.now), new Date(ui.now)))
 
 function countRecursive(nodes: any[]): { done: number; total: number } {
   let done = 0, total = 0
@@ -80,12 +75,12 @@ function onRowClick() {
 <style scoped>
 .row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
 .row:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
-.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
-.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }
-.done { background: var(--green-soft); border-color: var(--green-line); box-shadow: inset 3px 0 0 var(--green), var(--shadow-card); }
-.overdue:hover { box-shadow: inset 3px 0 0 var(--red), var(--shadow-lift); }
-.pending:hover { box-shadow: inset 3px 0 0 var(--blue), var(--shadow-lift); }
-.done:hover { box-shadow: inset 3px 0 0 var(--green), var(--shadow-lift); }
+.row.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
+.row.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }
+.row.done { background: var(--green-soft); border-color: var(--green-line); box-shadow: inset 3px 0 0 var(--green), var(--shadow-card); }
+.row.overdue:hover { box-shadow: inset 3px 0 0 var(--red), var(--shadow-lift); }
+.row.pending:hover { box-shadow: inset 3px 0 0 var(--blue), var(--shadow-lift); }
+.row.done:hover { box-shadow: inset 3px 0 0 var(--green), var(--shadow-lift); }
 .title { flex: 1 1 auto; min-width: 120px; }
 .expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: transform 150ms var(--ease); color: var(--ink-3); font-size: var(--font-sm); cursor: pointer; border-radius: var(--radius-sm); }
 .expand-btn:hover { color: var(--ink); background: var(--ink-tint); }

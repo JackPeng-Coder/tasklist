@@ -60,12 +60,12 @@ const dateLabel = computed(() => {
 <style scoped>
 .row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
 .row:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
-.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
-.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }
-.done { background: var(--green-soft); border-color: var(--green-line); box-shadow: inset 3px 0 0 var(--green), var(--shadow-card); }
-.overdue:hover { box-shadow: inset 3px 0 0 var(--red), var(--shadow-lift); }
-.pending:hover { box-shadow: inset 3px 0 0 var(--blue), var(--shadow-lift); }
-.done:hover { box-shadow: inset 3px 0 0 var(--green), var(--shadow-lift); }
+.row.overdue { background: var(--red-soft); border-color: var(--red-line); box-shadow: inset 3px 0 0 var(--red), var(--shadow-card); }
+.row.pending { background: var(--blue-soft); border-color: var(--blue-line); box-shadow: inset 3px 0 0 var(--blue), var(--shadow-card); }
+.row.done { background: var(--green-soft); border-color: var(--green-line); box-shadow: inset 3px 0 0 var(--green), var(--shadow-card); }
+.row.overdue:hover { box-shadow: inset 3px 0 0 var(--red), var(--shadow-lift); }
+.row.pending:hover { box-shadow: inset 3px 0 0 var(--blue), var(--shadow-lift); }
+.row.done:hover { box-shadow: inset 3px 0 0 var(--green), var(--shadow-lift); }
 .title { flex: 1 1 auto; min-width: 120px; }
 .checkbox-wrap { position: relative; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; flex-shrink: 0; }
 .checkmark { width: 18px; height: 18px; border: 2px solid var(--check-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--card); transition: border-color 180ms var(--ease), background-color 180ms var(--ease), transform 180ms var(--spring); }

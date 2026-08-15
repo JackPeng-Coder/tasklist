@@ -33,3 +33,14 @@ export function resolveDateField(value: string, now: Date): string {
   if (value === 'yesterday') return toISO(new Date(startOfDay(now).getTime() - 86400000))
   return value
 }
+
+export function formatTimestampLabel(ts: number, now: Date): string {
+  if (!Number.isFinite(ts)) return ''
+  const d = new Date(ts)
+  const base = `${d.getMonth() + 1}月${d.getDate()}日`
+  const full = d.getFullYear() === now.getFullYear() ? base : `${d.getFullYear()}年${base}`
+  if (d.getHours() === 0 && d.getMinutes() === 0) return full
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mm = String(d.getMinutes()).padStart(2, '0')
+  return `${full} ${hh}:${mm}`
+}
