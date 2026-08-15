@@ -97,6 +97,6 @@ function onRowClick() {
 .mini-btn:hover { background: var(--ink-tint); color: var(--ink); }
 .mini-btn.danger:hover { color: var(--red); background: var(--red-soft); }
 .group-wrap { position: relative; }
-.children { position: relative; margin-left: 18px; padding: 6px 0 2px 14px; }
-.indent-line { position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--color-border); }
+.children { position: relative; margin-left: 18px; padding: 8px 0 8px 14px; }
+.indent-line { position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; background: var(--color-border); border-radius: 1px; }
 </style>
