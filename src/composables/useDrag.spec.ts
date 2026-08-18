@@ -47,7 +47,7 @@ function defineCurrentTarget(proto: any) {
 }
 
 describe('useDrag lifecycle', () => {
-  const fakeEl = { getBoundingClientRect: () => ({ width: 100, height: 30 }) } as unknown as HTMLElement
+  const fakeEl = document.createElement('div') as unknown as HTMLElement
 
   beforeEach(() => {
     resetDrag()
@@ -62,9 +62,13 @@ describe('useDrag lifecycle', () => {
     beginDrag('n1', 'l1', null, down)
     window.dispatchEvent(new PointerEvent('pointermove', { clientX: 20, clientY: 10 }))
     expect(dragState.value?.active).toBe(true)
+    // 拖拽预览 = 被拖对象的克隆，激活后出现在 body 中
+    expect(document.querySelector('.drag-ghost')).not.toBeNull()
     window.dispatchEvent(new PointerEvent('pointerup', { clientX: 20, clientY: 10 }))
     expect(calls).toEqual([null])
     expect(dragState.value).toBeNull()
+    // 释放后预览克隆被移除，不残留
+    expect(document.querySelector('.drag-ghost')).toBeNull()
     // 拖拽后的 click 应被吞掉，不触发 toggle 等后续行为
     window.dispatchEvent(new Event('click'))
   })
@@ -77,8 +81,23 @@ describe('useDrag lifecycle', () => {
     beginDrag('n1', 'l1', null, down)
     window.dispatchEvent(new PointerEvent('pointermove', { clientX: 4, clientY: 4 }))
     expect(dragState.value?.active).toBe(false)
+    // 未达阈值时预览保持隐藏（display:none），释放后移除
+    expect(document.querySelector('.drag-ghost')).not.toBeNull()
+    expect((document.querySelector('.drag-ghost') as HTMLElement).style.display).toBe('none')
     window.dispatchEvent(new PointerEvent('pointerup', { clientX: 4, clientY: 4 }))
     expect(calls).toEqual([])
     expect(dragState.value).toBeNull()
+    expect(document.querySelector('.drag-ghost')).toBeNull()
+  })
+
+  it('resetDrag 移除预览克隆并清空状态', () => {
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', null, down)
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 20, clientY: 10 }))
+    expect(document.querySelector('.drag-ghost')).not.toBeNull()
+    resetDrag()
+    expect(dragState.value).toBeNull()
+    expect(document.querySelector('.drag-ghost')).toBeNull()
   })
 })

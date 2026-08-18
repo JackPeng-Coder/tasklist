@@ -21,7 +21,6 @@
         />
       </template>
       <div v-else class="empty-tip">{{ t('empty.noList') }}</div>
-      <DragPreview :state="dragState" />
     </div>
   </main>
 </template>
@@ -33,7 +32,6 @@ import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
 import { dragState, resetDrag, setDropHandler } from '../composables/useDrag'
 import TaskList from './TaskList.vue'
-import DragPreview from './DragPreview.vue'
 
 const { t } = useI18n()
 const data = useDataStore()

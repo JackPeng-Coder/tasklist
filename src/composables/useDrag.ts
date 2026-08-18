@@ -10,6 +10,8 @@ export interface DragState {
   height: number
   active: boolean
   ctrl: boolean
+  /** 拖拽预览：被拖对象本身的克隆（真实外观），跟随光标，释放后移除 */
+  ghost: HTMLElement | null
 }
 
 export interface DropTarget { id: string; kind: 'item' | 'group' }
@@ -49,7 +51,24 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
   startY = e.clientY
   const el = e.currentTarget as HTMLElement
   const rect = el.getBoundingClientRect()
-  dragState.value = { nodeId, listId, parentId, x: e.clientX, y: e.clientY, width: rect.width, height: rect.height, active: false, ctrl: e.ctrlKey }
+  // 拖拽预览 = 被拖对象本身的克隆：完整保留状态色、勾选/箭头、时间 chip、编辑按钮等外观
+  // （克隆携带组件的 scoped 属性，样式与真实行一致）；未达阈值前隐藏
+  const ghost = el.cloneNode(true) as HTMLElement
+  Object.assign(ghost.style, {
+    position: 'fixed',
+    left: '0px',
+    top: '0px',
+    width: rect.width + 'px',
+    margin: '0',
+    zIndex: '200',
+    pointerEvents: 'none',
+    opacity: '0.7',
+    display: 'none',
+    transform: 'translate(-50%, -50%)',
+  })
+  ghost.classList.add('drag-ghost')
+  document.body.appendChild(ghost)
+  dragState.value = { nodeId, listId, parentId, x: e.clientX, y: e.clientY, width: rect.width, height: rect.height, active: false, ctrl: e.ctrlKey, ghost }
   document.body.classList.add('no-select')
   onMove = (ev: PointerEvent) => {
     const d = dragState.value
@@ -58,9 +77,18 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
     if (!d.active) {
       if (!shouldStartDrag(startX, startY, ev.clientX, ev.clientY)) return
       d.active = true
+      if (d.ghost) {
+        d.ghost.style.display = 'block'
+        d.ghost.style.left = ev.clientX + 'px'
+        d.ghost.style.top = ev.clientY + 'px'
+      }
     }
     d.x = ev.clientX
     d.y = ev.clientY
+    if (d.ghost) {
+      d.ghost.style.left = ev.clientX + 'px'
+      d.ghost.style.top = ev.clientY + 'px'
+    }
   }
   onUp = (ev: PointerEvent) => {
     cleanup()
@@ -95,6 +123,10 @@ function cleanup(): void {
   onMove = null
   onUp = null
   onCancel = null
+  // 移除拖拽预览克隆
+  const ghost = dragState.value?.ghost
+  if (ghost && ghost.parentNode) ghost.parentNode.removeChild(ghost)
+  if (dragState.value) dragState.value.ghost = null
 }
 
 function suppressClick(e: MouseEvent): void {
@@ -102,7 +134,7 @@ function suppressClick(e: MouseEvent): void {
 }
 
 export function resetDrag(): void {
+  cleanup()
   dragState.value = null
   document.body.classList.remove('no-select')
-  cleanup()
 }
