@@ -76,4 +76,67 @@ describe('data store', () => {
     s.deleteList(l1.id)
     expect(s.currentListId).toBe('l2')
   })
+  it('undo/redo：addNode 后撤销消失、重做恢复', () => {
+    const s = useDataStore()
+    s.init()
+    const before = s.lists[0].items.length
+    expect(s.canUndo).toBe(false)
+    s.addNode(null, { id: 'n1', name: 'x', description: '', done: false, createdAt: 1 })
+    expect(s.lists[0].items.length).toBe(before + 1)
+    expect(s.canUndo).toBe(true)
+    s.undo()
+    expect(s.lists[0].items.length).toBe(before)
+    expect(s.canUndo).toBe(false)
+    expect(s.canRedo).toBe(true)
+    s.redo()
+    expect(s.lists[0].items.length).toBe(before + 1)
+    expect(s.canRedo).toBe(false)
+  })
+
+  it('undo/redo 覆盖 updateNode', () => {
+    const s = useDataStore()
+    s.init()
+    s.addNode(null, { id: 'n1', name: 'x', description: '', done: false, createdAt: 1 })
+    s.updateNode('n1', { name: 'renamed' } as any)
+    expect((s.lists[0].items.find((n) => n.id === 'n1') as any).name).toBe('renamed')
+    s.undo()
+    expect((s.lists[0].items.find((n) => n.id === 'n1') as any).name).toBe('x')
+    s.undo()
+    expect(s.lists[0].items.some((n) => n.id === 'n1')).toBe(false)
+    s.redo()
+    expect(s.lists[0].items.some((n) => n.id === 'n1')).toBe(true)
+  })
+
+  it('新变更后清空 redo 栈', () => {
+    const s = useDataStore()
+    s.init()
+    s.addNode(null, { id: 'n1', name: 'x', description: '', done: false, createdAt: 1 })
+    s.undo()
+    expect(s.canRedo).toBe(true)
+    s.addNode(null, { id: 'n2', name: 'y', description: '', done: false, createdAt: 2 })
+    expect(s.canRedo).toBe(false)
+    s.redo()
+    expect(s.lists[0].items.some((n) => n.id === 'n1')).toBe(false)
+  })
+
+  it('无实际变化的操作不产生历史（move 到自身为 no-op）', () => {
+    const s = useDataStore()
+    s.init()
+    s.addNode(null, { id: 'n1', name: 'x', description: '', done: false, createdAt: 1 })
+    const beforeLen = s.lists[0].items.length
+    s.moveNode({ fromListId: s.currentListId, nodeId: 'n1', toKind: 'item', toId: 'n1' })
+    expect(s.lists[0].items.length).toBe(beforeLen)
+    // move（无变化）不应产生额外历史：撤销一次即回到 addNode 之前
+    s.undo()
+    expect(s.lists[0].items.some((n) => n.id === 'n1')).toBe(false)
+    expect(s.canUndo).toBe(false)
+  })
+
+  it('init 不产生历史记录', () => {
+    const s = useDataStore()
+    s.init()
+    s.init()
+    expect(s.canUndo).toBe(false)
+    expect(s.canRedo).toBe(false)
+  })
 })

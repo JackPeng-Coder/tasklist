@@ -2,6 +2,8 @@
   <nav class="right-rail">
     <button class="icon-btn" :title="t('rail.addItem')" @click="$emit('add-item')">{{ t('rail.addItem') }}</button>
     <button class="icon-btn" :title="t('rail.addGroup')" @click="$emit('add-group')">{{ t('rail.addGroup') }}</button>
+    <button class="icon-btn" data-test="undo" :disabled="!data.canUndo" :title="t('rail.undo') + ' (Ctrl+Z)'" @click="data.undo()">{{ t('rail.undo') }}</button>
+    <button class="icon-btn" data-test="redo" :disabled="!data.canRedo" :title="t('rail.redo') + ' (Ctrl+Y)'" @click="data.redo()">{{ t('rail.redo') }}</button>
     <button class="icon-btn" :class="{ active: ui.editMode }" @click="ui.toggleEditMode()">{{ t('rail.edit') }}</button>
     <button class="icon-btn" @click="$emit('open-settings')">{{ t('rail.settings') }}</button>
   </nav>
@@ -10,8 +12,10 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useUiStore } from '../stores/ui'
+import { useDataStore } from '../stores/data'
 const { t } = useI18n()
 const ui = useUiStore()
+const data = useDataStore()
 defineEmits<{ (e: 'add-item'): void; (e: 'add-group'): void; (e: 'open-settings'): void }>()
 </script>
 
@@ -21,5 +25,7 @@ defineEmits<{ (e: 'add-item'): void; (e: 'add-group'): void; (e: 'open-settings'
 .icon-btn { background: none; border: 1px solid transparent; border-radius: var(--radius-sm); padding: 10px 4px; cursor: pointer; color: var(--ink-2); font-size: var(--font-xs); line-height: 1.35; white-space: nowrap; transition: color 150ms var(--ease), background-color 150ms var(--ease), border-color 150ms var(--ease), transform 140ms var(--spring), scale 200ms var(--spring); }
 .icon-btn:active { scale: 0.9; transition: scale 60ms var(--ease); }
 .icon-btn:hover { background: var(--ink-tint); border-color: var(--line); color: var(--ink); }
+.icon-btn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+.icon-btn:disabled:hover { background: none; border-color: transparent; color: var(--ink-2); }
 .icon-btn.active { border-color: var(--blue-line); color: var(--blue-ink); background: var(--blue-soft); }
 </style>

@@ -59,6 +59,7 @@ import ItemForm from './components/ItemForm.vue'
 import GroupForm from './components/GroupForm.vue'
 import ListForm from './components/ListForm.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
+import { isRedoShortcut, isUndoShortcut } from './composables/useUndoRedo'
 import i18n from './i18n'
 import pkg from '../package.json'
 
@@ -147,11 +148,17 @@ onMounted(() => {
   ui.applyToDOM()
   interval = window.setInterval(ui.touchNow, 60_000)
   document.addEventListener('visibilitychange', onVisibility)
+  document.addEventListener('keydown', onUndoRedoKey)
 })
 onBeforeUnmount(() => {
   clearInterval(interval)
   document.removeEventListener('visibilitychange', onVisibility)
+  document.removeEventListener('keydown', onUndoRedoKey)
 })
+function onUndoRedoKey(e: KeyboardEvent) {
+  if (isUndoShortcut(e)) { e.preventDefault(); data.undo() }
+  else if (isRedoShortcut(e)) { e.preventDefault(); data.redo() }
+}
 function onVisibility() {
   if (document.visibilityState === 'visible') ui.touchNow()
 }

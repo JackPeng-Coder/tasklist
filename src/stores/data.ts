@@ -51,6 +51,8 @@ export const useDataStore = defineStore('data', () => {
   const lists = ref<List[]>([])
   const currentListId = ref('')
   const recovered = ref(false)
+  const undoStack = ref<List[][]>([])
+  const redoStack = ref<List[][]>([])
 
   function ensureWelcomeList() {
     if (lists.value.length > 0) return
@@ -63,6 +65,8 @@ export const useDataStore = defineStore('data', () => {
     recovered.value = rec
     lists.value = data.lists
     ensureWelcomeList()
+    undoStack.value = []
+    redoStack.value = []
     if (!lists.value.some((l) => l.id === currentListId.value)) {
       currentListId.value = lists.value[0].id
     }
@@ -79,40 +83,68 @@ export const useDataStore = defineStore('data', () => {
     return l ? countNodes(l.items) : 0
   }
 
-  function addList(name: string, description: string) {
-    const l = createList(name)
-    l.description = description
-    lists.value.push(l)
-    currentListId.value = l.id
+  /** 深拷贝当前 lists（快照） */
+  function snapshot(): List[] {
+    return JSON.parse(JSON.stringify(lists.value))
   }
 
-  function renameList(id: string, name: string) {
-    lists.value = lists.value.map((l) => (l.id === id ? { ...l, name } : l))
-  }
-
-  function deleteList(id: string) {
-    lists.value = lists.value.filter((l) => l.id !== id)
-    if (currentListId.value === id) currentListId.value = lists.value[0]?.id ?? ''
-  }
-
-  function addNode(parentId: string | null, node: TreeNode) {
-    const list = currentList.value
-    if (!list) return
-    if (parentId === null) {
-      lists.value = lists.value.map((l) => (l.id === list.id ? { ...l, items: [...l.items, node] } : l))
-    } else {
-      lists.value = lists.value.map((l) =>
-        l.id === list.id ? { ...l, items: mapNodes(l.items, parentId, (n) => ({ ...(n as any), items: [...(n as any).items, node] })) } : l,
-      )
+  /**
+   * 统一历史记录的写入口：先记录变更前的快照，再执行 fn，最后清空 redo 栈。
+   * 无实际变化的操作（move 到自身等 no-op）不入历史。
+   */
+  function commit(fn: () => void): void {
+    const before = JSON.stringify(lists.value)
+    fn()
+    if (JSON.stringify(lists.value) !== before) {
+      undoStack.value.push(JSON.parse(before))
+      redoStack.value = []
     }
   }
 
+  function addList(name: string, description: string) {
+    commit(() => {
+      const l = createList(name)
+      l.description = description
+      lists.value = [...lists.value, l]
+      currentListId.value = l.id
+    })
+  }
+
+  function renameList(id: string, name: string) {
+    commit(() => {
+      lists.value = lists.value.map((l) => (l.id === id ? { ...l, name } : l))
+    })
+  }
+
+  function deleteList(id: string) {
+    commit(() => {
+      lists.value = lists.value.filter((l) => l.id !== id)
+      if (currentListId.value === id) currentListId.value = lists.value[0]?.id ?? ''
+    })
+  }
+
+  function addNode(parentId: string | null, node: TreeNode) {
+    commit(() => {
+      const list = currentList.value
+      if (!list) return
+      if (parentId === null) {
+        lists.value = lists.value.map((l) => (l.id === list.id ? { ...l, items: [...l.items, node] } : l))
+      } else {
+        lists.value = lists.value.map((l) =>
+          l.id === list.id ? { ...l, items: mapNodes(l.items, parentId, (n) => ({ ...(n as any), items: [...(n as any).items, node] })) } : l,
+        )
+      }
+    })
+  }
+
   function updateNode(nodeId: string, patch: Partial<Item>) {
-    const list = currentList.value
-    if (!list) return
-    lists.value = lists.value.map((l) =>
-      l.id === list.id ? { ...l, items: mapNodes(l.items, nodeId, (n) => ({ ...n, ...patch })) } : l,
-    )
+    commit(() => {
+      const list = currentList.value
+      if (!list) return
+      lists.value = lists.value.map((l) =>
+        l.id === list.id ? { ...l, items: mapNodes(l.items, nodeId, (n) => ({ ...n, ...patch })) } : l,
+      )
+    })
   }
 
   function toggleDone(nodeId: string) {
@@ -124,17 +156,38 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function deleteNode(nodeId: string) {
-    const list = currentList.value
-    if (!list) return
-    lists.value = lists.value.map((l) => (l.id === list.id ? { ...l, items: filterNodes(l.items, nodeId) } : l))
+    commit(() => {
+      const list = currentList.value
+      if (!list) return
+      lists.value = lists.value.map((l) => (l.id === list.id ? { ...l, items: filterNodes(l.items, nodeId) } : l))
+    })
   }
 
   function moveNode(spec: MoveSpec) {
-    const { lists: out } = applyMove(lists.value, spec, Date.now())
-    if (out !== lists.value) {
-      lists.value = out
-    }
+    commit(() => {
+      const { lists: out } = applyMove(lists.value, spec, Date.now())
+      if (out !== lists.value) {
+        lists.value = out
+      }
+    })
   }
+
+  function undo() {
+    const prev = undoStack.value.pop()
+    if (!prev) return
+    redoStack.value.push(snapshot())
+    lists.value = prev
+  }
+
+  function redo() {
+    const next = redoStack.value.pop()
+    if (!next) return
+    undoStack.value.push(snapshot())
+    lists.value = next
+  }
+
+  const canUndo = computed(() => undoStack.value.length > 0)
+  const canRedo = computed(() => redoStack.value.length > 0)
 
   function refreshNow() {
     /* 状态由 computed 依赖 now()，见 Task 15 */
@@ -146,5 +199,5 @@ export const useDataStore = defineStore('data', () => {
     })
   }
 
-  return { lists, currentListId, recovered, currentList, nodeCount, init, selectList, addList, renameList, deleteList, addNode, updateNode, toggleDone, toggleGroupExpanded, deleteNode, moveNode, refreshNow }
+  return { lists, currentListId, recovered, currentList, nodeCount, init, selectList, addList, renameList, deleteList, addNode, updateNode, toggleDone, toggleGroupExpanded, deleteNode, moveNode, undo, redo, canUndo, canRedo, refreshNow }
 })
