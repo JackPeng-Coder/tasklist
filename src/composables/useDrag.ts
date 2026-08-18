@@ -14,7 +14,7 @@ export interface DragState {
   ghost: HTMLElement | null
 }
 
-export interface DropTarget { id: string; kind: 'item' | 'group' }
+export interface DropTarget { id: string; kind: 'item' | 'group' | 'list' }
 
 export const DRAG_THRESHOLD = 8
 
@@ -38,6 +38,29 @@ export function resolveDropElem(el: Element | null): HTMLElement | null {
 export function resolveDropTarget(el: Element | null): DropTarget | null {
   const elem = resolveDropElem(el)
   return elem ? { id: elem.dataset.dropId!, kind: elem.dataset.dropKind as 'item' | 'group' } : null
+}
+
+/**
+ * 解析「有效落点」，结合 Ctrl 与元素所在层级：
+ * - 组合（或其展开子项区、组内子事项）→ 该组合
+ * - 事项 + Ctrl → 该事项（合并为目标）
+ * - 根层事项（无 Ctrl）→ 列表根层（仅供落点判定，不作为高亮目标）
+ */
+export function resolveEffectiveTarget(el: Element | null, ctrl: boolean, fallbackListId: string): DropTarget | null {
+  const elem = resolveDropElem(el)
+  if (!elem) return null
+  const kind = elem.dataset.dropKind
+  if (kind === 'group') return { kind: 'group', id: elem.dataset.dropId! }
+  if (kind === 'item') {
+    if (ctrl) return { kind: 'item', id: elem.dataset.dropId! }
+    const wrap = (elem as HTMLElement).closest('.group-wrap')
+    if (wrap) {
+      const groupRow = wrap.querySelector<HTMLElement>('.row[data-drop-kind="group"]')
+      if (groupRow?.dataset.dropId) return { kind: 'group', id: groupRow.dataset.dropId }
+    }
+    return { kind: 'list', id: fallbackListId }
+  }
+  return null
 }
 
 export const dragState = ref<DragState | null>(null)
@@ -66,19 +89,19 @@ function markTarget(el: HTMLElement | null): void {
   if (el) el.classList.add('drag-target')
 }
 
-// 更新悬停目标高亮：组合（含其展开子项区命中的部分）归一为组合行高亮；
-// 事项仅在按住 Ctrl（合并场景）时才作为目标高亮
+// 更新悬停目标高亮：按有效落点判定——
+// 组合（含展开子项区、组内子事项命中）归一为组合行高亮；事项仅在按住 Ctrl（合并）时高亮；根层事项（无 Ctrl）不高亮
 function updateTarget(d: DragState, cx: number, cy: number): void {
   const dropEl = resolveDropElem(document.elementFromPoint(cx, cy))
   if (!dropEl) { markTarget(null); return }
-  const kind = dropEl.dataset && dropEl.dataset.dropKind
-  const isGroup = kind === 'group'
-  if (!isGroup && !(kind === 'item' && d.ctrl)) { markTarget(null); return }
-  let row: HTMLElement | null = dropEl
-  if (isGroup && !dropEl.classList.contains('row')) {
-    row = dropEl.closest('.group-wrap')?.querySelector<HTMLElement>('.row') ?? null
-  }
-  markTarget(row)
+  const eff = resolveEffectiveTarget(dropEl, d.ctrl, d.listId)
+  if (!eff || eff.kind === 'list') { markTarget(null); return }
+  if (eff.kind === 'item') { markTarget(dropEl); return }
+  // 组合：直接命中组行则用之；子项区/组内子事项命中则按 id 归一为组合行
+  const groupRow = dropEl.classList.contains('row') && dropEl.dataset.dropKind === 'group'
+    ? dropEl
+    : document.querySelector<HTMLElement>(`.row[data-drop-kind="group"][data-drop-id="${eff.id}"]`)
+  markTarget(groupRow)
 }
 
 export function beginDrag(nodeId: string, listId: string, parentId: string | null, e: PointerEvent): void {
@@ -142,7 +165,7 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
       document.body.classList.remove('no-select')
       return
     }
-    const target = resolveDropTarget(document.elementFromPoint(ev.clientX, ev.clientY))
+    const target = resolveEffectiveTarget(document.elementFromPoint(ev.clientX, ev.clientY), d.ctrl, d.listId)
     onDrop?.(target)
     // 立即清理预览与选中禁止；在捕获阶段拦截紧随其后的 click，避免触发行切换
     dragState.value = null

@@ -47,12 +47,12 @@ setDropHandler((target) => {
   const d = dragState.value
   if (!d || !d.active) return
   if (target && target.id === d.nodeId) return // 无效目标
-  const toKind = target?.kind === 'group' ? 'group' : target?.kind === 'item' && d.ctrl ? 'item' : 'list'
+  const kind = target ? target.kind : 'list'
   data.moveNode({
     fromListId: d.listId,
     nodeId: d.nodeId,
-    toKind,
-    toId: toKind === 'list' ? d.listId : target!.id,
+    toKind: kind,
+    toId: kind === 'list' ? d.listId : target!.id,
   })
 })
 onBeforeUnmount(() => resetDrag())

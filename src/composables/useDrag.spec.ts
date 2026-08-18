@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { beginDrag, dragState, resetDrag, resolveDropTarget, setDropHandler, shouldStartDrag } from './useDrag'
+import { beginDrag, dragState, resetDrag, resolveDropTarget, resolveEffectiveTarget, setDropHandler, shouldStartDrag, type DropTarget } from './useDrag'
 
 class PointerEventStub extends MouseEvent {
   constructor(type: string, init?: PointerEventInit) {
@@ -55,7 +55,7 @@ describe('useDrag lifecycle', () => {
   })
 
   it('超过阈值后 pointerup 触发 drop 并清理状态', () => {
-    const calls: Array<{ id: string; kind: 'item' | 'group' } | null> = []
+    const calls: Array<DropTarget | null> = []
     setDropHandler((t) => { calls.push(t) })
     const down = makeDownEvent(fakeEl)
     ;(down as any).currentTarget = fakeEl
@@ -74,7 +74,7 @@ describe('useDrag lifecycle', () => {
   })
 
   it('未达阈值时 pointerup 不触发 drop 并直接清理', () => {
-    const calls: Array<{ id: string; kind: 'item' | 'group' } | null> = []
+    const calls: Array<DropTarget | null> = []
     setDropHandler((t) => { calls.push(t) })
     const down = makeDownEvent(fakeEl)
     ;(down as any).currentTarget = fakeEl
@@ -175,5 +175,53 @@ describe('useDrag lifecycle', () => {
     expect(dragState.value?.ctrl).toBe(false)
     expect(el.classList.contains('drag-target')).toBe(false)
     window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10 }))
+  })
+
+  it('resolveEffectiveTarget：组内子事项无 Ctrl → 其父组合；Ctrl → 事项本身', () => {
+    const wrap = document.createElement('div')
+    wrap.className = 'group-wrap'
+    const groupRow = document.createElement('div')
+    groupRow.className = 'row'
+    groupRow.setAttribute('data-drop-id', 'g')
+    groupRow.setAttribute('data-drop-kind', 'group')
+    const child = document.createElement('div')
+    child.className = 'row'
+    child.setAttribute('data-drop-id', 'c')
+    child.setAttribute('data-drop-kind', 'item')
+    wrap.append(groupRow, child)
+    expect(resolveEffectiveTarget(child, false, 'l1')).toEqual({ kind: 'group', id: 'g' })
+    expect(resolveEffectiveTarget(child, true, 'l1')).toEqual({ kind: 'item', id: 'c' })
+    // 根层事项（不在 group-wrap 内）无 Ctrl → 列表根层
+    const rootItem = document.createElement('div')
+    rootItem.setAttribute('data-drop-id', 'r')
+    rootItem.setAttribute('data-drop-kind', 'item')
+    expect(resolveEffectiveTarget(rootItem, false, 'l1')).toEqual({ kind: 'list', id: 'l1' })
+    // 组合元素（组行）→ 组合
+    expect(resolveEffectiveTarget(groupRow, false, 'l1')).toEqual({ kind: 'group', id: 'g' })
+  })
+
+  it('悬停组内子事项（无 Ctrl）→ 父组合行高亮', () => {
+    const wrap = document.createElement('div')
+    wrap.className = 'group-wrap'
+    const row = document.createElement('div')
+    row.className = 'row'
+    row.setAttribute('data-drop-id', 'g')
+    row.setAttribute('data-drop-kind', 'group')
+    const child = document.createElement('div')
+    child.className = 'row'
+    child.setAttribute('data-drop-id', 'c')
+    child.setAttribute('data-drop-kind', 'item')
+    wrap.append(row, child)
+    document.body.appendChild(wrap)
+    ;(document as any).elementFromPoint = () => child // 悬停组内子事项
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', null, down)
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10 }))
+    expect(row.classList.contains('drag-target')).toBe(true)
+    expect(child.classList.contains('drag-target')).toBe(false)
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10 }))
+    expect(row.classList.contains('drag-target')).toBe(false)
+    wrap.remove()
   })
 })
