@@ -7,8 +7,17 @@ body {
   background: var(--paper);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  /* 全局禁用文本选中：列表/按钮等交互元素不可误选，表单控件单独放行 */
+  user-select: none;
+  -webkit-user-select: none;
 }
 #app { height: 100vh; display: flex; }
+
+/* 表单控件保持可选中文本 */
+input, textarea, select, [contenteditable] {
+  user-select: text;
+  -webkit-user-select: text;
+}
 
 button { font-family: inherit; cursor: pointer; }
 /* 点击弹簧缩放：基础按压深度（各组件按目标大小微调）；scale 属性与 transform 独立叠加，
