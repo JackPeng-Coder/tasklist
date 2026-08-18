@@ -100,4 +100,59 @@ describe('useDrag lifecycle', () => {
     expect(dragState.value).toBeNull()
     expect(document.querySelector('.drag-ghost')).toBeNull()
   })
+
+  it('激活后 body.dragging，悬停 Ctrl 事项目标加高亮，释放清理', () => {
+    const el = document.createElement('div')
+    el.setAttribute('data-drop-id', 'b')
+    el.setAttribute('data-drop-kind', 'item')
+    ;(document as any).elementFromPoint = () => el
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', null, down)
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10, ctrlKey: true }))
+    expect(dragState.value?.active).toBe(true)
+    expect(document.body.classList.contains('dragging')).toBe(true)
+    expect(el.classList.contains('drag-target')).toBe(true)
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10, ctrlKey: true }))
+    expect(document.body.classList.contains('dragging')).toBe(false)
+    expect(el.classList.contains('drag-target')).toBe(false)
+  })
+
+  it('未按住 Ctrl 时事项目标不加高亮', () => {
+    const el = document.createElement('div')
+    el.setAttribute('data-drop-id', 'b')
+    el.setAttribute('data-drop-kind', 'item')
+    ;(document as any).elementFromPoint = () => el
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', null, down)
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10 }))
+    expect(document.body.classList.contains('dragging')).toBe(true)
+    expect(el.classList.contains('drag-target')).toBe(false)
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10 }))
+  })
+
+  it('悬停组合目标（子项区）高亮归一为组合行', () => {
+    const wrap = document.createElement('div')
+    wrap.className = 'group-wrap'
+    const row = document.createElement('div')
+    row.className = 'row'
+    row.setAttribute('data-drop-id', 'g')
+    row.setAttribute('data-drop-kind', 'group')
+    const children = document.createElement('div')
+    children.className = 'children'
+    children.setAttribute('data-drop-id', 'g')
+    children.setAttribute('data-drop-kind', 'group')
+    wrap.append(row, children)
+    document.body.appendChild(wrap)
+    ;(document as any).elementFromPoint = () => children // 悬停子项区
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', null, down)
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10 }))
+    expect(row.classList.contains('drag-target')).toBe(true)
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10 }))
+    expect(row.classList.contains('drag-target')).toBe(false)
+    wrap.remove()
+  })
 })

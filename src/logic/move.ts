@@ -67,6 +67,7 @@ export function applyMove(lists: List[], spec: MoveSpec, now: number): MoveResul
     const target = findRef(listOfTarget.items, spec.toId)
     if (!target) return { lists }
     const group = createGroup(`${target.name} · ${removed.name}`)
+    group.expanded = true // 合并两个事项时默认展开，直接可见两个子项
     group.items = [removed, target]
     return {
       lists: tmp.map((l) =>

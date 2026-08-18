@@ -22,12 +22,22 @@ export function shouldStartDrag(sx: number, sy: number, cx: number, cy: number):
   return Math.hypot(cx - sx, cy - sy) > DRAG_THRESHOLD
 }
 
-export function resolveDropTarget(el: Element | null): DropTarget | null {
+/** 从指针所在元素向上找到最近的拖放目标元素（携带 data-drop-id + 有效 drop-kind） */
+export function resolveDropElem(el: Element | null): HTMLElement | null {
   if (!el) return null
-  const id = (el as HTMLElement).dataset.dropId
-  const kind = (el as HTMLElement).dataset.dropKind
-  if (id && (kind === 'item' || kind === 'group')) return { id, kind }
-  return resolveDropTarget(el.parentElement)
+  let cur: HTMLElement | null = el as HTMLElement
+  while (cur) {
+    const id = cur.dataset && cur.dataset.dropId
+    const kind = cur.dataset && cur.dataset.dropKind
+    if (id && (kind === 'item' || kind === 'group')) return cur
+    cur = cur.parentElement
+  }
+  return null
+}
+
+export function resolveDropTarget(el: Element | null): DropTarget | null {
+  const elem = resolveDropElem(el)
+  return elem ? { id: elem.dataset.dropId!, kind: elem.dataset.dropKind as 'item' | 'group' } : null
 }
 
 export const dragState = ref<DragState | null>(null)
@@ -46,6 +56,30 @@ export function setDropHandler(fn: (target: DropTarget | null) => void): void {
   onDrop = fn
 }
 
+let targetEl: HTMLElement | null = null
+
+function markTarget(el: HTMLElement | null): void {
+  if (targetEl === el) return
+  if (targetEl) targetEl.classList.remove('drag-target')
+  targetEl = el
+  if (el) el.classList.add('drag-target')
+}
+
+// 更新悬停目标高亮：组合（含其展开子项区命中的部分）归一为组合行高亮；
+// 事项仅在按住 Ctrl（合并场景）时才作为目标高亮
+function updateTarget(d: DragState, cx: number, cy: number): void {
+  const dropEl = resolveDropElem(document.elementFromPoint(cx, cy))
+  if (!dropEl) { markTarget(null); return }
+  const kind = dropEl.dataset && dropEl.dataset.dropKind
+  const isGroup = kind === 'group'
+  if (!isGroup && !(kind === 'item' && d.ctrl)) { markTarget(null); return }
+  let row: HTMLElement | null = dropEl
+  if (isGroup && !dropEl.classList.contains('row')) {
+    row = dropEl.closest('.group-wrap')?.querySelector<HTMLElement>('.row') ?? null
+  }
+  markTarget(row)
+}
+
 export function beginDrag(nodeId: string, listId: string, parentId: string | null, e: PointerEvent): void {
   if (e.button !== 0 || tracking) return
   e.preventDefault()
@@ -56,7 +90,7 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
   const rect = el.getBoundingClientRect()
   grabDX = e.clientX - rect.left
   grabDY = e.clientY - rect.top
-  // 拖拽预览 = 被拖对象本身的克隆：完整保留状态色、勾选/箭头、时间 chip、编辑按钮等外观
+  // 拖拽预览 = 被拖对象本身的克隆（不透明）：完整保留状态色、勾选/箭头、时间 chip、编辑按钮等外观
   // （克隆携带组件的 scoped 属性，样式与真实行一致）；未达阈值前隐藏
   const ghost = el.cloneNode(true) as HTMLElement
   Object.assign(ghost.style, {
@@ -67,7 +101,7 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
     margin: '0',
     zIndex: '200',
     pointerEvents: 'none',
-    opacity: '0.7',
+    opacity: '1',
     display: 'none',
   })
   ghost.classList.add('drag-ghost')
@@ -86,6 +120,9 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
         d.ghost.style.left = ev.clientX - grabDX + 'px'
         d.ghost.style.top = ev.clientY - grabDY + 'px'
       }
+      // 拖拽激活：其他元素半透明、拖动克隆不透明（body.dragging）
+      document.body.classList.add('dragging')
+      updateTarget(d, ev.clientX, ev.clientY)
     }
     d.x = ev.clientX
     d.y = ev.clientY
@@ -93,6 +130,8 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
       d.ghost.style.left = ev.clientX - grabDX + 'px'
       d.ghost.style.top = ev.clientY - grabDY + 'px'
     }
+    // 悬停目标高亮（组合或 Ctrl 事项）恢复不透明
+    updateTarget(d, ev.clientX, ev.clientY)
   }
   onUp = (ev: PointerEvent) => {
     cleanup()
@@ -131,6 +170,9 @@ function cleanup(): void {
   const ghost = dragState.value?.ghost
   if (ghost && ghost.parentNode) ghost.parentNode.removeChild(ghost)
   if (dragState.value) dragState.value.ghost = null
+  // 清理拖拽高亮：目标类 + 其他元素半透明
+  markTarget(null)
+  document.body.classList.remove('dragging')
 }
 
 function suppressClick(e: MouseEvent): void {

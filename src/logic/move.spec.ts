@@ -50,6 +50,8 @@ describe('applyMove', () => {
     expect(g).not.toBeNull()
     expect(g.name).toBe('b · a')
     expect(g.items.map((n: any) => n.id).sort()).toEqual([idA, idB].sort())
+    // 融合两个事项时新建组合默认展开
+    expect(g.expanded).toBe(true)
   })
 
   it('移动到自身无效', () => {
