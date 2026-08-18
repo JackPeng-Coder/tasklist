@@ -39,7 +39,8 @@ button:focus-visible, input:focus-visible, select:focus-visible {
    悬停有效目标时目标行恢复不透明，组合高亮归一到组合行并连同全部子行恢复 */
 body.dragging .main-area :is(.row, .group-head, .date-sep, .list-title, .list-desc, .empty-tip) { opacity: 0.55; }
 body.dragging .main-area .drag-target { opacity: 1; }
-body.dragging .main-area .group-wrap:has(.row.drag-target) .row { opacity: 1; }
+/* 仅令目标组合这一层及其子层不透明：:has(> .row.drag-target) 限定直接子行，避免命中祖先层 */
+body.dragging .main-area .group-wrap:has(> .row.drag-target) .row { opacity: 1; }
 /* 手上的拖动克隆始终不透明（双重保险） */
 body.dragging .drag-ghost { opacity: 1 !important; }
 
