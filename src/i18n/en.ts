@@ -1,7 +1,7 @@
 export default {
   common: { cancel: 'Cancel', confirm: 'Confirm', save: 'Save', edit: 'Edit', delete: 'Delete', new: 'New', add: 'Add' },
   list: { name: 'List name', description: 'List description', new: 'New list', edit: 'Edit list' },
-  item: { name: 'Item name', description: 'Item description', new: 'New item', edit: 'Edit item', date: 'Date', time: 'Time', dateFormat: 'yyyy/mm/dd' },
+  item: { name: 'Item name', description: 'Item description', new: 'New item', edit: 'Edit item', date: 'Date', time: 'Time' },
   group: { name: 'Group name', description: 'Group description', new: 'New group', edit: 'Edit group' },
   status: { overdue: 'Overdue', pending: 'To do', done: 'Done', doneCount: '{done}/{total} done' },
   sidebar: { lists: 'Lists', edit: 'Edit', newList: '+ New list', renameList: 'Rename list', collapse: 'Collapse sidebar', expand: 'Expand sidebar' },

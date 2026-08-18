@@ -10,10 +10,7 @@
       <span>{{ t('item.date') }}</span>
       <label class="switch"><input type="checkbox" v-model="hasDate" /><span class="slider" /></label>
     </div>
-    <div v-if="hasDate" class="picker-wrap">
-      <input class="picker" type="date" v-model="date" data-test="date-picker" required />
-      <span v-if="!date" class="picker-ph" data-test="date-ph">{{ t('item.dateFormat') }}</span>
-    </div>
+    <input v-if="hasDate" class="picker" type="date" v-model="date" />
     <div class="switch-row">
       <span>{{ t('item.time') }}</span>
       <label class="switch"><input type="checkbox" v-model="hasTime" /><span class="slider" /></label>
@@ -66,10 +63,6 @@ function trySubmit() { emit('submit') }
 .field input, .picker { padding: 8px 10px; border: 1px solid var(--input-line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-size: var(--font-md); outline: none; font-family: inherit; transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease); }
 .field input:focus, .picker:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-ring); }
 .picker { width: 100%; }
-.picker-wrap { position: relative; }
-.picker:invalid::-webkit-datetime-edit { color: transparent; }
-.picker:invalid::-webkit-datetime-edit-fields-wrapper { display: none; }
-.picker-ph { position: absolute; inset: 0; display: flex; align-items: center; padding: 8px 10px; color: var(--ink-3); font-size: var(--font-md); pointer-events: none; }
 .switch-row { display: flex; align-items: center; gap: 10px; font-size: var(--font-sm); color: var(--ink); }
 .switch-row > span { flex: 1; }
 </style>
