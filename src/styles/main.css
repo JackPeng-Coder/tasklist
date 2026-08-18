@@ -37,7 +37,7 @@ button:focus-visible, input:focus-visible, select:focus-visible {
 
 /* 拖拽高亮：仅主区内容元素半透明（0.7）、拖动克隆与左右侧栏不透明；
    悬停有效目标时目标行恢复不透明，组合高亮归一到组合行并连同全部子行恢复 */
-body.dragging .main-area :is(.row, .group-head, .date-sep, .list-title, .list-desc, .empty-tip) { opacity: 0.7; }
+body.dragging .main-area :is(.row, .group-head, .date-sep, .list-title, .list-desc, .empty-tip) { opacity: 0.55; }
 body.dragging .main-area .drag-target { opacity: 1; }
 body.dragging .main-area .group-wrap:has(.row.drag-target) .row { opacity: 1; }
 /* 手上的拖动克隆始终不透明（双重保险） */
