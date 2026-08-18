@@ -224,4 +224,70 @@ describe('useDrag lifecycle', () => {
     expect(row.classList.contains('drag-target')).toBe(false)
     wrap.remove()
   })
+
+  it('拖回自己所在父组合不高亮（无变化）', () => {
+    const row = document.createElement('div')
+    row.className = 'row'
+    row.setAttribute('data-drop-id', 'g')
+    row.setAttribute('data-drop-kind', 'group')
+    document.body.appendChild(row)
+    ;(document as any).elementFromPoint = () => row // 悬停自己的父组合
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', 'g', down) // n1 的父组合正是 g
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10 }))
+    expect(row.classList.contains('drag-target')).toBe(false)
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10 }))
+    row.remove()
+  })
+
+  it('拖到祖父组合仍高亮（父的父，非原父，属真实移动）', () => {
+    const wrap = document.createElement('div')
+    wrap.className = 'group-wrap'
+    const row = document.createElement('div')
+    row.className = 'row'
+    row.setAttribute('data-drop-id', 'h')
+    row.setAttribute('data-drop-kind', 'group')
+    wrap.append(row)
+    document.body.appendChild(wrap)
+    ;(document as any).elementFromPoint = () => row // 悬停祖父组合 h（n1 在 g 内，g 在 h 内）
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', 'g', down)
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10 }))
+    expect(row.classList.contains('drag-target')).toBe(true)
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10 }))
+    wrap.remove()
+  })
+
+  it('拖到自身（组）不高亮（无变化）', () => {
+    const row = document.createElement('div')
+    row.className = 'row'
+    row.setAttribute('data-drop-id', 'g')
+    row.setAttribute('data-drop-kind', 'group')
+    document.body.appendChild(row)
+    ;(document as any).elementFromPoint = () => row // 悬停被拖组合自身
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('g', 'l1', null, down)
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10 }))
+    expect(row.classList.contains('drag-target')).toBe(false)
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10 }))
+    row.remove()
+  })
+
+  it('Ctrl 拖到自身（事项）不高亮（无变化）', () => {
+    const el = document.createElement('div')
+    el.setAttribute('data-drop-id', 'n1')
+    el.setAttribute('data-drop-kind', 'item')
+    document.body.appendChild(el)
+    ;(document as any).elementFromPoint = () => el
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', 'g', down)
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10, ctrlKey: true }))
+    expect(el.classList.contains('drag-target')).toBe(false)
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10, ctrlKey: true }))
+    el.remove()
+  })
 })

@@ -49,12 +49,29 @@ function isDescendant(list: List, ancestorId: string, nodeId: string): boolean {
   return walk(list.items)
 }
 
+/** 找到 nodeId 的直接父组合 id（根层返回 null） */
+function directParentId(nodes: TreeNode[], nodeId: string): string | null {
+  const walk = (ns: TreeNode[]): string | null => {
+    for (const n of ns) {
+      if (Array.isArray((n as any).items)) {
+        if ((n as any).items.some((c: TreeNode) => c.id === nodeId)) return n.id
+        const deeper = walk((n as any).items)
+        if (deeper !== null) return deeper
+      }
+    }
+    return null
+  }
+  return walk(nodes)
+}
+
 export function applyMove(lists: List[], spec: MoveSpec, now: number): MoveResult {
   const srcList = lists.find((l) => l.id === spec.fromListId)
   if (!srcList) return { lists }
   if (spec.toKind === 'item' && spec.nodeId === spec.toId) return { lists }
   if (spec.toKind === 'group' && spec.nodeId === spec.toId) return { lists }
   if (isDescendant(srcList, spec.nodeId, spec.toId)) return { lists }
+  // 拖回自己直接所在的父组合：无任何变化（不重排），视为无效落点
+  if (spec.toKind === 'group' && directParentId(srcList.items, spec.nodeId) === spec.toId) return { lists }
 
   const { removed, rest } = removeNode(srcList.items, spec.nodeId)
   if (!removed) return { lists }

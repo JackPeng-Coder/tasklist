@@ -91,11 +91,14 @@ function markTarget(el: HTMLElement | null): void {
 
 // 更新悬停目标高亮：按有效落点判定——
 // 组合（含展开子项区、组内子事项命中）归一为组合行高亮；事项仅在按住 Ctrl（合并）时高亮；根层事项（无 Ctrl）不高亮
+// 无实际变化的落点不高亮：回到自己直接所在的父组合、或拖到自身（组合拖回自身 / Ctrl 合并到自身）
 function updateTarget(d: DragState, cx: number, cy: number): void {
   const dropEl = resolveDropElem(document.elementFromPoint(cx, cy))
   if (!dropEl) { markTarget(null); return }
   const eff = resolveEffectiveTarget(dropEl, d.ctrl, d.listId)
   if (!eff || eff.kind === 'list') { markTarget(null); return }
+  if (eff.id === d.nodeId) { markTarget(null); return }
+  if (eff.kind === 'group' && eff.id === d.parentId && d.parentId !== null) { markTarget(null); return }
   if (eff.kind === 'item') { markTarget(dropEl); return }
   // 组合：直接命中组行则用之；子项区/组内子事项命中则按 id 归一为组合行
   const groupRow = dropEl.classList.contains('row') && dropEl.dataset.dropKind === 'group'
