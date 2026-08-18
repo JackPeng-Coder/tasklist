@@ -34,6 +34,9 @@ export const dragState = ref<DragState | null>(null)
 let onDrop: ((target: DropTarget | null) => void) | null = null
 let startX = 0
 let startY = 0
+/** 拖动起始时鼠标在行内的抓取点偏移（预览保持该相对位置，不居中于光标） */
+let grabDX = 0
+let grabDY = 0
 let tracking = false
 let onMove: ((e: PointerEvent) => void) | null = null
 let onUp: ((e: PointerEvent) => void) | null = null
@@ -51,20 +54,21 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
   startY = e.clientY
   const el = e.currentTarget as HTMLElement
   const rect = el.getBoundingClientRect()
+  grabDX = e.clientX - rect.left
+  grabDY = e.clientY - rect.top
   // 拖拽预览 = 被拖对象本身的克隆：完整保留状态色、勾选/箭头、时间 chip、编辑按钮等外观
   // （克隆携带组件的 scoped 属性，样式与真实行一致）；未达阈值前隐藏
   const ghost = el.cloneNode(true) as HTMLElement
   Object.assign(ghost.style, {
     position: 'fixed',
-    left: '0px',
-    top: '0px',
+    left: e.clientX - grabDX + 'px',
+    top: e.clientY - grabDY + 'px',
     width: rect.width + 'px',
     margin: '0',
     zIndex: '200',
     pointerEvents: 'none',
     opacity: '0.7',
     display: 'none',
-    transform: 'translate(-50%, -50%)',
   })
   ghost.classList.add('drag-ghost')
   document.body.appendChild(ghost)
@@ -79,15 +83,15 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
       d.active = true
       if (d.ghost) {
         d.ghost.style.display = 'block'
-        d.ghost.style.left = ev.clientX + 'px'
-        d.ghost.style.top = ev.clientY + 'px'
+        d.ghost.style.left = ev.clientX - grabDX + 'px'
+        d.ghost.style.top = ev.clientY - grabDY + 'px'
       }
     }
     d.x = ev.clientX
     d.y = ev.clientY
     if (d.ghost) {
-      d.ghost.style.left = ev.clientX + 'px'
-      d.ghost.style.top = ev.clientY + 'px'
+      d.ghost.style.left = ev.clientX - grabDX + 'px'
+      d.ghost.style.top = ev.clientY - grabDY + 'px'
     }
   }
   onUp = (ev: PointerEvent) => {
