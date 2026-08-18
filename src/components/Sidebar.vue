@@ -64,7 +64,7 @@ function startRename(l: List) {
 .pending { color: var(--blue-ink); }
 .done { color: var(--green-ink); }
 .list-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.mini-btn { background: none; border: none; border-radius: var(--radius-sm); padding: 2px 5px; color: var(--ink-3); cursor: pointer; transition: color 150ms var(--ease), background-color 150ms var(--ease), scale 200ms var(--spring); }
+.mini-btn { background: none; border: none; border-radius: var(--radius-sm); padding: 2px 5px; color: var(--ink-3); cursor: pointer; font-size: var(--font-xs); line-height: 1.2; transition: color 150ms var(--ease), background-color 150ms var(--ease), scale 200ms var(--spring); }
 .mini-btn:active { scale: 0.9; transition: scale 60ms var(--ease); }
 .mini-btn:hover { background: var(--ink-tint); color: var(--ink); }
 .mini-btn.danger:hover { color: var(--red); background: var(--red-soft); }
