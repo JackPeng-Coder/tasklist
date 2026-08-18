@@ -19,7 +19,7 @@ Tasklist：Vue 3 + Vite + TypeScript + Pinia + vue-i18n 的纯前端任务清单
 - `npm run dev` — 开发服务器
 - `npm test` — 全量单测（vitest run）；`npm run test:watch` — 监听模式
 - `npm run build` — **类型检查 + 构建**（`vue-tsc -b && vite build`）。**无独立 lint/format/typecheck 脚本**，验证 = `npm test` + `npm run build`
-- 无 CI 配置
+- CI：GitHub Actions（`.github/workflows/deploy.yml`）——push 到 `main` 时执行 `npm test` + `npm run build`，并把 `dist/` 发布到 `gh-pages` 分支（GitHub Pages 来源即该分支）。发版需升 `public/sw.js` 顶部 `CACHE` 缓存名一档（v1→v2→…），让 SW 升级并替换旧缓存
 
 ## 测试约定
 

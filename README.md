@@ -55,12 +55,18 @@ npm run test:watch   # 监听模式
 
 ## 部署（GitHub Pages）
 
+**自动部署**：推送到 `main` 分支即触发 GitHub Actions（`.github/workflows/deploy.yml`），自动 `npm test` + `npm run build` 并把 `dist/` 发布到 `gh-pages` 分支，GitHub Pages 随即生效（来源即 `gh-pages` 分支）。日常只需正常 commit + push。
+
+手动发布（可选，适合不开 CI 的场景）：
+
 ```bash
 npm run build
 npx gh-pages -d dist
 ```
 
-如无 gh-pages 依赖，先 `npm i -D gh-pages`；也可以手动把 `dist/` 推送到 gh-pages 分支。
+如无 gh-pages 依赖，先 `npm i -D gh-pages`。
+
+> 发版清单：记得把 `public/sw.js` 顶部的缓存名 `CACHE` 升一档（`tasklist-v1` → `tasklist-v2` → …），确保已安装 PWA 的旧缓存被替换、尽快吃到新版本。
 
 ## 项目文档
 

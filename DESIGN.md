@@ -19,8 +19,9 @@
 - i18n：vue-i18n，内置中/英双语，架构支持扩展更多语言
 - 无 UI 组件库，手写组件 + CSS 变量主题（浅色/深色）
 - 数据持久化：localStorage 单键 `tasklist:v1`，写入时防抖
-- PWA：manifest + 简单 Service Worker（离线缓存），支持「安装到桌面」独立窗口
-- 部署：GitHub Pages，`npm run build` 产物直接推送，零运维
+- PWA：manifest + Service Worker（离线缓存：**页面导航网络优先、离线回退缓存**，静态资源缓存优先；缓存名 `CACHE` 随发版升档以替换旧缓存，让已安装的旧窗口尽快吃到新版本），支持「安装到桌面」独立窗口
+- 部署：GitHub Pages（来源为 `gh-pages` 分支根目录）；推送到 `main` 时由 GitHub Actions（`.github/workflows/deploy.yml`）自动执行 `npm test` + `npm run build` 并把 `dist/` 发布到 `gh-pages`，无需人工操作
+- 部署产物含 `.nojekyll`，GitHub Pages 不做 Jekyll 加工，静态文件原样托管（无 `_` 前缀文件被吞、无用 front matter 解析的边界问题）
 - 开发服务器：Vite，`server.host` 显式绑定 `127.0.0.1`（避免默认 `localhost` 在部分 Windows 环境下解析 IPv6 `::1` 时触发 `EACCES`）
 - 间距令牌（`--gap-*`，定义于 `variables.css`）：`--gap-xs: 4px`（组合与展开子项、缩进竖线留白）、`--gap-sm: 8px`（同层级）、`--gap-sep: 6px`（日期标签上下留白）、`--gap-md: 12px`、`--gap-lg: 16px`（分节标题上留白）。有效间隔梯度为 **异色 > 异日 > 同层 > 组合-子项**
 - 按压反馈：所有可点击元素（行、勾选、组合箭头、各类按钮、侧栏列表项、开关滑块等）按下时以独立的 `scale` 属性收缩——`scale` 与 `transform` 叠加互不覆盖，行的 hover 上浮、完成勾的放大、组合箭头的旋转在按压时均保留。按压缩放系数：行 0.98、对话框/设置/列表项 0.94、图标钮/行内编辑钮/开关滑块 0.9、勾选 0.85、组合箭头 0.8；按下 60ms `--ease` 快速收缩、松开以 `--spring` 回弹。状态切换（如勾选完成）会重建行元素，该行的松开回弹随之结束，按压反馈不受影响；拖拽按住期间保持按压缩放
