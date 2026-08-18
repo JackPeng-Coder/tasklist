@@ -78,7 +78,7 @@ function onRowClick() {
 </script>
 
 <style scoped>
-.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
 .row.actions-wrapped .actions { margin-left: auto; }
 .trailing { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: nowrap; margin-left: auto; }
 .actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
@@ -104,7 +104,7 @@ function onRowClick() {
 .mini-btn { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; color: var(--ink-3); cursor: pointer; font-size: var(--font-xs); transition: color 150ms var(--ease), background-color 150ms var(--ease); }
 .mini-btn:hover { background: var(--ink-tint); color: var(--ink); }
 .mini-btn.danger:hover { color: var(--red); background: var(--red-soft); }
-.group-wrap { position: relative; }
-.children { position: relative; margin-left: 18px; padding: 8px 0 8px 14px; }
-.indent-line { position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; background: var(--color-border); border-radius: 1px; }
+.group-wrap { position: relative; margin-bottom: var(--gap-sm); }
+.children { position: relative; margin-left: 18px; padding: var(--gap-xs) 0 0 14px; }
+.indent-line { position: absolute; left: 0; top: var(--gap-xs); bottom: var(--gap-xs); width: 2px; background: var(--color-border); border-radius: 1px; }
 </style>

@@ -74,11 +74,13 @@ const doneRows = computed(() => withSeparators(grouped.value.done, ui.now))
 </script>
 
 <style scoped>
-.group-head { display: flex; align-items: center; gap: 10px; font-size: var(--font-sm); margin: 12px 0 6px; }
+.group-head { display: flex; align-items: center; gap: 10px; font-size: var(--font-sm); margin: var(--gap-lg) 0 var(--gap-sm); }
+/* 组合展开后的第一个嵌套分节标题紧贴组合行（组内耦合最紧，只留 children 的 xs 上边距），后续分节标题保持正常间距 */
+.children .group-head:first-of-type { margin-top: 0; }
 .group-head .label { font-weight: 600; white-space: nowrap; }
 .group-head.overdue { color: var(--color-overdue); }
 .group-head.pending { color: var(--color-pending); }
 .group-head.done { color: var(--color-done); }
 .group-head .rule { flex: 1; height: 1px; background: color-mix(in srgb, currentColor 22%, transparent); }
-.date-sep { color: var(--color-muted); font-size: var(--font-xs); margin: 6px 0 4px; }
+.date-sep { color: var(--color-muted); font-size: var(--font-xs); margin: var(--gap-sep) 0; }
 </style>

@@ -61,7 +61,7 @@ const dateLabel = computed(() => {
 </script>
 
 <style scoped>
-.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: var(--gap-sm); cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
 .row.actions-wrapped .actions { margin-left: auto; }
 .actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .row:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
