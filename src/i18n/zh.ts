@@ -1,7 +1,7 @@
 export default {
   common: { cancel: '取消', confirm: '确认', save: '保存', edit: '编辑', delete: '删除', new: '新建', add: '添加' },
   list: { name: '列表名称', description: '列表描述', new: '新建列表', edit: '编辑列表' },
-  item: { name: '事项名称', description: '事项描述', new: '新建事项', edit: '编辑事项', date: '日期', time: '时间' },
+  item: { name: '事项名称', description: '事项描述', new: '新建事项', edit: '编辑事项', date: '日期', time: '时间', dateFormat: 'yyyy/mm/dd' },
   group: { name: '组合名称', description: '组合描述', new: '新建组合', edit: '编辑组合' },
   status: { overdue: '已逾期', pending: '未完成', done: '已完成', doneCount: '{done}/{total} 已完成' },
   sidebar: { lists: '列表', edit: '编辑', newList: '+ 新建列表', renameList: '重命名列表', collapse: '收起侧栏', expand: '展开侧栏' },
