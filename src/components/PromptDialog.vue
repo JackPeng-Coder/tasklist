@@ -38,7 +38,7 @@ function onCancel() {
 
 <style scoped>
 .field { display: flex; flex-direction: column; gap: 6px; }
-input { padding: 8px 10px; border: 1px solid var(--input-line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-size: var(--font-md); outline: none; font-family: inherit; transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease); }
+input { padding: 8px 10px; border: 1px solid var(--input-line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-size: var(--font-md); outline: none; font-family: inherit; transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease), background-color 150ms var(--ease), color 150ms var(--ease); }
 input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-ring); }
 .btn { padding: 5px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: var(--font-sm); font-weight: 500; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), border-color 150ms var(--ease), background-color 150ms var(--ease), transform 140ms var(--spring), scale 200ms var(--spring); }
 .btn:not(:disabled):active { scale: 0.94; transition: scale 60ms var(--ease); }

@@ -48,7 +48,7 @@ function onSelectList(id: string) {
 </script>
 
 <style scoped>
-.sidebar { width: var(--sidebar-width); flex-shrink: 0; background: var(--card); border-right: 1px solid var(--line); display: flex; flex-direction: column; transition: width 220ms var(--ease), transform 220ms var(--ease); overflow: hidden; }
+.sidebar { width: var(--sidebar-width); flex-shrink: 0; background: var(--card); border-right: 1px solid var(--line); display: flex; flex-direction: column; transition: width 220ms var(--ease), transform 220ms var(--ease), background-color 220ms var(--ease), border-color 220ms var(--ease); overflow: hidden; }
 .sidebar.collapsed { width: 0; border-right: none; }
 /* 窄屏覆盖态遮罩：点击收起侧栏（仅 ≤720px 显示；弹窗 z-index 100 高于其上方） */
 .sidebar-mask { position: fixed; inset: 0; z-index: 40; background: var(--mask); display: none; }

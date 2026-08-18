@@ -61,7 +61,7 @@ const dateLabel = computed(() => {
 </script>
 
 <style scoped>
-.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: var(--gap-sm); cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease), scale 200ms var(--spring); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); margin-bottom: var(--gap-sm); cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease), color 200ms var(--ease), opacity 160ms var(--ease), scale 200ms var(--spring); }
 .row:active { scale: 0.98; transition: scale 60ms var(--ease); }
 .row.actions-wrapped .actions { margin-left: auto; }
 .actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
@@ -78,7 +78,7 @@ const dateLabel = computed(() => {
 .checkmark:active { scale: 0.85; transition: scale 60ms var(--ease); }
 .checkbox-wrap:hover .checkmark { border-color: var(--green); }
 .checkmark svg { width: 10px; height: 10px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-.checkmark svg path { stroke-dasharray: 14; stroke-dashoffset: 14; transition: stroke-dashoffset 250ms var(--ease) 60ms; }
+.checkmark svg path { stroke-dasharray: 14; stroke-dashoffset: 14; transition: stroke-dashoffset 250ms var(--ease) 60ms, stroke 200ms var(--ease); }
 .checkmark.checked { border-color: var(--green); background: var(--green); transform: scale(1.06); }
 .checkmark.checked svg path { stroke-dashoffset: 0; }
 .name { font-size: var(--font-md); font-weight: 500; }

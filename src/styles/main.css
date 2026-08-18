@@ -1,5 +1,13 @@
 @import './variables.css';
 * { box-sizing: border-box; }
+/* 全站极短的颜色/透明度过渡：任何元素的颜色、背景、边框、透明度、描边变化都以极短时长平滑过渡。
+   该规则作为兜底：无组件级 transition 的元素同样生效；自带 transition 短横写法的元素由组件规则整体覆盖，其缺失的属性见各组件补齐（如 .row 的 color/opacity、输入框的 color/background 等）。
+   时长取 140ms 与按钮系 150ms 同档；尊重文末 prefers-reduced-motion。 */
+*, *::before, *::after {
+  transition-property: color, background-color, border-color, opacity, fill, stroke;
+  transition-duration: 140ms;
+  transition-timing-function: var(--ease);
+}
 html, body { margin: 0; height: 100%; font-size: var(--font-base); }
 body {
   font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Segoe UI', sans-serif;

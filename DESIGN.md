@@ -25,6 +25,7 @@
 - 开发服务器：Vite，`server.host` 显式绑定 `127.0.0.1`（避免默认 `localhost` 在部分 Windows 环境下解析 IPv6 `::1` 时触发 `EACCES`）
 - 间距令牌（`--gap-*`，定义于 `variables.css`）：`--gap-xs: 4px`（组合与展开子项、缩进竖线留白）、`--gap-sm: 8px`（同层级）、`--gap-sep: 6px`（日期标签上下留白）、`--gap-md: 12px`、`--gap-lg: 16px`（分节标题上留白）。有效间隔梯度为 **异色 > 异日 > 同层 > 组合-子项**
 - 按压反馈：所有可点击元素（行、勾选、组合箭头、各类按钮、侧栏列表项、开关滑块等）按下时以独立的 `scale` 属性收缩——`scale` 与 `transform` 叠加互不覆盖，行的 hover 上浮、完成勾的放大、组合箭头的旋转在按压时均保留。按压缩放系数：行 0.98、对话框/设置/列表项 0.94、图标钮/行内编辑钮/开关滑块 0.9、勾选 0.85、组合箭头 0.8；按下 60ms `--ease` 快速收缩、松开以 `--spring` 回弹。状态切换（如勾选完成）会重建行元素，该行的松开回弹随之结束，按压反馈不受影响；拖拽按住期间保持按压缩放
+- 颜色/透明度过渡：全站任何元素的颜色、背景、边框、透明度、描边变化都以极短时长（140ms，与按钮系 150ms 同档）的 `--ease` 平滑过渡，不瞬间跳变。`src/styles/main.css` 以 `*` 兜底（无组件级 transition 的元素同样生效）；自带 `transition` 短横写法的组件在其列表内补齐缺失的 color/opacity/background-color 等属性（如行 `.row` 含 color/opacity、输入框含 color/background-color、侧栏含 background-color/border-color）。尊重 `prefers-reduced-motion`（过渡时长降至 0.01ms）
 - 文本选中：全局禁用文本选中（`user-select: none`，含 WebKit 前缀），列表/按钮等交互元素不可误选；输入框、下拉、文本域等表单控件保持可选中文本（`user-select: text`）；拖拽期再经 `body.no-select` 双重保证
 
 ### 2.1 数据模型

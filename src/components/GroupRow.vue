@@ -78,7 +78,7 @@ function onRowClick() {
 </script>
 
 <style scoped>
-.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease), scale 200ms var(--spring); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease), color 200ms var(--ease), opacity 160ms var(--ease), scale 200ms var(--spring); }
 .row:active { scale: 0.98; transition: scale 60ms var(--ease); }
 .row.actions-wrapped .actions { margin-left: auto; }
 .trailing { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: nowrap; margin-left: auto; }
@@ -91,7 +91,7 @@ function onRowClick() {
 .row.pending:hover { box-shadow: inset 3px 0 0 var(--blue), var(--shadow-lift); }
 .row.done:hover { box-shadow: inset 3px 0 0 var(--green), var(--shadow-lift); }
 .title { flex: 1 1 auto; min-width: 120px; }
-.expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: transform 150ms var(--ease), scale 200ms var(--spring); color: var(--ink-3); font-size: var(--font-sm); cursor: pointer; border-radius: var(--radius-sm); }
+.expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: transform 150ms var(--ease), color 150ms var(--ease), scale 200ms var(--spring); color: var(--ink-3); font-size: var(--font-sm); cursor: pointer; border-radius: var(--radius-sm); }
 .expand-btn:active { scale: 0.8; transition: scale 60ms var(--ease); }
 .expand-btn:hover { color: var(--ink); background: var(--ink-tint); }
 .expand-btn.open { transform: rotate(90deg); }
