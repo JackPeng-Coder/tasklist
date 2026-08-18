@@ -114,6 +114,7 @@ interface Group {       // 组合（可递归嵌套，不限深度）
 - 行的换行策略分两级：时间 chip 与操作按钮组是独立换行单元（按钮组内部 `flex-wrap: nowrap` + `flex-shrink: 0`，绝不部分同行部分换行）。与标题同行能放下时全部同行；放不下时按钮组整体换到下一行、时间 chip 留在顶行最右侧；顶行连时间 chip 都放不下时 chip 与按钮组一起换行、紧贴靠右
 - 按钮组换行后靠右对齐：`useTrailingWrap` 组合式函数（ResizeObserver 监听行尺寸变化，依据 chip/按钮/标题的几何位置）为行添加 `actions-wrapped` 类，按钮组 `margin-left: auto` 靠右；无日期的事项按钮换行后同样靠右
 - 操作按钮（`.mini-btn`）高度与日期 chip 等高（`line-height: 1.2` + 垂直 padding 3px，随字号缩放），切换编辑模式不撑高行、不改变行高（文字未换行时行高不变）
+- 侧栏列表项的删除按钮同样保持紧凑高度（`font-xs` + `line-height: 1.2`），切换编辑模式不改变侧栏列表项的行高
 
 ### 3.5 组合
 
