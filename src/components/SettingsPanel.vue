@@ -47,6 +47,7 @@ function onLang(e: Event) {
 .row span { color: var(--ink); }
 .row input[type='range'] { flex: 1; accent-color: var(--blue); cursor: pointer; }
 .row select { padding: 5px 10px; border-radius: var(--radius-sm); border: 1px solid var(--input-line); background: var(--card); color: var(--ink); font-size: var(--font-sm); cursor: pointer; font-family: inherit; }
-.row button { padding: 5px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: var(--font-sm); font-weight: 500; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), border-color 150ms var(--ease), box-shadow 150ms var(--ease), transform 140ms var(--spring); }
+.row button { padding: 5px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: var(--font-sm); font-weight: 500; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), border-color 150ms var(--ease), box-shadow 150ms var(--ease), transform 140ms var(--spring), scale 200ms var(--spring); }
+.row button:active { scale: 0.94; transition: scale 60ms var(--ease); }
 .row button:hover { color: var(--blue-ink); border-color: var(--blue); box-shadow: var(--shadow-lift); }
 </style>

@@ -11,7 +11,9 @@ body {
 #app { height: 100vh; display: flex; }
 
 button { font-family: inherit; cursor: pointer; }
-button:active, .row:active { transform: scale(0.98); }
+/* 点击弹簧缩放：基础按压深度（各组件按目标大小微调）；scale 属性与 transform 独立叠加，
+   不覆盖行的 hover 上浮、完成勾的放大、组合箭头的旋转 */
+button:not(:disabled):active { scale: 0.94; }
 button:focus-visible, input:focus-visible, select:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 1px;
@@ -27,7 +29,8 @@ button:focus-visible, input:focus-visible, select:focus-visible {
 /* 滑动开关 */
 .switch { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
 .switch input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; }
-.switch .slider { position: absolute; inset: 0; background: var(--ink-tint-strong); border-radius: 999px; cursor: pointer; transition: background 200ms var(--ease); }
+.switch .slider { position: absolute; inset: 0; background: var(--ink-tint-strong); border-radius: 999px; cursor: pointer; transition: background 200ms var(--ease), scale 200ms var(--spring); }
+.switch .slider:active { scale: 0.9; transition: scale 60ms var(--ease); }
 .switch .slider::after { content: ''; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; background: #fff; border-radius: 50%; box-shadow: var(--shadow-card); transition: transform 200ms var(--spring); }
 .switch input:checked + .slider { background: var(--blue); }
 .switch input:checked + .slider::after { transform: translateX(16px); }

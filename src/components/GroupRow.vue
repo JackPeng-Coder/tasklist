@@ -78,7 +78,8 @@ function onRowClick() {
 </script>
 
 <style scoped>
-.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); background: var(--card); cursor: pointer; border: 1px solid var(--line); box-shadow: var(--shadow-card); transition: transform 160ms var(--spring), box-shadow 160ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease), scale 200ms var(--spring); }
+.row:active { scale: 0.98; transition: scale 60ms var(--ease); }
 .row.actions-wrapped .actions { margin-left: auto; }
 .trailing { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: nowrap; margin-left: auto; }
 .actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
@@ -90,7 +91,8 @@ function onRowClick() {
 .row.pending:hover { box-shadow: inset 3px 0 0 var(--blue), var(--shadow-lift); }
 .row.done:hover { box-shadow: inset 3px 0 0 var(--green), var(--shadow-lift); }
 .title { flex: 1 1 auto; min-width: 120px; }
-.expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: transform 150ms var(--ease); color: var(--ink-3); font-size: var(--font-sm); cursor: pointer; border-radius: var(--radius-sm); }
+.expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: transform 150ms var(--ease), scale 200ms var(--spring); color: var(--ink-3); font-size: var(--font-sm); cursor: pointer; border-radius: var(--radius-sm); }
+.expand-btn:active { scale: 0.8; transition: scale 60ms var(--ease); }
 .expand-btn:hover { color: var(--ink); background: var(--ink-tint); }
 .expand-btn.open { transform: rotate(90deg); }
 .name { font-weight: 600; font-size: var(--font-lg); }
@@ -101,7 +103,8 @@ function onRowClick() {
 .time-chip.overdue { color: var(--red-ink); background: rgba(224, 82, 82, 0.12); }
 .time-chip.pending { color: var(--blue-ink); background: rgba(75, 111, 217, 0.11); }
 .time-chip.done { color: var(--green-ink); background: rgba(53, 160, 111, 0.12); }
-.mini-btn { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 3px 8px; color: var(--ink-3); cursor: pointer; font-size: var(--font-xs); line-height: 1.2; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
+.mini-btn { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 3px 8px; color: var(--ink-3); cursor: pointer; font-size: var(--font-xs); line-height: 1.2; transition: color 150ms var(--ease), background-color 150ms var(--ease), scale 200ms var(--spring); }
+.mini-btn:active { scale: 0.9; transition: scale 60ms var(--ease); }
 .mini-btn:hover { background: var(--ink-tint); color: var(--ink); }
 .mini-btn.danger:hover { color: var(--red); background: var(--red-soft); }
 .group-wrap { position: relative; margin-bottom: var(--gap-sm); }

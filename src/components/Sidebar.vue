@@ -46,12 +46,14 @@ function startRename(l: List) {
 }
 .sidebar-head { padding: 48px 8px 8px; display: flex; gap: 4px; align-items: center; min-width: var(--sidebar-width); }
 .sidebar-head .title { flex: 1; font-weight: 600; color: var(--ink); }
-.icon-btn { background: none; border: 1px solid transparent; border-radius: var(--radius-sm); font-size: 18px; cursor: pointer; color: var(--ink-3); display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; transition: color 150ms var(--ease), background-color 150ms var(--ease), transform 140ms var(--spring); }
+.icon-btn { background: none; border: 1px solid transparent; border-radius: var(--radius-sm); font-size: 18px; cursor: pointer; color: var(--ink-3); display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; transition: color 150ms var(--ease), background-color 150ms var(--ease), transform 140ms var(--spring), scale 200ms var(--spring); }
+.icon-btn:active { scale: 0.9; transition: scale 60ms var(--ease); }
 .icon-btn:hover { background: var(--ink-tint); color: var(--ink); }
 .sidebar-head .icon-btn.edit { width: auto; padding: 0 10px; font-size: 13px; }
 .sidebar-head .icon-btn.edit.active { background: var(--blue); color: #fff; }
 .sidebar-body { flex: 1; overflow-y: auto; padding: 0 8px; }
-.list-item { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 2px; color: var(--ink-2); transition: background-color 150ms var(--ease), color 150ms var(--ease), transform 140ms var(--spring); min-width: calc(var(--sidebar-width) - 16px); }
+.list-item { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 2px; color: var(--ink-2); transition: background-color 150ms var(--ease), color 150ms var(--ease), transform 140ms var(--spring), scale 200ms var(--spring); min-width: calc(var(--sidebar-width) - 16px); }
+.list-item:active { scale: 0.94; transition: scale 60ms var(--ease); }
 .list-item:hover { background: var(--ink-tint); color: var(--ink); }
 .list-item.new-list { width: calc(100% - 16px); font: inherit; background: none; border: none; text-align: left; color: var(--ink-3); }
 .list-item.new-list:hover { color: var(--ink); background: var(--ink-tint); }
@@ -62,7 +64,8 @@ function startRename(l: List) {
 .pending { color: var(--blue-ink); }
 .done { color: var(--green-ink); }
 .list-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.mini-btn { background: none; border: none; border-radius: var(--radius-sm); padding: 2px 5px; color: var(--ink-3); cursor: pointer; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
+.mini-btn { background: none; border: none; border-radius: var(--radius-sm); padding: 2px 5px; color: var(--ink-3); cursor: pointer; transition: color 150ms var(--ease), background-color 150ms var(--ease), scale 200ms var(--spring); }
+.mini-btn:active { scale: 0.9; transition: scale 60ms var(--ease); }
 .mini-btn:hover { background: var(--ink-tint); color: var(--ink); }
 .mini-btn.danger:hover { color: var(--red); background: var(--red-soft); }
 </style>
