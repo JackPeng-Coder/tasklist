@@ -12,13 +12,15 @@
       v-model:description="formDescription"
       v-model:date="formDate"
       v-model:time="formTime"
+      :invalid="formItemInvalid"
+      @update:invalid="formItemInvalid = $event"
       @submit="saveItemForm"
     />
     <GroupForm v-else-if="editingTarget === 'group'" v-model:name="formName" v-model:description="formDescription" @submit="saveGroupForm" />
     <ListForm v-else-if="editingTarget === 'list'" v-model:name="formName" v-model:description="formDescription" @submit="saveListForm" />
     <template #actions>
       <button class="btn" @click="editingTarget = null">{{ t('common.cancel') }}</button>
-      <button class="btn primary" data-test="save" :disabled="!formName.trim()" @click="saveForm">{{ t('common.confirm') }}</button>
+      <button class="btn primary" data-test="save" :disabled="!formName.trim() || (editingTarget === 'item' && formItemInvalid)" @click="saveForm">{{ t('common.confirm') }}</button>
     </template>
   </ModalDialog>
   <ModalDialog :open="settingsOpen" @close="settingsOpen = false">
@@ -79,6 +81,7 @@ const formName = ref('')
 const formDescription = ref('')
 const formDate = ref<string>()
 const formTime = ref<string>()
+const formItemInvalid = ref(false)
 const deletingId = ref<string | null>(null)
 const deletingType = ref<'list' | 'node' | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -155,7 +158,7 @@ function onVisibility() {
 
 function openNewItem(parentId: string | null) {
   editingTarget.value = 'item'; editingId.value = null; editingParentId.value = parentId
-  formName.value = ''; formDescription.value = ''; formDate.value = undefined; formTime.value = undefined
+  formName.value = ''; formDescription.value = ''; formDate.value = undefined; formTime.value = undefined; formItemInvalid.value = false
 }
 function openNewGroup(parentId: string | null) {
   editingTarget.value = 'group'; editingId.value = null; editingParentId.value = parentId
@@ -176,7 +179,7 @@ function openEditNode(id: string) {
   editingTarget.value = isGroup(node) ? 'group' : 'item'
   editingId.value = id
   formName.value = node.name; formDescription.value = node.description
-  formDate.value = (node as Item).date; formTime.value = (node as Item).time
+  formDate.value = (node as Item).date; formTime.value = (node as Item).time; formItemInvalid.value = false
 }
 function findNodeDeep(nodes: any[], id: string): any {
   for (const n of nodes) {
@@ -186,7 +189,7 @@ function findNodeDeep(nodes: any[], id: string): any {
   return null
 }
 function saveItemForm() {
-  if (!formName.value.trim()) return
+  if (!formName.value.trim() || formItemInvalid.value) return
   const patch = { name: formName.value.trim(), description: formDescription.value, date: formDate.value, time: formTime.value }
   if (editingId.value) data.updateNode(editingId.value, patch as any)
   else data.addNode(editingParentId.value, { ...createItem(formName.value.trim()), description: formDescription.value, date: formDate.value, time: formTime.value } as any)

@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -31,6 +31,7 @@ const emit = defineEmits<{
   (e: 'update:description', v: string): void
   (e: 'update:date', v?: string): void
   (e: 'update:time', v?: string): void
+  (e: 'update:invalid', v: boolean): void
   (e: 'submit'): void
 }>()
 
@@ -40,6 +41,12 @@ const hasDate = ref(!!props.date)
 const hasTime = ref(!!props.time)
 const date = ref(props.date ?? '')
 const time = ref(props.time ?? '')
+
+// 勾选即必填：勾了日期必须有日期值；勾了时间必须有时间值且必须有日期（时间不脱离日期单独成立）
+const invalid = computed(
+  () => (hasDate.value && !date.value) || (hasTime.value && (!time.value || !date.value)),
+)
+watch(invalid, (v) => emit('update:invalid', v), { immediate: true })
 
 watch(name, (v) => emit('update:name', v))
 watch(description, (v) => emit('update:description', v))
@@ -54,7 +61,8 @@ watch(hasTime, (v) => {
 })
 watch(time, (v) => { if (hasTime.value) emit('update:time', v || undefined) })
 
-function trySubmit() { emit('submit') }
+// 未填完整的勾选项视为无效，阻止 enter 提交
+function trySubmit() { if (!invalid.value) emit('submit') }
 </script>
 
 <style scoped>
