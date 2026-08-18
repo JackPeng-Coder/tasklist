@@ -51,6 +51,7 @@ let tracking = false
 let onMove: ((e: PointerEvent) => void) | null = null
 let onUp: ((e: PointerEvent) => void) | null = null
 let onCancel: (() => void) | null = null
+let onKey: ((e: KeyboardEvent) => void) | null = null
 
 export function setDropHandler(fn: (target: DropTarget | null) => void): void {
   onDrop = fn
@@ -150,6 +151,15 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
   }
   window.addEventListener('pointermove', onMove)
   window.addEventListener('pointerup', onUp)
+  // 按住/松开 Ctrl 而不移动鼠标时，也要即时更新合并意图并重算目标高亮
+  onKey = (ev: KeyboardEvent) => {
+    const d = dragState.value
+    if (!d || ev.key !== 'Control') return
+    d.ctrl = ev.ctrlKey
+    if (d.active) updateTarget(d, d.x, d.y)
+  }
+  window.addEventListener('keydown', onKey)
+  window.addEventListener('keyup', onKey)
   onCancel = () => {
     cleanup()
     dragState.value = null
@@ -163,9 +173,14 @@ function cleanup(): void {
   if (onMove) window.removeEventListener('pointermove', onMove)
   if (onUp) window.removeEventListener('pointerup', onUp)
   if (onCancel) window.removeEventListener('pointercancel', onCancel)
+  if (onKey) {
+    window.removeEventListener('keydown', onKey)
+    window.removeEventListener('keyup', onKey)
+  }
   onMove = null
   onUp = null
   onCancel = null
+  onKey = null
   // 移除拖拽预览克隆
   const ghost = dragState.value?.ghost
   if (ghost && ghost.parentNode) ghost.parentNode.removeChild(ghost)

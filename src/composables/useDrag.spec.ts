@@ -155,4 +155,25 @@ describe('useDrag lifecycle', () => {
     expect(row.classList.contains('drag-target')).toBe(false)
     wrap.remove()
   })
+
+  it('按住/松开 Ctrl 而不移动即即时刷新目标高亮', () => {
+    const el = document.createElement('div')
+    el.setAttribute('data-drop-id', 'b')
+    el.setAttribute('data-drop-kind', 'item')
+    ;(document as any).elementFromPoint = () => el
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', null, down)
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10 }))
+    expect(el.classList.contains('drag-target')).toBe(false)
+    // 按下 Ctrl（不移动鼠标）
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Control', ctrlKey: true }))
+    expect(dragState.value?.ctrl).toBe(true)
+    expect(el.classList.contains('drag-target')).toBe(true)
+    // 松开 Ctrl（不移动鼠标）
+    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'Control', ctrlKey: false }))
+    expect(dragState.value?.ctrl).toBe(false)
+    expect(el.classList.contains('drag-target')).toBe(false)
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10 }))
+  })
 })
