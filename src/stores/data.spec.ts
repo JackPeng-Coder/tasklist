@@ -1,8 +1,26 @@
+import { STORE_KEY, type List, type Settings, type UIState } from '../types'
 import { setActivePinia, createPinia } from 'pinia'
 import { watch } from 'vue'
 import { useDataStore } from './data'
 import { saveTaskData } from '../storage'
-import { STORE_KEY, type List, type Settings, type UIState } from '../types'
+
+function externalBlob(lists: List[], savedAt?: number): string {
+  return JSON.stringify({
+    version: 1,
+    lists,
+    settings: { theme: 'light', fontSize: 16, lang: 'zh', showDescription: true },
+    ui: { sidebarCollapsed: false, expandedGroupIds: [] },
+    ...(savedAt !== undefined ? { savedAt } : {}),
+  })
+}
+
+function fireStorageEvent(newValue: string) {
+  const ev = new Event('storage') as StorageEvent
+  Object.defineProperty(ev, 'key', { value: STORE_KEY })
+  Object.defineProperty(ev, 'newValue', { value: newValue })
+  window.dispatchEvent(ev)
+}
+
 
 describe('data store', () => {
   beforeEach(() => {
@@ -139,4 +157,34 @@ describe('data store', () => {
     expect(s.canUndo).toBe(false)
     expect(s.canRedo).toBe(false)
   })
+  it('跨标签页同步：应用较新的外部数据且不破坏撤销/重做栈', () => {
+    const s = useDataStore()
+    s.init()
+    s.addNode(null, { id: 'n1', name: 'x', description: '', done: false, createdAt: 1 })
+    expect(s.canUndo).toBe(true)
+    const external: List[] = [...s.lists, { id: 'l2', name: 'other', description: '', items: [] }]
+    fireStorageEvent(externalBlob(external, 200))
+    expect(s.lists.some((l) => l.id === 'l2')).toBe(true)
+    expect(s.canUndo).toBe(true)
+    expect(s.canRedo).toBe(false)
+  })
+
+  it('跨标签页同步：旧于本页最后写回的数据被忽略（不整体回退）', () => {
+    const s = useDataStore()
+    s.init()
+    s.addNode(null, { id: 'n1', name: 'x', description: '', done: false, createdAt: 1 })
+    s.markSaved(100)
+    fireStorageEvent(externalBlob([], 50))
+    expect(s.lists).toHaveLength(1)
+    expect(s.lists[0].items.some((n) => n.id === 'n1')).toBe(true)
+  })
+
+  it('跨标签页同步：无 savedAt 的旧格式数据仍会应用', () => {
+    const s = useDataStore()
+    s.init()
+    const external: List[] = [...s.lists, { id: 'l3', name: 'oldfmt', description: '', items: [] }]
+    fireStorageEvent(externalBlob(external))
+    expect(s.lists.some((l) => l.id === 'l3')).toBe(true)
+  })
+
 })

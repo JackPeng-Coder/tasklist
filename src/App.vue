@@ -120,10 +120,23 @@ function onPromptConfirm(value: string | null) {
 
 
 let saveTimer: number | undefined
+let lastContentJson = ''
 function scheduleSave() {
   clearTimeout(saveTimer)
   saveTimer = window.setTimeout(() => {
-    saveTaskData({ version: 1, lists: data.lists, settings: ui.settings, ui: { sidebarCollapsed: ui.sidebarCollapsed, expandedGroupIds: ui.expandedGroupIds } })
+    const taskData: TaskData = {
+      version: 1,
+      lists: data.lists,
+      settings: ui.settings,
+      ui: { sidebarCollapsed: ui.sidebarCollapsed, expandedGroupIds: ui.expandedGroupIds },
+    }
+    // 与上次写回内容一致时不重复写：避免同步触发的深度 watch 造成写回广播循环
+    const contentJson = JSON.stringify({ lists: taskData.lists, settings: taskData.settings, ui: taskData.ui })
+    if (contentJson === lastContentJson) return
+    lastContentJson = contentJson
+    taskData.savedAt = Date.now()
+    saveTaskData(taskData)
+    data.markSaved(taskData.savedAt)
   }, 300)
 }
 

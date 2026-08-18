@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { createList, STORE_KEY, type Item, type List, type TreeNode } from '../types'
+import { createList, STORE_KEY, type Item, type List, type TaskData, type TreeNode } from '../types'
 import { loadTaskData } from '../storage'
 import { applyMove, type MoveSpec } from '../logic/move'
 import { resolveDateField } from '../logic/dates'
@@ -53,6 +53,8 @@ export const useDataStore = defineStore('data', () => {
   const recovered = ref(false)
   const undoStack = ref<List[][]>([])
   const redoStack = ref<List[][]>([])
+  /** 本页最近一次实际写回 localStorage 的时间戳；跨标签页同步据此拒绝更旧的外部写入 */
+  const lastSavedAt = ref(0)
 
   function ensureWelcomeList() {
     if (lists.value.length > 0) return
@@ -189,15 +191,44 @@ export const useDataStore = defineStore('data', () => {
   const canUndo = computed(() => undoStack.value.length > 0)
   const canRedo = computed(() => redoStack.value.length > 0)
 
+  /**
+   * 记录本页最近一次写回的时间戳。由 App.vue 在 saveTaskData 成功后调用。
+   */
+  function markSaved(at: number) {
+    if (at > lastSavedAt.value) lastSavedAt.value = at
+  }
+
+  /**
+   * 应用另一标签页写入的整库数据（跨标签页同步）。
+   * 与 init 不同：不重建欢迎列表、不清空撤销/重做栈——同步不应摧毁本页历史。
+   */
+  function applyExternal(incoming: List[]) {
+    lists.value = incoming
+    if (!lists.value.some((l) => l.id === currentListId.value)) {
+      currentListId.value = lists.value[0]?.id ?? ''
+    }
+  }
+
   function refreshNow() {
     /* 状态由 computed 依赖 now()，见 Task 15 */
   }
 
   if (typeof window !== 'undefined') {
     window.addEventListener('storage', (e) => {
-      if (e.key === STORE_KEY) init()
+      if (e.key !== STORE_KEY) return
+      const raw = e.newValue
+      if (!raw) return
+      try {
+        const parsed = JSON.parse(raw) as TaskData
+        if (parsed.version !== 1 || !Array.isArray(parsed.lists)) return
+        // 旧于本页最后写回的外部数据不采纳，避免另一标签页的迟到写入把本页整体回退
+        if (lastSavedAt.value > 0 && typeof parsed.savedAt === 'number' && parsed.savedAt <= lastSavedAt.value) return
+        applyExternal(parsed.lists)
+      } catch {
+        /* 忽略非法外部写入 */
+      }
     })
   }
 
-  return { lists, currentListId, recovered, currentList, nodeCount, init, selectList, addList, renameList, deleteList, addNode, updateNode, toggleDone, toggleGroupExpanded, deleteNode, moveNode, undo, redo, canUndo, canRedo, refreshNow }
+  return { lists, currentListId, recovered, currentList, nodeCount, init, selectList, addList, renameList, deleteList, addNode, updateNode, toggleDone, toggleGroupExpanded, deleteNode, moveNode, undo, redo, canUndo, canRedo, markSaved, applyExternal, refreshNow }
 })

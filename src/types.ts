@@ -47,6 +47,8 @@ export interface TaskData {
   lists: List[]
   settings: Settings
   ui: UIState
+  /** 最近一次写入的时间戳，跨标签页同步时用于判定新旧，旧数据不覆盖本地 */
+  savedAt?: number
 }
 
 export const STORE_KEY = 'tasklist:v1'
