@@ -143,7 +143,9 @@ export function beginDrag(nodeId: string, listId: string, parentId: string | nul
       if (!shouldStartDrag(startX, startY, ev.clientX, ev.clientY)) return
       d.active = true
       if (d.ghost) {
-        d.ghost.style.display = 'block'
+        // 激活显示：清除内联 display（初始为 none 隐藏），令克隆回落到源行 scoped 的 display:flex，
+        // 避免强制 block 覆盖 flex 布局导致换行塌陷（chip 不靠右、actions 撑满整行）
+        d.ghost.style.display = ''
         d.ghost.style.left = ev.clientX - grabDX + 'px'
         d.ghost.style.top = ev.clientY - grabDY + 'px'
       }

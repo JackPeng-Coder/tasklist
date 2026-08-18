@@ -118,6 +118,21 @@ describe('useDrag lifecycle', () => {
     expect(el.classList.contains('drag-target')).toBe(false)
   })
 
+  it('激活后克隆不强制内联 display（回落到 .row 的 flex，避免块级塌陷）', () => {
+    fakeEl.className = 'row'
+    const down = makeDownEvent(fakeEl)
+    ;(down as any).currentTarget = fakeEl
+    beginDrag('n1', 'l1', null, down)
+    // 未激活时克隆隐藏
+    expect(document.querySelector('.drag-ghost')?.getAttribute('style') ?? '').toContain('display: none')
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: 30, clientY: 10 }))
+    const ghost = document.querySelector('.drag-ghost') as HTMLElement
+    expect(ghost).not.toBeNull()
+    // 激活后不得持内联 display:block（会覆盖 scoped .row{display:flex} 导致布局塌陷）
+    expect(ghost.style.display).not.toBe('block')
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: 30, clientY: 10 }))
+  })
+
   it('未按住 Ctrl 时事项目标不加高亮', () => {
     const el = document.createElement('div')
     el.setAttribute('data-drop-id', 'b')
