@@ -10,6 +10,8 @@ Tasklist：Vue 3 + Vite + TypeScript + Pinia + vue-i18n 的纯前端任务清单
 |---|---|---|
 | `DESIGN.md` | **项目设计画像**：一切设计细节 | 陈述语气、不带时间修饰、不含开发计划。**任何设计内容变更必须同步到此文档**（用户强制规则，代码改动同次提交或紧随其后） |
 | `ROADMAP.md` | 开发计划与排期（根目录） | 与 DESIGN.md 分离，只放计划性内容 |
+| `README.md` | 项目入口文档（功能/命令/部署/许可） | 面向使用者，内容随代码同步更新 |
+| `LICENSE` | 开源许可证（MIT） | 版权署名 Jack Peng (彭俊杰)；变更许可需用户确认 |
 | `docs/superpowers/plans/` | 实施计划（writing-plans 产物） | 过程性文档，不视为设计 |
 
 ## 命令（package.json 为唯一事实来源）
@@ -32,7 +34,7 @@ Tasklist：Vue 3 + Vite + TypeScript + Pinia + vue-i18n 的纯前端任务清单
 - 路径别名 `@/*` → `src/*`（vite + tsconfig 均配置）
 - 数据键：`STORE_KEY = 'tasklist:v1'`、`BACKUP_KEY = 'tasklist:backup'`（`src/types.ts`）；写入防抖
 - 新增文案必须**同时**更新 `src/i18n/zh.ts` 与 `src/i18n/en.ts`
-- 类型定义集中在 `src/types.ts`；纯逻辑在 `src/logic/`（均带 spec）；状态在 `src/stores/`；组件在 `src/components/`
+- 类型定义集中在 `src/types.ts`；纯逻辑在 `src/logic/`（均带 spec）；状态在 `src/stores/`；组件在 `src/components/`；跨组件可复用的交互逻辑（快捷键、拖拽、换行自适应等）在 `src/composables/`（均带 spec）
 
 ## 工作流程
 

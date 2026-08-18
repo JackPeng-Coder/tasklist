@@ -33,6 +33,7 @@
   <ConfirmDialog :open="deletingType !== null" :title="t('confirm.title')" :message="t('confirm.message')" @confirm="confirmDelete" @cancel="onCancelDelete" />
     <ConfirmDialog :open="importConfirmOpen" :title="t('settings.importTitle')" :message="t('settings.importMessage')" :confirm-text="t('common.confirm')" @confirm="confirmImport" @cancel="importConfirmOpen = false" />
     <AlertDialog :open="alertOpen" :title="alertTitle" :message="alertMessage" @close="alertOpen = false" />
+    <AboutDialog :open="aboutOpen" @close="aboutOpen = false" />
     <PromptDialog :open="promptOpen" :title="promptTitle" :default-value="promptDefault" @confirm="onPromptConfirm" @cancel="promptOpen = false" />
     <input ref="fileInput" type="file" accept="application/json" data-test="import-input" class="hidden-input" @change="onFileChange" />
 
@@ -59,9 +60,9 @@ import ItemForm from './components/ItemForm.vue'
 import GroupForm from './components/GroupForm.vue'
 import ListForm from './components/ListForm.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
+import AboutDialog from './components/AboutDialog.vue'
 import { isRedoShortcut, isUndoShortcut } from './composables/useUndoRedo'
 import i18n from './i18n'
-import pkg from '../package.json'
 
 const { t } = useI18n()
 const data = useDataStore()
@@ -88,6 +89,7 @@ const deletingType = ref<'list' | 'node' | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 const pendingImport = ref<TaskData | null>(null)
 const importConfirmOpen = ref(false)
+const aboutOpen = ref(false)
 
 const alertOpen = ref(false)
 const alertTitle = ref('')
@@ -241,7 +243,8 @@ function onExport() {
   doExport()
 }
 function onAbout() {
-  showAlert(t('settings.about'), `TaskList v${pkg.version}`)
+  settingsOpen.value = false
+  aboutOpen.value = true
 }
 
 function doExport() {

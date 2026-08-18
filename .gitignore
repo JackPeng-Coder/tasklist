@@ -5,3 +5,4 @@ dist
 *.tsbuildinfo
 .superpowers/
 DESIGN-backup.md
+dev-server.log
