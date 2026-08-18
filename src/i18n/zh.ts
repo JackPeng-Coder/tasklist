@@ -8,7 +8,7 @@ export default {
   rail: { addItem: '+事项', addGroup: '+组合', edit: '编辑', settings: '设置' },
   settings: { title: '设置', showDescription: '显示描述', theme: '外观', light: '浅色模式', dark: '深色模式', fontSize: '字号大小', language: '语言', import: '导入数据', export: '导出数据', about: '关于', imported: '导入成功', importFailed: '导入失败：文件格式不正确', importTitle: '确认导入？', importMessage: '将覆盖同 ID 数据', recovered: '检测到本地数据损坏，已备份原数据并重置为空数据' },
   date: { yesterday: '昨天', today: '今天', tomorrow: '明天', dayAfterTomorrow: '后天', nodate: '无时间' },
-  empty: { noItems: '暂无事项，点击右侧 + 添加', noList: '暂无列表' },
+  empty: { noItems: '暂无事项', noList: '暂无列表' },
   confirm: { title: '确认删除', message: '删除后不可恢复' },
   required: '名称必填',
 }

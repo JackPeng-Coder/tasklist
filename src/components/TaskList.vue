@@ -83,4 +83,5 @@ const doneRows = computed(() => withSeparators(grouped.value.done, ui.now))
 .group-head.done { color: var(--color-done); }
 .group-head .rule { flex: 1; height: 1px; background: color-mix(in srgb, currentColor 22%, transparent); }
 .date-sep { color: var(--color-muted); font-size: var(--font-xs); margin: var(--gap-sep) 0; }
+.empty-tip { color: var(--ink-3); }
 </style>

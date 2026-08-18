@@ -22,7 +22,7 @@ function collectItems(nodes: TreeNode[]): Item[] {
 
 export function groupStatus(group: Group, now: number): NodeStatus {
   const items = collectItems(group.items)
-  if (items.length === 0) return 'pending'
+  if (items.length === 0) return 'done'
   const hasOverdue = items.some((i) => !i.done && itemTimestamp(i) < now)
   if (hasOverdue) return 'overdue'
   if (items.every((i) => i.done)) return 'done'
@@ -49,7 +49,7 @@ export function nodeTimestamp(node: TreeNode, now: number): number {
 }
 
 export function listStatus(list: List, now: number): NodeStatus {
-  if (list.items.length === 0) return 'pending'
+  if (list.items.length === 0) return 'done'
   if (list.items.some((n) => nodeStatus(n, now) === 'overdue')) return 'overdue'
   if (list.items.every((n) => nodeStatus(n, now) === 'done')) return 'done'
   return 'pending'

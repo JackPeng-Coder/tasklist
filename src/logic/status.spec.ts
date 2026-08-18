@@ -19,9 +19,9 @@ describe('itemTimestamp', () => {
 })
 
 describe('group 状态', () => {
-  it('空组合为未完成', () => {
+  it('空组合默认为已完成', () => {
     const g = createGroup('g'); g.items = []
-    expect(groupStatus(g, NOW)).toBe('pending')
+    expect(groupStatus(g, NOW)).toBe('done')
   })
   it('含逾期子孙为已逾期', () => {
     const g = createGroup('g')
@@ -80,6 +80,6 @@ describe('listStatus', () => {
     expect(listStatus({ id: 'l', name: '', description: '', items: [dated] }, NOW)).toBe('pending')
     expect(listStatus({ id: 'l', name: '', description: '', items: [{ ...dated, date: '2026-08-01' }] }, NOW)).toBe('overdue')
     expect(listStatus({ id: 'l', name: '', description: '', items: [doneItem] }, NOW)).toBe('done')
-    expect(listStatus({ id: 'l', name: '', description: '', items: [] }, NOW)).toBe('pending')
+    expect(listStatus({ id: 'l', name: '', description: '', items: [] }, NOW)).toBe('done')
   })
 })
