@@ -91,7 +91,7 @@ function onRowClick() {
 .row.pending:hover { box-shadow: inset 3px 0 0 var(--blue), var(--shadow-lift); }
 .row.done:hover { box-shadow: inset 3px 0 0 var(--green), var(--shadow-lift); }
 .title { flex: 1 1 auto; min-width: 120px; }
-.expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: transform 150ms var(--ease), color 150ms var(--ease), scale 200ms var(--spring); color: var(--ink-3); font-size: var(--font-sm); cursor: pointer; border-radius: var(--radius-sm); }
+.expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; transition: transform 240ms var(--spring), color 150ms var(--ease), scale 200ms var(--spring); color: var(--ink-3); font-size: calc(var(--font-sm) * 2); line-height: 1; cursor: pointer; border-radius: var(--radius-sm); }
 .expand-btn:active { scale: 0.8; transition: scale 60ms var(--ease); }
 .expand-btn:hover { color: var(--ink); background: var(--ink-tint); }
 .expand-btn.open { transform: rotate(90deg); }
@@ -108,6 +108,7 @@ function onRowClick() {
 .mini-btn:hover { background: var(--ink-tint); color: var(--ink); }
 .mini-btn.danger:hover { color: var(--red); background: var(--red-soft); }
 .group-wrap { position: relative; margin-bottom: var(--gap-sm); }
-.children { position: relative; margin-left: 18px; padding: var(--gap-xs) 0 0 14px; }
+.children { position: relative; margin-left: 18px; padding: var(--gap-xs) 0 0 14px; animation: children-in 140ms var(--ease); }
+@keyframes children-in { from { opacity: 0; } to { opacity: 1; } }
 .indent-line { position: absolute; left: 0; top: var(--gap-xs); bottom: var(--gap-xs); width: 2px; background: var(--color-border); border-radius: 1px; }
 </style>
