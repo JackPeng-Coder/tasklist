@@ -1,4 +1,5 @@
 <template>
+  <div v-if="!ui.sidebarCollapsed" class="sidebar-mask" data-test="sidebar-mask" @click="ui.toggleSidebar()" />
   <aside class="sidebar" :class="{ collapsed: ui.sidebarCollapsed }">
     <div class="sidebar-head">
       <span class="title">{{ t('sidebar.lists') }}</span>
@@ -10,7 +11,7 @@
         :key="l.id"
         class="list-item"
         :class="[{ active: l.id === data.currentListId }, listStatus(l, ui.now)]"
-        @click="data.selectList(l.id)"
+        @click="onSelectList(l.id)"
       >
         <span class="list-name" @dblclick="startRename(l)">{{ l.name }}</span>
         <span v-if="ui.editMode" class="mini-btn danger" @click.stop="$emit('delete-list', l.id)">{{ t('common.delete') }}</span>
@@ -35,14 +36,26 @@ const emit = defineEmits<{ (e: 'new-list'): void; (e: 'delete-list', id: string)
 function startRename(l: List) {
   emit('rename-list', l)
 }
+
+// 选择列表；窄屏（≤720px 覆盖态）下自动收起侧栏
+const NARROW = '(max-width: 720px)'
+function onSelectList(id: string) {
+  data.selectList(id)
+  if (window.matchMedia && window.matchMedia(NARROW).matches) {
+    ui.sidebarCollapsed = true
+  }
+}
 </script>
 
 <style scoped>
 .sidebar { width: var(--sidebar-width); flex-shrink: 0; background: var(--card); border-right: 1px solid var(--line); display: flex; flex-direction: column; transition: width 220ms var(--ease), transform 220ms var(--ease); overflow: hidden; }
 .sidebar.collapsed { width: 0; border-right: none; }
+/* 窄屏覆盖态遮罩：点击收起侧栏（仅 ≤720px 显示；弹窗 z-index 100 高于其上方） */
+.sidebar-mask { position: fixed; inset: 0; z-index: 40; background: var(--mask); display: none; }
 @media (max-width: 720px) {
   .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 50; width: var(--sidebar-width); transform: translateX(0); transition: transform 220ms var(--ease); }
   .sidebar.collapsed { width: var(--sidebar-width); transform: translateX(-100%); }
+  .sidebar-mask { display: block; }
 }
 .sidebar-head { padding: 48px 8px 8px; display: flex; gap: 4px; align-items: center; min-width: var(--sidebar-width); }
 .sidebar-head .title { flex: 1; font-weight: 600; color: var(--ink); }
