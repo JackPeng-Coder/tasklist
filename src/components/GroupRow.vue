@@ -1,7 +1,7 @@
 <template>
   <div class="group-wrap">
     <div ref="rowEl" class="row" :class="statusClass" data-test="row" :data-drop-id="group.id" data-drop-kind="group" @pointerdown="onPointerDown" @click="onRowClick">
-      <span class="expand-btn" :class="{ open: group.expanded }" data-test="arrow">▸</span>
+      <span class="expand-btn" :class="{ open: group.expanded }" data-test="arrow"><span class="arrow-glyph">▸</span></span>
       <span class="title">
         <span class="name">{{ group.name }}</span>
         <span v-if="showDesc && group.description" class="desc"> · {{ group.description }}</span>
@@ -91,10 +91,11 @@ function onRowClick() {
 .row.pending:hover { box-shadow: inset 3px 0 0 var(--blue), var(--shadow-lift); }
 .row.done:hover { box-shadow: inset 3px 0 0 var(--green), var(--shadow-lift); }
 .title { flex: 1 1 auto; min-width: 120px; }
-.expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; transition: transform 240ms var(--spring), color 150ms var(--ease), scale 200ms var(--spring); color: var(--ink-3); font-size: calc(var(--font-sm) * 2); line-height: 1; cursor: pointer; border-radius: var(--radius-sm); }
+.expand-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; transition: background-color 150ms var(--ease), color 150ms var(--ease), scale 200ms var(--spring); color: var(--ink-3); font-size: calc(var(--font-sm) * 2); line-height: 1; cursor: pointer; border-radius: var(--radius-sm); }
 .expand-btn:active { scale: 0.8; transition: scale 60ms var(--ease); }
 .expand-btn:hover { color: var(--ink); background: var(--ink-tint); }
-.expand-btn.open { transform: rotate(90deg); }
+.arrow-glyph { display: inline-block; line-height: 1; transition: transform 240ms var(--spring); transform-origin: center; }
+.expand-btn.open .arrow-glyph { transform: rotate(90deg); }
 .name { font-weight: 600; font-size: var(--font-lg); }
 .desc { color: var(--ink-2); font-size: var(--font-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .spacer { flex: 1; }
