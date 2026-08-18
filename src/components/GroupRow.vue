@@ -101,7 +101,7 @@ function onRowClick() {
 .time-chip.overdue { color: var(--red-ink); background: rgba(224, 82, 82, 0.12); }
 .time-chip.pending { color: var(--blue-ink); background: rgba(75, 111, 217, 0.11); }
 .time-chip.done { color: var(--green-ink); background: rgba(53, 160, 111, 0.12); }
-.mini-btn { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; color: var(--ink-3); cursor: pointer; font-size: var(--font-xs); transition: color 150ms var(--ease), background-color 150ms var(--ease); }
+.mini-btn { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 3px 8px; color: var(--ink-3); cursor: pointer; font-size: var(--font-xs); line-height: 1.2; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
 .mini-btn:hover { background: var(--ink-tint); color: var(--ink); }
 .mini-btn.danger:hover { color: var(--red); background: var(--red-soft); }
 .group-wrap { position: relative; margin-bottom: var(--gap-sm); }
