@@ -97,4 +97,16 @@ describe('TaskList', () => {
     expect(w.text()).toContain('明天')
     expect(w.text()).not.toContain('无时间')
   })
+
+  it('已完成事项仍是有效的合并目标（data-drop-kind="item"）', () => {
+    const s = useDataStore()
+    s.init()
+    s.lists = [{
+      id: 'l', name: 'L', description: '',
+      items: [{ id: 'd', name: '已完成', description: '', date: '2026-01-01', done: true, createdAt: 1 }],
+    }]
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
+    const row = w.find('.row[data-drop-id="d"]')
+    expect(row.attributes('data-drop-kind')).toBe('item')
+  })
 })

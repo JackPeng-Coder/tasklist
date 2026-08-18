@@ -1,5 +1,5 @@
 <template>
-  <div ref="rowEl" class="row" :class="statusClass" data-test="row" :data-drop-id="item.id" :data-drop-kind="item.done ? undefined : 'item'" @pointerdown="onPointerDown" @click="onRowClick">
+  <div ref="rowEl" class="row" :class="statusClass" data-test="row" :data-drop-id="item.id" data-drop-kind="item" @pointerdown="onPointerDown" @click="onRowClick">
     <span class="checkbox-wrap">
       <span class="checkmark" :class="{ checked: item.done }" data-test="dot">
         <svg viewBox="0 0 16 16"><path d="M3 8.5 L6.5 12 L13 4.5" /></svg>
