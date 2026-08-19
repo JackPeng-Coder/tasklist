@@ -44,7 +44,7 @@ describe('TaskList', () => {
     expect((s.lists[0].items[0] as any).done).toBe(true)
   })
 
-  it('组合行显示递归计算的时间 chip（最早未完成事项的时间）', () => {
+  it('组合行显示递归计算的时间 chip（最早未完成事项的时间，仅时间不带日期）', () => {
     const ui = useUiStore()
     ui.now = new Date(2026, 7, 14, 12, 0).getTime()
     const s = useDataStore()
@@ -60,7 +60,47 @@ describe('TaskList', () => {
     const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
     const groupChip = w.find('.row[data-drop-kind="group"] .time-chip')
     expect(groupChip.exists()).toBe(true)
-    expect(groupChip.text()).toBe('8月20日 09:00')
+    expect(groupChip.text()).toBe('09:00')
+  })
+
+  it('事项仅指定日期（无时间）时右侧不显示时间 chip', () => {
+    const s = useDataStore()
+    s.init()
+    s.lists = [{
+      id: 'l', name: 'L', description: '',
+      items: [{ id: 'a', name: '仅日期', description: '', date: '2026-08-20', done: false, createdAt: 1 }],
+    }]
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
+    expect(w.find('.row[data-drop-kind="item"][data-drop-id="a"] .time-chip').exists()).toBe(false)
+  })
+
+  it('事项有日期和时间时右侧只显示时间（不带日期）', () => {
+    const s = useDataStore()
+    s.init()
+    s.lists = [{
+      id: 'l', name: 'L', description: '',
+      items: [{ id: 'a', name: '有时间', description: '', date: '2026-08-20', time: '14:30', done: false, createdAt: 1 }],
+    }]
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
+    const chip = w.find('.row[data-drop-kind="item"][data-drop-id="a"] .time-chip')
+    expect(chip.exists()).toBe(true)
+    expect(chip.text()).toBe('14:30')
+  })
+
+  it('组合仅含只有日期无时间的事项时右侧不显示时间 chip', () => {
+    const ui = useUiStore()
+    ui.now = new Date(2026, 7, 14, 12, 0).getTime()
+    const s = useDataStore()
+    s.init()
+    const group = {
+      id: 'g', name: '组合', description: '', expanded: true,
+      items: [
+        { id: 'x', name: '仅日期', description: '', date: '2026-08-20', done: false, createdAt: 1 },
+      ],
+    }
+    s.lists = [{ id: 'l', name: 'L', description: '', items: [group] }]
+    const w = mount(TaskList, { props: { nodes: s.lists[0].items as any, depth: 0, parentId: null }, global: { plugins: [pinia, i18n] } })
+    expect(w.find('.row[data-drop-kind="group"] .time-chip').exists()).toBe(false)
   })
 
   it('组合的时间 chip 位于已完成计数（group-meta）右侧', () => {

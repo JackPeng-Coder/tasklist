@@ -30,7 +30,7 @@ import { useI18n } from 'vue-i18n'
 import { useDataStore } from '../stores/data'
 import { useUiStore } from '../stores/ui'
 import { groupStatus, groupTimestamp } from '../logic/status'
-import { formatTimestampLabel } from '../logic/dates'
+import { formatTimeOnly } from '../logic/dates'
 import { beginDrag, dragState } from '../composables/useDrag'
 import { useTrailingWrap } from '../composables/useTrailingWrap'
 import type { Group } from '../types'
@@ -50,7 +50,7 @@ const statusClass = computed(() => {
   return s === 'overdue' ? 'overdue' : s === 'done' ? 'done' : 'pending'
 })
 const showDesc = computed(() => ui.settings.showDescription && !!props.group.description)
-const groupTimeLabel = computed(() => formatTimestampLabel(groupTimestamp(props.group, ui.now), new Date(ui.now)))
+const groupTimeLabel = computed(() => formatTimeOnly(groupTimestamp(props.group, ui.now)))
 
 function countRecursive(nodes: any[]): { done: number; total: number } {
   let done = 0, total = 0

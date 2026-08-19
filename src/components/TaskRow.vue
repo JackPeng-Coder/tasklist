@@ -9,7 +9,7 @@
       <span class="name">{{ item.name }}</span>
       <span v-if="showDesc && item.description" class="desc"> · {{ item.description }}</span>
     </span>
-    <span v-if="item.date" class="time-chip" :class="statusClass">{{ dateLabel }}</span>
+    <span v-if="item.time" class="time-chip" :class="statusClass">{{ item.time }}</span>
     <span v-if="ui.editMode" class="actions">
       <button class="mini-btn" @click.stop="$emit('edit', item.id)">{{ t('common.edit') }}</button>
       <button class="mini-btn danger" @click.stop="$emit('remove', item.id)">{{ t('common.delete') }}</button>
@@ -50,14 +50,6 @@ const statusClass = computed(() => {
   return s === 'overdue' ? 'overdue' : s === 'done' ? 'done' : 'pending'
 })
 const showDesc = computed(() => ui.settings.showDescription && !!props.item.description)
-const dateLabel = computed(() => {
-  if (!props.item.date) return ''
-  const [y, m, d] = props.item.date.split('-').map(Number)
-  const base = `${m}月${d}日`
-  const full = y === new Date(ui.now).getFullYear() ? base : `${y}年${base}`
-  const time = props.item.time ?? ''
-  return full + (time ? ` ${time}` : '')
-})
 </script>
 
 <style scoped>

@@ -1,4 +1,4 @@
-import { formatDateLabel, formatTimestampLabel, resolveDateField, toISO } from './dates'
+import { formatDateLabel, formatTimeOnly, resolveDateField, toISO } from './dates'
 
 const NOW = new Date(2026, 7, 14, 12, 0) // 2026-08-14
 
@@ -23,18 +23,18 @@ describe('formatDateLabel', () => {
   })
 })
 
-describe('formatTimestampLabel', () => {
-  it('带时间的时间戳显示 M月D日 HH:mm', () => {
-    expect(formatTimestampLabel(new Date(2026, 7, 16, 18, 0).getTime(), NOW)).toBe('8月16日 18:00')
+describe('formatTimeOnly', () => {
+  it('带时间的时间戳只提取 HH:mm（不显示日期）', () => {
+    expect(formatTimeOnly(new Date(2026, 7, 16, 18, 0).getTime())).toBe('18:00')
   })
-  it('整点（00:00）只显示日期', () => {
-    expect(formatTimestampLabel(new Date(2026, 7, 14).getTime(), NOW)).toBe('8月14日')
+  it('跨年只显示时间，不带年份', () => {
+    expect(formatTimeOnly(new Date(2025, 11, 31, 9, 30).getTime())).toBe('09:30')
   })
-  it('跨年带年份', () => {
-    expect(formatTimestampLabel(new Date(2025, 11, 31, 9, 30).getTime(), NOW)).toBe('2025年12月31日 09:30')
+  it('整点（00:00，即只有日期无时间）返回空字符串', () => {
+    expect(formatTimeOnly(new Date(2026, 7, 14).getTime())).toBe('')
   })
   it('Infinity（无时间）返回空字符串', () => {
-    expect(formatTimestampLabel(Infinity, NOW)).toBe('')
+    expect(formatTimeOnly(Infinity)).toBe('')
   })
 })
 
