@@ -1,5 +1,5 @@
 // 缓存名：每次发版升一档（v1 -> v2 -> ...），配合 activate 清理旧缓存，确保旧窗口尽快吃到新版本
-const CACHE = 'tasklist-v3'
+const CACHE = 'tasklist-v4'
 self.addEventListener('install', (e) => {
   self.skipWaiting()
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./'])))
