@@ -61,9 +61,10 @@ onBeforeUnmount(() => resetDrag())
 <style scoped>
 .main-area { flex: 1; overflow-y: auto; position: relative; }
 .content { max-width: 760px; margin: 0 auto; padding: 56px 28px 48px; }
-.sidebar-toggle { position: fixed; top: 10px; left: 10px; width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink-2); cursor: pointer; font-size: 14px; box-shadow: var(--shadow-card); transition: color 150ms var(--ease), background-color 150ms var(--ease), border-color 150ms var(--ease), box-shadow 150ms var(--ease), transform 140ms var(--spring), scale 200ms var(--spring); z-index: 60; }
+@media (max-width: 720px) { .content { padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px) + 16px); } }
+.sidebar-toggle { position: fixed; top: 10px; left: 10px; width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: var(--radius-sm); background: transparent; color: var(--ink-2); cursor: pointer; font-size: 18px; box-shadow: none; transition: color 150ms var(--ease), background-color 150ms var(--ease), transform 140ms var(--spring), scale 200ms var(--spring); z-index: 60; }
 .sidebar-toggle:active { scale: 0.9; transition: scale 60ms var(--ease); }
-.sidebar-toggle:hover { color: var(--ink); box-shadow: var(--shadow-lift); }
+.sidebar-toggle:hover { color: var(--ink); background: var(--ink-tint); }
 .list-title { margin: 0 0 6px; font-size: var(--font-lg); font-weight: 700; }
 .list-desc { margin: 0 0 18px; color: var(--ink-2); font-size: var(--font-sm); }
 .empty-tip { color: var(--ink-3); font-size: var(--font-md); text-align: center; padding: 60px 20px; }

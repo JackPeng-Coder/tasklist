@@ -5,7 +5,7 @@ export default {
   group: { name: '组合名称', description: '组合描述', new: '新建组合', edit: '编辑组合' },
   status: { overdue: '已逾期', pending: '未完成', done: '已完成', doneCount: '{done}/{total} 已完成' },
   sidebar: { lists: '列表', edit: '编辑', newList: '+ 新建列表', renameList: '重命名列表', collapse: '收起侧栏', expand: '展开侧栏' },
-  rail: { addItem: '+事项', addGroup: '+组合', undo: '撤销', redo: '重做', edit: '编辑', settings: '设置' },
+  rail: { addItem: '事项', addGroup: '组合', undo: '撤销', redo: '重做', edit: '编辑', settings: '设置' },
   settings: { title: '设置', showDescription: '显示描述', theme: '外观', light: '浅色模式', dark: '深色模式', fontSize: '字号大小', language: '语言', import: '导入数据', export: '导出数据', about: '关于', imported: '导入成功', importFailed: '导入失败：文件格式不正确', importTitle: '确认导入？', importMessage: '将覆盖同 ID 数据', recovered: '检测到本地数据损坏，已备份原数据并重置为空数据' },
   about: {
     tagline: '纯前端、单机优先的任务清单，数据只属于你',

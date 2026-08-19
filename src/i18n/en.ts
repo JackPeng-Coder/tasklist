@@ -5,7 +5,7 @@ export default {
   group: { name: 'Group name', description: 'Group description', new: 'New group', edit: 'Edit group' },
   status: { overdue: 'Overdue', pending: 'To do', done: 'Done', doneCount: '{done}/{total} done' },
   sidebar: { lists: 'Lists', edit: 'Edit', newList: '+ New list', renameList: 'Rename list', collapse: 'Collapse sidebar', expand: 'Expand sidebar' },
-  rail: { addItem: '+Item', addGroup: '+Group', undo: 'Undo', redo: 'Redo', edit: 'Edit', settings: 'Settings' },
+  rail: { addItem: 'Item', addGroup: 'Group', undo: 'Undo', redo: 'Redo', edit: 'Edit', settings: 'Settings' },
   settings: { title: 'Settings', showDescription: 'Show description', theme: 'Appearance', light: 'Light mode', dark: 'Dark mode', fontSize: 'Font size', language: 'Language', import: 'Import data', export: 'Export data', about: 'About', imported: 'Import successful', importFailed: 'Import failed: invalid file format', importTitle: 'Confirm import?', importMessage: 'Data with the same ID will be overwritten', recovered: 'Local data was corrupted; the original data has been backed up and reset' },
   about: {
     tagline: 'A pure-frontend, local-first task list. Your data stays yours.',
