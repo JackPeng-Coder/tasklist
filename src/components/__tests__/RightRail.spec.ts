@@ -1,5 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia, type Pinia } from 'pinia'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import RightRail from '../RightRail.vue'
 import { useDataStore } from '../../stores/data'
 import { useUiStore } from '../../stores/ui'
@@ -30,6 +32,53 @@ describe('RightRail', () => {
     expect(btns[3].text()).toContain('重做')
     expect(btns[4].text()).toContain('编辑')
     expect(btns[5].text()).toContain('设置')
+  })
+
+  it('窄屏下按钮含 .btn-label 元素（窄屏媒体查询负责视觉隐藏）', () => {
+    // 真实渲染（CSS 媒体查询）由浏览器处理，jsdom 不解析 media query
+    // 此处断言 DOM 结构：每个按钮仍含 .btn-label（窄屏下由 clip 隐藏、不撑宽）
+    const w = mountRail()
+    const btns = w.findAll('.icon-btn')
+    for (const b of btns) {
+      expect(b.find('.btn-label').exists()).toBe(true)
+    }
+  })
+
+  it('窄屏 .icon-btn 使用 flex: 1 1 0 + min-width 让按钮平分布局宽度，仅在不够时换行', () => {
+    // jsdom 不解析 @media 媒体查询，故直接检查 .vue 源码中的窄屏 CSS 规则。
+    // 设计目标：窄屏（≤720px）下工具栏按钮平分容器宽度，两端不留白；
+    // 仅当视口实在不够（按按钮最小可点宽度排列后仍溢出）时才允许换行。
+    // 旧实现 .icon-btn { flex: 0 0 auto } 会让按钮按内容尺寸聚集，再被 justify-content: center 推到中间，
+    // 导致两侧长期留出 30~60+ px 的空白，不符合「不够位置才换行」的语义。
+    const src = readFileSync(join(__dirname, '..', 'RightRail.vue'), 'utf8')
+    const narrowBlocks = src.split(/@media\s*\(max-width:\s*720px\)/).slice(1)
+    expect(narrowBlocks.length).toBeGreaterThan(0)
+    const iconBtnRuleBodies = narrowBlocks
+      .map((b) => b.match(/\.icon-btn\s*\{([\s\S]*?)\}/))
+      .filter((m): m is RegExpExecArray => !!m)
+      .map((m) => m[1])
+    expect(iconBtnRuleBodies.length).toBeGreaterThan(0)
+    const all = iconBtnRuleBodies.join('\n')
+    // 必须采用 fill 策略
+    expect(all).toMatch(/flex:\s*1 1 0/)
+    // 必须设最小宽度防止按钮被压到不可见/不可点
+    expect(all).toMatch(/min-width:\s*36px/)
+    // 必须不再使用 0 0 auto 旧策略
+    expect(all).not.toMatch(/flex:\s*0 0 auto/)
+  })
+
+  it('窄屏 .right-rail 不再用 justify-content: center 把按钮推到中间造成两端空白', () => {
+    // 设计：按钮采用 flex: 1 1 0 时会自动平分整行宽度；只有换行后剩下零星的"孤儿按钮"
+    // 才会看到 justify-content 的影响。默认 flex-start 比 center 更符合"逐批换行、靠左起步"的视觉，
+    // 避免按整行居中再次让窄屏出现两侧对称空白。
+    const src = readFileSync(join(__dirname, '..', 'RightRail.vue'), 'utf8')
+    const narrowRailRule = src.match(
+      /@media\s*\(max-width:\s*720px\)[\s\S]*?\.right-rail\s*\{([\s\S]*?)\}/
+    )
+    expect(narrowRailRule).toBeTruthy()
+    const body = narrowRailRule![1]
+    // 不允许在窄屏 rail 上继续使用 justify-content: center
+    expect(body).not.toMatch(/justify-content:\s*center/)
   })
 
   it('主动作按钮不再以文字「+」开头（图标已替代「+」语义）', () => {

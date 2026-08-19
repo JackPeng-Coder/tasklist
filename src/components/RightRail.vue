@@ -81,6 +81,8 @@ defineEmits<{ (e: 'add-item'): void; (e: 'add-group'): void; (e: 'open-settings'
 @media (max-width: 720px) {
   .right-rail {
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* 按钮自身已平分整行；justify 只在换行后影响"孤儿按钮"位置，靠左起步比居中更符合"逐批换行"语义 */
     position: fixed;
     bottom: 0;
     left: 0;
@@ -191,16 +193,16 @@ defineEmits<{ (e: 'add-item'): void; (e: 'add-group'): void; (e: 'open-settings'
   filter: grayscale(0.6);
 }
 
-/* 窄屏：仅图标，6 个按钮一行均匀分布；title 仍提供中文提示 */
+/* 窄屏：仅图标，按钮平分布局宽度；只有真正放不下时（min-width × 数量 > 可用宽度）才逐批换行 */
 @media (max-width: 720px) {
   .icon-btn {
-    flex: 1 1 0;
-    min-width: 0;
-    padding: 8px 4px;
+    flex: 1 1 0; /* 平分容器宽度，避免两端留白 */
+    min-width: 36px; /* 内容自然最小宽度（约 16px 图标 + 10px*2 内边距），低于此即代表确实无空间 → 触发换行 */
+    padding: 8px 10px;
     justify-content: center;
   }
   .icon-btn .btn-label {
-    /* 窄屏仅图标：隐藏文字标签 */
+    /* 窄屏仅图标：视觉隐藏文字标签（不占 flex 空间，避免按钮内大量留白） */
     position: absolute;
     width: 1px;
     height: 1px;

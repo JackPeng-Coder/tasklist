@@ -100,7 +100,7 @@ interface Group {       // 组合（可递归嵌套，不限深度）
   5. `编辑`：图标为铅笔 + 下划线；切换全局编辑模式（开启后事项/组合右侧显示「编辑」「删除」等按钮）
   6. `设置`：图标为三条横线 + 圆点（滑尺条，表示调节）；打开设置弹窗（见 3.7）
 - 主动作按钮文字不再以 `+` 开头：`+` 语义由左侧图标承担，避免文字 + 图标重复表达同一概念
-- 窄屏底部栏（≤720px）固定覆盖在列表底部：6 个按钮等分宽度 (`flex: 1 1 0; min-width: 0`)，文字标签通过 `clip` 隐藏、仅保留 16px 图标，title 仍提供中文提示；容器 `width: auto` 铺满屏宽，`background: var(--card)` + `box-shadow: 0 -2px 8px var(--ink-tint)` 与列表分层，`padding-bottom` 含 `env(safe-area-inset-bottom)` 适配刘海屏；主区 `padding-bottom` 同步预留 toolbar + 安全区高度（`calc(52px + env(safe-area-inset-bottom, 0px) + 16px)`）
+- 窄屏底部栏（≤720px）固定覆盖在列表底部：按钮以 `flex: 1 1 0` 平分容器宽度（`min-width: 36px` 防止过度收缩），文字标签通过 `clip` 隐藏、仅保留 16px 图标，title 仍提供中文提示；容器 `width: auto` 铺满屏宽、`flex-wrap: wrap` 配合按钮自身 `flex: 1 1 0` 让按钮组**有空间时填满整行、仅在 6 × min-width + 5 × gap + 容器 padding 之和超出视口宽度时才换行**，杜绝两端留白，`justify-content: flex-start` 处理换行后的"孤儿按钮"位置（避免居中再次出现对称空白），`background: var(--card)` + `box-shadow: 0 -2px 8px var(--ink-tint)` 与列表分层，`padding-bottom` 含 `env(safe-area-inset-bottom)` 适配刘海屏；主区 `padding-bottom` 同步预留 toolbar + 安全区高度（`calc(52px + env(safe-area-inset-bottom, 0px) + 16px)`）
 
 ### 3.3 主区
 
@@ -153,6 +153,8 @@ interface Group {       // 组合（可递归嵌套，不限深度）
 - `Enter` 确认（聚焦在输入框时）
 - 点击遮罩关闭
 - 必填项未填写时确认按钮禁用
+- 弹窗宽度的两层约束：宽屏 `min-width: 360px` 给阅读/输入留舒适区间、`max-width: min(560px, 92vw)` 防超宽屏溢出；窄屏（≤720px）解除 `min-width`（设为 `0`）并把 `max-width` 收敛为 `92vw`，避免 320/336 等视口被 `min-width` 顶开、向左溢出视口 12~20 px
+- 弹窗内的子面板（`.panel` / `.about`）以同样的两层策略响应：宽屏设 `min-width: 300px` 给内容留舒适宽度，窄屏解除 `min-width`，让弹窗自身宽度决定面板宽度
 
 #### 3.6.1 新建/编辑列表
 

@@ -37,4 +37,8 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
 .dialog h3 { margin: 0 0 4px; font-size: var(--font-lg); }
 .body { margin: 16px 0; }
 .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+/* 窄屏解除 .dialog 的 min-width 约束：宽屏的 360px 最小宽度在 ≤360px 视口下会被 max-width 顶开、向左溢出视口 */
+@media (max-width: 720px) {
+  .dialog { min-width: 0; max-width: 92vw; }
+}
 </style>

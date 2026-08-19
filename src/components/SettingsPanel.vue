@@ -43,6 +43,11 @@ function onLang(e: Event) {
 
 <style scoped>
 .panel { display: flex; flex-direction: column; gap: 16px; min-width: 300px; }
+/* 窄屏释放 .panel min-width：与 ModalDialog 同步，否则 320/336 视口下弹窗本身已压到 294/309，
+   面板仍按 300px 撑出弹窗右边缘（开关/选择器/滑尺溢出弹窗外） */
+@media (max-width: 720px) {
+  .panel { min-width: 0; }
+}
 .row { display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: var(--font-sm); }
 .row span { color: var(--ink); }
 .row input[type='range'] { flex: 1; accent-color: var(--blue); cursor: pointer; }

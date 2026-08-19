@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import AboutDialog from '../AboutDialog.vue'
 import i18n from '../../i18n'
 import pkg from '../../../package.json'
@@ -50,5 +52,14 @@ describe('AboutDialog', () => {
     const w = mountAbout()
     await w.get('[data-test="about-close"]').trigger('click')
     expect(w.emitted('close')).toBeTruthy()
+  })
+
+  it('窄屏释放 .about min-width：与 ModalDialog / SettingsPanel 同步，避免 320/336 视口下内容撑出弹窗', () => {
+    // .about { min-width: 300px; max-width: 460px } 在窄屏下若不释放，会顶开已经压到 ~294/309px 的弹窗
+    const src = readFileSync(join(__dirname, '..', 'AboutDialog.vue'), 'utf8')
+    const narrowBlocks = src.split(/@media\s*\(max-width:\s*720px\)/).slice(1)
+    expect(narrowBlocks.length).toBeGreaterThan(0)
+    const allNarrow = narrowBlocks.join('\n')
+    expect(allNarrow).toMatch(/\.about[\s\S]*?min-width:\s*(0|auto)/)
   })
 })

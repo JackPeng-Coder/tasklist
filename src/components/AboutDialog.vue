@@ -39,6 +39,10 @@ const repoUrl = 'https://github.com/JackPeng-Coder/tasklist'
 
 <style scoped>
 .about { display: flex; flex-direction: column; gap: 10px; min-width: 300px; max-width: 460px; }
+/* 窄屏释放 .about min-width：与 ModalDialog / SettingsPanel 同步，避免 320/336 视口下顶开已被压窄的弹窗 */
+@media (max-width: 720px) {
+  .about { min-width: 0; }
+}
 .head { display: flex; align-items: center; gap: 10px; }
 .name { font-size: var(--font-lg); font-weight: 700; color: var(--ink); }
 .ver { font-size: var(--font-xs); color: var(--blue-ink); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px solid var(--blue-line); background: var(--blue-soft); }
